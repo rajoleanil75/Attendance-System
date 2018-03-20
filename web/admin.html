@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <script>
+        function getTasks() {
+            var role = document.getElementById('role')
+            var cid = document.getElementById('cid')
+            if (role.value == 0) {
+                alert("Please select Role...!!!");
+            }
+            else {
+                var uname = document.getElementById('uname');
+                var pass = document.getElementById('pass');
+                $.post("http://192.168.100.175:9090/feedback/global/Login/login_check_admin",
+                    {param1: uname.value, param2: pass.value, param3: role.value,param4:cid.value},
+                    function (data) {
+                        // alert(data);
+                        if(data=='0')
+                            alert("Invalid Username or Password...!!!");
+                        else if (data=='E')
+                            alert("Something went wrong...!!!");
+                        else if(data=='B')
+                            alert("You are Blocked, Please Contact System Administrator...!!!");
+                        else if(data=="-1")
+                            alert("Invalid Password, Remaing chances : 2");
+                        else if(data=="-2")
+                            alert("Invalid Password, Remaing chances : 1");
+                        else if(data=="-3")
+                            alert("Invalid Password, Remaing chances : 0");
+                        else
+                        {
+                            var user=JSON.parse(data);
+                            sessionStorage.setItem("uid",user.uid);
+                            sessionStorage.setItem("uname",user.uname);
+                            sessionStorage.setItem("id",user.id);
+                            sessionStorage.setItem("role",user.role);
+                            sessionStorage.setItem("llogin",user.llogin);
+                            switch (role.value)
+                            {
+                                case '1':
+                                    $.post("http://192.168.100.175:9090/feedback/admin/student_services/searchById",
+                                        {param1: user.id },
+                                        function (data) {
+                                            // alert(data);
+                                            if (data == "E")
+                                                alert("Invalid Details...!!!");
+                                            else {
+                                                var dt = JSON.parse(data);
+                                                sessionStorage.setItem("studid",dt[1]);
+                                                sessionStorage.setItem("sname",dt[2]);
+                                                sessionStorage.setItem("roll",dt[3]);
+                                                sessionStorage.setItem("sclass",dt[4]);
+                                                sessionStorage.setItem("sdiv",dt[5]);
+                                                window.location="http://192.168.100.175:9090/feedback/shome.html";
+                                            }
+                                        });
+                                    break;
+                                case '2':window.location="http://192.168.100.175:9090/feedback/thome.html";
+                                    break;
+                                case '3':window.location="http://192.168.100.175:9090/feedback/hhome.html";
+                                    break;
+                                case '4':window.location="http://192.168.100.175:9090/feedback/ahome.html";
+                                    break;
+                                default:alert("Something went wrong...!!!");
+                                    break;
+                            }
+
+                        }
+                    });
+            }
+        }
+        function fetch() {
+            document.getElementById("cid").length = 0;
+            $.post("http://192.168.100.175:9090/feedback/admin/backup_services/viewAll",
+                function (data) {
+
+                    for(var i=0;i<(data.length);i++)
+                    {
+                        document.getElementById("cid").options[i]=new Option(data[i][0],data[i][3]);
+                    }
+                });
+        }
+    </script>
+</head>
+<title>Feedback Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+
+    <div class="divnavbar">
+        <nav class="navbar navbar-expand-xl">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <div class="font-color"><a class="nav-link dropdown" href="http://192.168.100.175:9090/feedback/admin.html">
+                        Home
+                    </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="row content">
+        <div class="col-sm-8 mainnav">
+            <h1>Welcome To Feedback Portal</h1>
+            <hr>
+            <p> The <b>FEEDBACK PORTAL</b> is a system designed by<br> <b>COMPUTER SCIENCE DEPARTMENT.</b> <br>This system helps to take the feedback from
+                Students for a particular<br> Teacher,Subject and Practical Sessions.<br> This system analysis the feedback and gives reports
+                in the form of<br> Graphs as well as Report.</p>
+            <hr>
+        </div>
+        <div class="col-sm-4 sidenav">
+            <h4>Login</h4>
+            <hr>
+            <form action="javascript:getTasks();" name="fillform" >
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" placeholder="username" id="uname" required>
+                    <br>
+                    <label>Password</label>
+                    <input type="password" class="form-control" placeholder="password" id="pass" required>
+                    <!--<br>-->
+                    <select name="role" class="form-control" id="role" hidden>
+                        <!--<option value="0">Select Role</option>-->
+                        <!--<option value="1">Student</option>-->
+                        <!--<option value="2">Teacher</option>-->
+                        <!--<option value="3">Co-Ordinator</option>-->
+                        <option value="4">Admin</option>
+                    </select>
+                    <br>
+                    <label>Select Academic year :</label>
+                    <select name="cid" id="cid" class="form-control">
+                    </select>
+                    <br>
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
+                    <input class="btn btn-dark" type="reset" value="Reset">
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
+                    <input class="btn btn-dark" type="submit" value="Login">
+                </div>
+            </form>
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            <a href="http://192.168.100.175:9090/feedback/new_user5.html">new user?</a>
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            <a href="http://192.168.100.175:9090/feedback/forgetpass3.html">Forget Password</a>
+        </div>
+        <div class="footer">
+            <hr>
+        </div>
+    </div>
+    <div id='footer'></div>

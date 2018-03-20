@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="DB.Course" table="course">
+        <id name="id">
+            <column name="id" sql-type="int"/>
+            <generator class="native"/>
+        </id>
+        <property name="name">
+            <column name="name" sql-type="varchar(40)" not-null="true" length="40"/>
+        </property>
+    </class>
+
+    <class name="DB.CSClass" table="csclass">
+        <id name="id">
+            <column name="id" sql-type="int"/>
+            <generator class="native"/>
+        </id>
+        <property name="name">
+            <column name="name" sql-type="varchar(20)" not-null="true" length="20"/>
+        </property>
+        <many-to-one name="course" class="DB.Course" column="course_id" not-null="true" cascade="all"/>
+    </class>
+
+    <class name="DB.Division" table="division">
+        <!--<id name="id">-->
+            <!--<column name="name" sql-type="varchar(10)" not-null="true"/>-->
+        <!--</id>-->
+        <composite-id>
+            <key-property name="name" column="name" />
+            <key-many-to-one name="csClass" class="DB.CSClass" column="csclass"/>
+        </composite-id>
+        <!--<property name="name">-->
+
+        <!--</property>-->
+        <!--<many-to-one name="csClass" class="DB.CSClass" column="csclass_id" not-null="true" cascade="all"/>-->
+    </class>
+
+    <class name="DB.Teacher" table="Teacher">
+        <id name="id">
+            <column name="id" sql-type="int"/>
+            <generator class="native"/>
+        </id>
+        <property name="name">
+            <column name="name" sql-type="varchar(30)" not-null="true" length="30"/>
+        </property>
+    </class>
+
+    <class name="DB.Subject" table="Subject">
+        <id name="id">
+            <column name="id" sql-type="varchar(15)"/>
+        </id>
+        <property name="name">
+            <column name="name" sql-type="varchar(50)" not-null="true" length="50"/>
+        </property>
+        <many-to-one name="CSClass" class="DB.CSClass" column="csclass_id" not-null="true" cascade="all"/>
+        <many-to-one name="teacher" class="DB.Teacher" column="teacher_id" not-null="true" cascade="all"/>
+    </class>
+
+    <class name="DB.Student" table="student">
+        <composite-id>
+            <key-property name="roll" sql-type="int" not-null="true" />
+            <key-many-to-one name="division" class="DB.Division" column="division_id" cascade="all"/>
+        </composite-id>
+        <property name="name">
+            <column name="name" sql-type="varchar(40)" not-null="true" length="40"/>
+        </property>
+    </class>
+
+    <class name="DB.LabBatch" table="labbatch">
+        <composite-id>
+            <key-property name="name" sql-type="varchar(20)" not-null="true" length="20"/>
+            <key-many-to-one name="division" class="DB.Division" column="division" cascade="all"/>
+        </composite-id>
+        <property name="name">
+            <column name="name" sql-type="varchar(10)" not-null="true" length="10"/>
+        </property>
+        <property name="from">
+            <column name="sfrom" sql-type="int"/>
+        </property>
+        <property name="to">
+            <column name="sto" sql-type="int"/>
+        </property>
+    </class>
+
+    <class name="DB.Teacher_LabBatch" table="teacher_labbatch">
+        <id name="id">
+            <column name="id" sql-type="int"/>
+            <generator class="native"/>
+        </id>
+        <many-to-one name="teacher" class="DB.Teacher" column="teacher_id" not-null="true" cascade="all"/>
+        <many-to-one name="labBatch" class="DB.LabBatch" column="labbatch_id" not-null="true" cascade="all"/>
+    </class>
+
+
+</hibernate-mapping>
