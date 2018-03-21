@@ -1,11 +1,12 @@
 package DB;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  * Created by Anil on 19/03/2018
  */
-public class LabAttendance {
+public class LabAttendance implements Serializable {
     private LabTimetable labTimetable;
     private Student student;
     private int flag;

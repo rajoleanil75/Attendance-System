@@ -26,30 +26,45 @@
     </class>
 
     <class name="DB.Division" table="division">
-        <!--<id name="id">-->
-            <!--<column name="name" sql-type="varchar(10)" not-null="true"/>-->
-        <!--</id>-->
         <composite-id>
-            <key-property name="name" column="name" />
-            <key-many-to-one name="csClass" class="DB.CSClass" column="csclass"/>
+            <key-property name="name" column="dname" />
+            <key-many-to-one name="csClass" class="DB.CSClass" column="csclass_id"/>
         </composite-id>
-        <!--<property name="name">-->
-
-        <!--</property>-->
-        <!--<many-to-one name="csClass" class="DB.CSClass" column="csclass_id" not-null="true" cascade="all"/>-->
     </class>
 
-    <class name="DB.Teacher" table="Teacher">
+    <class name="DB.Teacher" table="teacher">
         <id name="id">
             <column name="id" sql-type="int"/>
             <generator class="native"/>
         </id>
         <property name="name">
-            <column name="name" sql-type="varchar(30)" not-null="true" length="30"/>
+            <column name="name" sql-type="varchar(40)" not-null="true" length="40"/>
+        </property>
+        <property name="pass">
+            <column name="pass" sql-type="varchar(16)"/>
+        </property>
+        <property name="ques">
+            <column name="ques" sql-type="text"/>
+        </property>
+        <property name="ans">
+            <column name="ans" sql-type="varchar(20)"/>
         </property>
     </class>
 
-    <class name="DB.Subject" table="Subject">
+    <class name="DB.Student" table="student">
+        <composite-id>
+            <key-property name="roll" column="roll"/>
+            <key-many-to-one name="division" class="DB.Division">
+                <column name="dname"/>
+                <column name="class_id"/>
+            </key-many-to-one>
+        </composite-id>
+        <property name="name">
+            <column name="name" sql-type="varchar(40)" not-null="true" length="40"/>
+        </property>
+    </class>
+
+    <class name="DB.Subject" table="subject">
         <id name="id">
             <column name="id" sql-type="varchar(15)"/>
         </id>
@@ -60,24 +75,56 @@
         <many-to-one name="teacher" class="DB.Teacher" column="teacher_id" not-null="true" cascade="all"/>
     </class>
 
-    <class name="DB.Student" table="student">
+    <class name="DB.SubjectTimetable" table="subject_timetable">
         <composite-id>
-            <key-property name="roll" sql-type="int" not-null="true" />
-            <key-many-to-one name="division" class="DB.Division" column="division_id" cascade="all"/>
+            <key-property name="slotno" column="slotno"/>
+            <key-property name="day" column="day"/>
+            <key-many-to-one name="subject" class="DB.Subject" column="subject_id"/>
+            <key-many-to-one name="division" class="DB.Division">
+                <column name="dname"/>
+                <column name="csclass_id"/>
+            </key-many-to-one>
         </composite-id>
-        <property name="name">
-            <column name="name" sql-type="varchar(40)" not-null="true" length="40"/>
+        <property name="stime">
+            <column name="stime" sql-type="time"/>
+        </property>
+        <property name="etime">
+            <column name="etime" sql-type="time"/>
         </property>
     </class>
 
-    <class name="DB.LabBatch" table="labbatch">
+    <class name="DB.SubjectAttendance" table="subject_attendance">
         <composite-id>
-            <key-property name="name" sql-type="varchar(20)" not-null="true" length="20"/>
-            <key-many-to-one name="division" class="DB.Division" column="division" cascade="all"/>
+            <key-many-to-one name="subjectTimetable" class="DB.SubjectTimetable">
+                <column name="slotno"/>
+                <column name="day"/>
+                <column name="subject_id"/>
+                <column name="dname"/>
+                <column name="csclass_id"/>
+            </key-many-to-one>
+            <key-many-to-one name="teacher" class="DB.Teacher" column="teacher"/>
+            <key-many-to-one name="student" class="DB.Student">
+                <column name="roll" />
+                <column name="dname_s"/>
+                <column name="class_id_s"/>
+            </key-many-to-one>
+            <key-property name="date" column="date"/>
         </composite-id>
-        <property name="name">
-            <column name="name" sql-type="varchar(10)" not-null="true" length="10"/>
+        <property name="flag">
+            <column name="flag" sql-type="int" not-null="true"/>
         </property>
+        <many-to-one name="subject" class="DB.Subject" column="subject_id_extra" not-null="false" cascade="all"/>
+    </class>
+
+    <class name="DB.LabBatch" table="lab_batch">
+        <composite-id>
+            <key-property name="name" column="lname"/>
+            <key-many-to-one name="division" class="DB.Division">
+                <column name="dname"/>
+                <column name="csclass_id"/>
+            </key-many-to-one>
+        </composite-id>
+
         <property name="from">
             <column name="sfrom" sql-type="int"/>
         </property>
@@ -86,14 +133,72 @@
         </property>
     </class>
 
-    <class name="DB.Teacher_LabBatch" table="teacher_labbatch">
+    <class name="DB.LabInstructor" table="lab_instructor">
+        <composite-id>
+            <key-many-to-one name="teacher" class="DB.Teacher" column="teacher_id"/>
+            <key-many-to-one name="labBatch" class="DB.LabBatch">
+                <column name="lname"/>
+                <column name="dname"/>
+                <column name="csclass_id"/>
+            </key-many-to-one>
+        </composite-id>
+    </class>
+
+    <class name="DB.LabTimetable" table="lab_timetable">
+        <composite-id>
+            <key-property name="day" column="day"/>
+            <key-many-to-one name="labInstructor" class="DB.LabInstructor">
+                <column name="teacher_id"/>
+                <column name="lname"/>
+                <column name="dname"/>
+                <column name="csclass_id"/>
+            </key-many-to-one>
+        </composite-id>
+        <property name="stime">
+            <column name="stime" sql-type="time"/>
+        </property>
+        <property name="etime">
+            <column name="etime" sql-type="time"/>
+        </property>
+    </class>
+
+    <class name="DB.LabAttendance" table="lab_attendance">
+        <composite-id>
+            <key-many-to-one name="labTimetable" class="DB.LabTimetable">
+                <column name="day"/>
+                <column name="teacher_id"/>
+                <column name="lname"/>
+                <column name="dname"/>
+                <column name="csclass_id"/>
+            </key-many-to-one>
+            <key-many-to-one name="student" class="DB.Student">
+                <column name="roll"/>
+                <column name="dname_s"/>
+                <column name="csclass_id_s"/>
+            </key-many-to-one>
+            <key-many-to-one name="teacher" class="DB.Teacher" column="teacher_id_extra"/>
+            <key-property name="date" column="date"/>
+        </composite-id>
+        <property name="flag">
+            <column name="flag" sql-type="int" not-null="true"/>
+        </property>
+    </class>
+
+    <class name="DB.TNotification" table="tnotification">
         <id name="id">
             <column name="id" sql-type="int"/>
             <generator class="native"/>
         </id>
+        <property name="name">
+            <column name="name" sql-type="text"/>
+        </property>
+        <property name="date">
+            <column name="ndate" sql-type="date"/>
+        </property>
+        <property name="time">
+            <column name="ntime" sql-type="time"/>
+        </property>
         <many-to-one name="teacher" class="DB.Teacher" column="teacher_id" not-null="true" cascade="all"/>
-        <many-to-one name="labBatch" class="DB.LabBatch" column="labbatch_id" not-null="true" cascade="all"/>
     </class>
-
 
 </hibernate-mapping>

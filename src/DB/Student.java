@@ -1,9 +1,11 @@
 package DB;
 
+import java.io.Serializable;
+
 /**
  * Created by Anil on 19/03/2018
  */
-public class Student {
+public class Student implements Serializable {
     private int roll;
     private String name;
     private DB.Division division;

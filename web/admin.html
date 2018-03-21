@@ -23,7 +23,7 @@
             else {
                 var uname = document.getElementById('uname');
                 var pass = document.getElementById('pass');
-                $.post("http://192.168.100.175:9090/feedback/global/Login/login_check_admin",
+                $.post("http://localhost:8080/attendance_war_exploded/global/Login/login_check_admin",
                     {param1: uname.value, param2: pass.value, param3: role.value,param4:cid.value},
                     function (data) {
                         // alert(data);
@@ -50,7 +50,7 @@
                             switch (role.value)
                             {
                                 case '1':
-                                    $.post("http://192.168.100.175:9090/feedback/admin/student_services/searchById",
+                                    $.post("http://localhost:8080/attendance_war_exploded/admin/student_services/searchById",
                                         {param1: user.id },
                                         function (data) {
                                             // alert(data);
@@ -63,15 +63,15 @@
                                                 sessionStorage.setItem("roll",dt[3]);
                                                 sessionStorage.setItem("sclass",dt[4]);
                                                 sessionStorage.setItem("sdiv",dt[5]);
-                                                window.location="http://192.168.100.175:9090/feedback/shome.html";
+                                                window.location="http://localhost:8080/attendance_war_exploded/shome.html";
                                             }
                                         });
                                     break;
-                                case '2':window.location="http://192.168.100.175:9090/feedback/thome.html";
+                                case '2':window.location="http://localhost:8080/attendance_war_exploded/thome.html";
                                     break;
-                                case '3':window.location="http://192.168.100.175:9090/feedback/hhome.html";
+                                case '3':window.location="http://localhost:8080/attendance_war_exploded/hhome.html";
                                     break;
-                                case '4':window.location="http://192.168.100.175:9090/feedback/ahome.html";
+                                case '4':window.location="http://localhost:8080/attendance_war_exploded/ahome.html";
                                     break;
                                 default:alert("Something went wrong...!!!");
                                     break;
@@ -83,7 +83,7 @@
         }
         function fetch() {
             document.getElementById("cid").length = 0;
-            $.post("http://192.168.100.175:9090/feedback/admin/backup_services/viewAll",
+            $.post("http://localhost:8080/attendance_war_exploded/admin/backup_services/viewAll",
                 function (data) {
 
                     for(var i=0;i<(data.length);i++)
@@ -94,7 +94,7 @@
         }
     </script>
 </head>
-<title>Feedback Portal</title>
+<title>Attendance System</title>
 <body onload="fetch()">
 <div class="container">
     <div id='header'></div>
@@ -103,7 +103,7 @@
         <nav class="navbar navbar-expand-xl">
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <div class="font-color"><a class="nav-link dropdown" href="http://192.168.100.175:9090/feedback/admin.html">
+                    <div class="font-color"><a class="nav-link dropdown" href="http://localhost:8080/Feedback_System_war_exploded/admin.html">
                         Home
                     </a>
                     </div>
@@ -113,7 +113,7 @@
     </div>
     <div class="row content">
         <div class="col-sm-8 mainnav">
-            <h1>Welcome To Feedback Portal</h1>
+            <h1>Welcome To Attendance Portal</h1>
             <hr>
             <p> The <b>FEEDBACK PORTAL</b> is a system designed by<br> <b>COMPUTER SCIENCE DEPARTMENT.</b> <br>This system helps to take the feedback from
                 Students for a particular<br> Teacher,Subject and Practical Sessions.<br> This system analysis the feedback and gives reports
@@ -150,9 +150,9 @@
                 </div>
             </form>
             &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-            <a href="http://192.168.100.175:9090/feedback/new_user5.html">new user?</a>
+            <a href="http://localhost:8080/attendance_war_exploded/new_user5.html">new user?</a>
             &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-            <a href="http://192.168.100.175:9090/feedback/forgetpass3.html">Forget Password</a>
+            <a href="http://localhost:8080/attendance_war_exploded/forgetpass3.html">Forget Password</a>
         </div>
         <div class="footer">
             <hr>

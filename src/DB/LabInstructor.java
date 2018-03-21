@@ -1,9 +1,11 @@
 package DB;
 
+import java.io.Serializable;
+
 /**
  * Created by Anil on 19/03/2018
  */
-public class LabInstructor {
+public class LabInstructor implements Serializable {
     private LabBatch labBatch;
     private Teacher teacher;
 

@@ -1,12 +1,13 @@
 package DB;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 /**
  * Created by Anil on 19/03/2018
  */
-public class SubjectTimetable {
+public class SubjectTimetable implements Serializable {
     private int slotno;
     private int day;
     private LocalTime stime;

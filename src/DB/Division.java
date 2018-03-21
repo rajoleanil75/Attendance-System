@@ -1,9 +1,11 @@
 package DB;
 
+import java.io.Serializable;
+
 /**
  * Created by Anil on 19/03/2018
  */
-public class Division {
+public class Division implements Serializable {
     private String name;
     private CSClass csClass;
 

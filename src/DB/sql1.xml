@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="DB.User" table="uuser">
+        <id name="name">
+            <column name="name" sql-type="varchar(30)" not-null="true" unique="true"/>
+            <!--<column name="uid" sql-type="int"/>-->
+            <!--<generator class="native"/>-->
+        </id>
+        <!--<property name="name">-->
+            <!--<column name="name" sql-type="varchar(30)" not-null="true" unique="true"/>-->
+        <!--</property>-->
+        <!--<property name="id">-->
+            <!--<column name="id" sql-type="varchar(15)"/>-->
+        <!--</property>-->
+        <property name="password">
+            <column name="password" sql-type="varchar(16)" not-null="true" length="16"/>
+        </property>
+        <property name="role">
+            <column name="role" sql-type="int" not-null="true"/>
+        </property>
+        <property name="date">
+            <column name="llogindate" sql-type="date"/>
+        </property>
+        <property name="time">
+            <column name="llogintime" sql-type="time"/>
+        </property>
+        <property name="ques">
+            <column name="ques" sql-type="text"/>
+        </property>
+        <property name="ans">
+            <column name="ans" sql-type="varchar(20)"/>
+        </property>
+    </class>
+    <class name="DB.Backup" table="dbbackup">
+        <id name="id">
+            <column name="id" sql-type="int"/>
+            <generator class="native"/>
+        </id>
+        <property name="dname">
+            <column name="dbname" sql-type="varchar(20)" not-null="true" unique="true"/>
+        </property>
+        <property name="bname">
+            <column name="bname" not-null="true" sql-type="varchar(20)" unique="true"/>
+        </property>
+        <property name="date">
+            <column name="bdate" sql-type="date"/>
+        </property>
+        <property name="cur">
+            <column name="cur" sql-type="int"/>
+        </property>
+    </class>
+    <class name="DB.Notification" table="notification">
+        <id name="id">
+            <column name="id" sql-type="int"/>
+            <generator class="native"/>
+        </id>
+        <property name="name">
+            <column name="name" sql-type="text"/>
+        </property>
+        <property name="date">
+            <column name="ndate" sql-type="date"/>
+        </property>
+        <property name="time">
+            <column name="ntime" sql-type="time"/>
+        </property>
+        <many-to-one name="user" class="DB.User" column="user_id" not-null="true" cascade="all"/>
+    </class>
+</hibernate-mapping>

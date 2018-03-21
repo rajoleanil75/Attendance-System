@@ -1,12 +1,13 @@
 package DB;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  * Created by Anil on 19/03/2018
  */
-public class SubjectAttendance {
-    private SubjectAttendance subjectAttendance;
+public class SubjectAttendance implements Serializable {
+    private SubjectTimetable subjectTimetable;
     private Student student;
     private int flag;
     private Teacher teacher;
@@ -53,11 +54,11 @@ public class SubjectAttendance {
         this.student = student;
     }
 
-    public SubjectAttendance getSubjectAttendance() {
-        return subjectAttendance;
+    public SubjectTimetable getSubjectTimetable() {
+        return subjectTimetable;
     }
 
-    public void setSubjectAttendance(SubjectAttendance subjectAttendance) {
-        this.subjectAttendance = subjectAttendance;
+    public void setSubjectTimetable(SubjectTimetable subjectTimetable) {
+        this.subjectTimetable = subjectTimetable;
     }
 }
