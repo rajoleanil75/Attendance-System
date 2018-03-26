@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "amenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .col-sm-8{
+            padding-left: 100px;
+            padding-right: 100px;
+        }
+    </style>
+    <script>
+        function fetch()
+        {
+            validate_admin();
+            document.getElementById("cid").length = 0;
+            $.post("http://localhost:8080/attendance_war_exploded/global/course_services/viewAll",
+                function (data) {
+                    document.getElementById("cid").options[0]=new Option("Select Course","-2");
+                    for(var i=0;i<(data.length);i++)
+                    {
+                        document.getElementById("cid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
+                    }
+                });
+
+            document.getElementById("tid").length = 0;
+            $.post("http://localhost:8080/attendance_war_exploded/global/teacher_services/viewAll",
+                function (data) {
+                    document.getElementById("tid").options[0]=new Option("Select Teacher","-1");
+                    for(var i=0;i<(data.length);i++)
+                    {
+                        document.getElementById("tid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
+                    }
+                });
+        }
+        function cidchange() {
+            var cid=document.getElementById("cid");
+            document.getElementById("clid").length = 0;
+            if (cid.value=="-1")
+            {
+
+            }
+            else {
+                $.post("http://localhost:8080/attendance_war_exploded/global/class_services/getCourseWise",
+                    {param1: cid.value},
+                    function (data) {
+                        document.getElementById("clid").options[0] = new Option("Select Class", "-1");
+                        for (var i = 0; i < (data.length); i++) {
+                            document.getElementById("clid").options[i + 1] = new Option(data[i]["1"], data[i]["0"]);
+                        }
+                    });
+            }
+        }
+        function clidchange() {
+            var cid=document.getElementById("clid");
+            var tbl = document.getElementById('tbl');
+            while(tbl.rows.length > 1) {
+                tbl.deleteRow(1);
+            }
+            $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getClassWise",
+                {param1: cid.value},
+                function (data) {
+                    var tbl = document.getElementById('tbl');
+                    for(var i=1;i<(data.length+1);i++)
+                    {
+                        var x=tbl.insertRow(i);
+                        x.insertCell(0);
+                        x.insertCell(1);
+                        x.insertCell(2);
+                        var y=x.insertCell(3);
+                        tbl.rows[i].cells[0].innerHTML=data[i-1]["0"];
+                        tbl.rows[i].cells[1].innerHTML=data[i-1]["1"];
+                        tbl.rows[i].cells[2].innerHTML=data[i-1]["2"];
+                        var checkbox = document.createElement('input');
+                        checkbox.type = "checkbox";
+                        checkbox.name = "chk";
+                        checkbox.value = data[i-1]["0"];
+                        checkbox.id = "checkbox";
+                        y.appendChild(checkbox);
+                    }
+                });
+        }
+        function tidchange() {
+            var cid=document.getElementById("tid");
+            var tbl = document.getElementById('tbl');
+            while(tbl.rows.length > 1) {
+                tbl.deleteRow(1);
+            }
+            $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getTeacherWise",
+                {param1: cid.value},
+                function (data) {
+                    var tbl = document.getElementById('tbl');
+                    for(var i=1;i<(data.length+1);i++)
+                    {
+                        var x=tbl.insertRow(i);
+                        x.insertCell(0);
+                        x.insertCell(1);
+                        x.insertCell(2);
+                        var y=x.insertCell(3);
+                        tbl.rows[i].cells[0].innerHTML=data[i-1]["0"];
+                        tbl.rows[i].cells[1].innerHTML=data[i-1]["1"];
+                        tbl.rows[i].cells[2].innerHTML=data[i-1]["2"];
+                        var checkbox = document.createElement('input');
+                        checkbox.type = "checkbox";
+                        checkbox.name = "chk";
+                        checkbox.value = data[i-1]["0"];
+                        checkbox.id = "checkbox";
+                        y.appendChild(checkbox);
+                    }
+                });
+        }
+
+        function delete_sub(){
+            var cid=document.getElementById("clid");
+            var q = document.querySelectorAll("input[type=checkbox][name=chk]"), l = q.length, i;
+            for (i = 0; i < l; i++) {
+                if (q[i].checked == true) {
+                    // alert(q[i].value);
+                    $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/delete",
+                        {param1: q[i].value},
+                        function (data) {
+                        // alert(data);
+                            if(data=="0")
+                                alert("Lab Batch Not Deleted...!!!");
+                            else if(data=="1") {
+                                alert("Lab Batch Deleted...!!!");
+                            }
+                            else
+                                alert("Something went wrong...!!!");
+                        });
+                }
+            }
+        }
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+
+            <div class="row content1">
+                <div class="col-sm-8 text-center">
+                    <h4><label>Lab Batch Details</label></h4>
+                    <table class="table table-hover text-left" id="tbl">
+                        <tbody>
+                        <tr><td>Batch Name</td><td>Form Roll No</td><td>To Roll No</td><td><input type=Button name="delete" value="Delete" onclick="delete_sub()"/></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-4">
+                    <form class="form-text text-left" action="#">
+                        <table class="table text-left borderless" id="tbl1">
+                            <tbody>
+                            <tr><td>
+
+                            </td>
+                                <td></td></tr>
+                            </tbody>
+                        </table>
+                    </form>
+                    <div class="col-sm-12">
+                        <div class="col-sm-1">
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="form-group text-left" >
+
+                                <select name="cid" id="cid" class="form-control" onchange="cidchange()">
+                                </select>
+                            </div>
+                            <div class="form-group text-left" >
+
+                                <select name="clid" id="clid" class="form-control" onchange="clidchange()">
+
+                                </select>
+                            </div>
+
+                            <div class="form-group text-left" >
+
+                                <select name="tid" id="tid" class="form-control" onchange="tidchange()">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id='footer'></div>

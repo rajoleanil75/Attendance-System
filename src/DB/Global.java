@@ -37,10 +37,8 @@ public class Global {
     }
     public static Session getSession() throws HibernateException
     {
-//        reload();
         try {
             return ourSessionFactory.getCurrentSession();
-
         }
         catch (Exception e)
         {
@@ -74,17 +72,12 @@ public class Global {
     {
         try {
             return ourSessionFactory1.getCurrentSession();
-//        return ourSessionFactory.getCurrentSession();
         }
         catch (Exception e)
         {
             return ourSessionFactory1.openSession();
         }
     }
-    //    public static Session getCSession1() throws HibernateException
-//    {
-//        return ourSessionFactory1.getCurrentSession();
-//    }
     public static void closeFactory1()
     {
         try {

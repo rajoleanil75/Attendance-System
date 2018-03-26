@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "amenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <script>
+        function fetch() {
+
+            validate_admin();
+            document.getElementById("cid").length = 0;
+            $.post("http://localhost:8080/attendance_war_exploded/global/course_services/viewAll",
+                function (data) {
+                    document.getElementById("cid").options[0]=new Option("Select Course","-1");
+                    for(var i=0;i<(data.length);i++)
+                    {
+                        document.getElementById("cid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
+                    }
+                });
+        }
+        function cidchange() {
+            var cid=document.getElementById("cid");
+            document.getElementById("clid").length = 0;
+            $.post("http://localhost:8080/attendance_war_exploded/global/class_services/getCourseWise",
+                {param1: cid.value},
+                function (data) {
+                    document.getElementById("clid").options[0]=new Option("Select Class","-1");
+                    for(var i=0;i<(data.length);i++)
+                    {
+                        document.getElementById("clid").options[i+1]=new Option(data[i]["1"],data[i]["0"]);
+                    }
+                });
+        }
+        function clidchange() {
+            var cid = document.getElementById("clid");
+            document.getElementById("did").length = 0;
+            $.post("http://localhost:8080/attendance_war_exploded/global/division_services/getClassWise",
+                {param1: cid.value},
+                function (data) {
+                    document.getElementById("did").options[0] = new Option("Select Division", "-1");
+                    for (var i = 0; i < (data.length); i++) {
+                        document.getElementById("did").options[i + 1] = new Option(data[i]["0"], data[i]["0"]);
+                    }
+                });
+        }
+
+        function didchange() {
+            var cid = document.getElementById("clid");
+            var did = document.getElementById("did");
+            var tbl = document.getElementById('tbl');
+            while(tbl.rows.length > 1) {
+                tbl.deleteRow(1);
+            }
+            $.post("http://localhost:8080/attendance_war_exploded/global/student_services/viewDivisionWise",
+                {param1: did.value, param2:cid.value},
+                function (data) {
+                    var tbl = document.getElementById('tbl');
+                    for(var i=1;i<(data.length+1);i++)
+                    {
+                        var x=tbl.insertRow(i);
+                        x.insertCell(0);
+                        x.insertCell(1);
+                        var y=x.insertCell(2);
+                        tbl.rows[i].cells[0].innerHTML=data[i-1]["2"];
+                        tbl.rows[i].cells[1].innerHTML=data[i-1]["1"];
+                        var checkbox = document.createElement('input');
+                        checkbox.type = "checkbox";
+                        checkbox.name = "chk";
+                        checkbox.value = data[i-1]["0"];;
+                        checkbox.id = "checkbox";
+                        y.appendChild(checkbox);
+                    }
+                });
+        }
+
+        function delete_stud() {
+            var cid = document.getElementById("clid");
+            var did = document.getElementById("did");
+            var q = document.querySelectorAll("input[type=checkbox][name=chk]"), l = q.length, i;
+            for (i = 0; i < l; i++) {
+                if (q[i].checked == true) {
+                    $.post("http://localhost:8080/attendance_war_exploded/global/student_services/delete",
+                        {param1: q[i].value,param2: cid.value, param3:did.value},
+                        function (data) {
+                            if(data=="0")
+                                alert("Student Not Deleted...!!!");
+                            else if(data=="1") {
+                                alert("Student Deleted...!!!");
+                            }
+                            else
+                                alert("Something went wrong...!!!");
+                        });
+                }
+            }
+        }
+        function searchStudent()
+        {
+            var tbl = document.getElementById('tbl');
+            while(tbl.rows.length > 1) {
+                tbl.deleteRow(1);
+            }
+            var tid = document.getElementById('tid');
+            var cid = document.getElementById("clid");
+            var did = document.getElementById("did");
+            $.post("http://localhost:8080/attendance_war_exploded/global/student_services/search",
+                {param1: tid.value,param2: did.value,param3:cid.value},
+                function (data) {
+                    if(data==""||data==null||data==undefined)
+                        alert("Student Not Found...!!!");
+                    else{
+                        var tbl = document.getElementById('tbl');
+                        for(var i=1;i<(data.length+1);i++)
+                        {
+                            var x=tbl.insertRow(i);
+                            x.insertCell(0);
+                            x.insertCell(1);
+                            var y=x.insertCell(2);
+                            tbl.rows[i].cells[0].innerHTML=data[i-1]["2"];
+                            tbl.rows[i].cells[1].innerHTML=data[i-1]["1"];
+                            var checkbox = document.createElement('input');
+                            checkbox.type = "checkbox";
+                            checkbox.name = "chk";
+                            checkbox.value = data[i-1]["0"];;
+                            checkbox.id = "checkbox";
+                            y.appendChild(checkbox);
+                        }
+                    }
+                });
+        }
+    </script>
+    <style>
+        .col-sm-8{
+            padding-left: 100px;
+            padding-right: 100px;
+        }
+        .borderless td, .borderless th {
+            border: none;
+        }
+    </style>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+
+            <div class="row content1">
+                <div class="col-sm-8 text-center">
+                    <h4><label>Student Details</label></h4>
+                    <table class="table table-hover text-left" id="tbl">
+                        <tbody>
+                        <tr><td>Roll No</td><td>Name</td><td><input type=Button name="delete" value="Delete" onclick="delete_stud()"/></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-4">
+                    <form class="form-text text-left" action="javascript:searchStudent();">
+                        <table class="table text-left borderless" id="tbl1">
+                            <tbody>
+                            <tr><td><div class="form-group">
+                                <input type="text" class="form-control" id="tid" placeholder="Student Name" required>
+                            </div></td>
+                                <td><button type="submit" class="btn btn-block btn-danger">Search</button></td></tr>
+                            </tbody>
+                        </table>
+                    </form>
+                    <div class="col-sm-12">
+                        <div class="col-sm-1">
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="form-group text-left" >
+
+                                <select name="cid" id="cid" class="form-control" onchange="cidchange()">
+                                </select>
+                            </div>
+                            <div class="form-group text-left" >
+
+                                <select name="clid" id="clid" class="form-control" onchange="clidchange()">
+
+                                </select>
+                            </div>
+                            <div class="form-group text-left" >
+
+                                <select name="did" id="did" class="form-control" onchange="didchange()">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id='footer'></div>

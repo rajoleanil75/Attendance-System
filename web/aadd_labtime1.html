@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="js/script.js"></script>
+
+    <script src="scripts/jquery-3.2.1.js" type="text/javascript"></script>
+    <script src="js/xlsx.core.min.js"></script>
+    <script src="js/xls.core.min.js"></script>
+
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "amenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .col-sm-12{
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        .dec
+        {
+            padding-left: 400px;
+            padding-right: 400px;
+        }
+    </style>
+    <script>
+        var cur=1;
+        var subject=[[],[],[]];
+        var total=0;
+        function fetch()
+        {
+            validate_admin();
+            var clid=sessionStorage.getItem("clid");
+            var did=sessionStorage.getItem("did");
+            // var tbl = document.getElementById('tbl');
+            $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getClassDivWise",
+                {param1: clid,param2:did},
+                function (data) {
+                    total=data.length;
+                    for(var i=0;i<(data.length);i++)
+                    {
+                        subject[i][0]=data[i]["0"];
+                        subject[i][1]=data[i]["1"]
+                        subject[i][2]=data[i]["2"]
+                        // document.getElementById("cid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
+                    }
+                });
+        }
+        function addrow() {
+            var tbl = document.getElementById('tbl');
+            var lastRow = tbl.rows.length;
+            var iteration = lastRow - 1;
+            var row = tbl.insertRow(lastRow);
+            var y0 = row.insertCell(0);
+            y0.innerText=cur;
+
+
+            for (j=0;j<=5;j++)
+            {
+                y=row.insertCell(j+1);
+                var select = document.createElement("select");
+                select.className="form-control";
+                select.id=cur+""+j;
+
+
+                var option = document.createElement("option");
+                // option.value = lastRow+""+j+""+k;
+                option.value="-1";
+                option.text ="Select LabBatch";
+                select.add(option);
+                for(k=0;k<total;k++)
+                {
+                    var option = document.createElement("option");
+                    // option.value = lastRow+""+j+""+k;
+                    option.value=subject[k][1];
+                    option.text =subject[k][0];
+                    option.setAttribute("tid",subject[k][2]);
+                    select.add(option);
+                }
+                // var option = document.createElement("option");
+                // option.value = 1;
+                // option.text = "NewJob";
+                // select.add(option);
+
+                y.appendChild(select);
+            }
+            cur++;
+
+            // var el = document.createElement('input');
+            //
+            // el.type = 'text';
+            // el.name = 'name_' + i;
+            // el.id = 'name_' + i;
+            // el.size = 20;
+            // el.maxlength = 20;
+            // firstCell.appendChild(el);
+            //
+
+        }
+
+        function addLab() {
+            var clid=sessionStorage.getItem("clid");
+            var did=sessionStorage.getItem("did");
+            // var tbl=document.getElementById("tbl");
+            var tcur=cur;
+
+            for(i=1;i<tcur;i++)
+            {
+                for(j=0;j<=5;j++)
+                {
+                    var t_id=i+""+j;
+                    var subj=document.getElementById(t_id);
+                    var tid=subj.options[subj.selectedIndex].getAttribute('tid')
+                    if(subj.value=="-1")
+                        continue;
+                    $.post("http://localhost:8080/attendance_war_exploded/global/lab_time_services/add",
+                        { param1: j+1, param2: subj.value,param3:tid, param4: did, param5:clid },
+                        function (data) {
+                            if(data=='1')
+                            {
+
+                            }
+                            else
+                            {
+
+                            }
+                        });
+
+
+                    // alert(subj.value);
+                    // alert(i);
+                    // alert(j);
+                }
+            }
+            var uid=sessionStorage.getItem("uname");
+            var clid_name=sessionStorage.getItem("clid_name");
+            $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/admin_notification",
+                {param1: "LabBatch Timetable added, Class Name: "+clid_name+", Division: "+did  , param2: uid},
+                function (data) {
+                });
+            alert("Timetable Added Successfully...!!!");
+            window.location="http://localhost:8080/attendance_war_exploded/aadd_divtime.html";
+
+        }
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <!--<div class="col-sm-2">-->
+                <!--</div>-->
+                <div class="col-sm-12 text-center">
+                    <h4><label>Add Timetable</label></h4><br>
+
+                    <table class="table text-left table-bordered" id="tbl">
+                        <tbody>
+                        <tr class="text-center"><th colspan="7">Add Timetable</th></tr>
+                        <tr class="text-center">
+                            <th>Slot No.</th>
+                            <th>MON</th>
+                            <th>TUE</th>
+                            <th>WED</th>
+                            <th>THU</th>
+                            <th>FRI</th>
+                            <th>SAT</th>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <input type="button" value="Insert Slot" onclick="addrow()">
+                    <br>
+                    <br>
+                    <div class="dec">
+                        <button type="submit" class="btn btn-block btn-danger" onclick="addLab()">Add</button>
+                    </div>
+
+                </div>
+                <!--<div class="col-sm-2">-->
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "amenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <script>
+        function add() {
+            var bname = document.getElementById('bname');
+            $.post("http://localhost:8080/attendance_war_exploded/global/backup_services/refresh",
+                {param1: bname.value},
+                function (data) {
+                    if(data=='1')
+                    {
+                        alert("Database refresh Successfully...!!!");
+                        window.location = "http://localhost:8080/attendance_war_exploded/ahome.html";
+                    }
+                    else
+                    {
+                        alert("Please try again...!!!");
+                    }
+                });
+        }
+    </script>
+    <style>
+        .col-sm-8{
+            padding-left: 190px;
+            padding-right: 190px;
+        }
+    </style>
+    <script>
+
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="validate_admin()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-8 text-center">
+                    <h4><label>Refresh Database</label></h4>
+                    <form class="form-text text-left" action="javascript:add();">
+                        <div class="form-group">
+                            <label>Enter Academic Year</label>
+                            <input type="text" class="form-control" id="bname" placeholder="YYYY-YYYY" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-block btn-danger">Submit</button>
+                    </form>
+                </div>
+                <div class="col-sm-2">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id='footer'></div>

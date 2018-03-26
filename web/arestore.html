@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "amenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .col-sm-8{
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        .col-sm-4{
+            padding-right: 50px;
+            padding-left: 50px;
+        }
+
+    </style>
+    <script>
+        function fetch() {
+            validate_admin();
+            var ques1 = document.getElementById('ques1');
+            while(ques1.rows.length > 2) {
+                ques1.deleteRow(2);
+            }
+            $.post("http://localhost:8080/attendance_war_exploded/global/backup_services/viewAll",
+                function (data) {
+                    j = 1;
+                    for (var i = 0; i < (data.length); i++) {
+                        var x = ques1.insertRow(++j);
+                        y0 = x.insertCell(0);
+                        y0.innerText = i + 1;
+                        y1 = x.insertCell(1);
+                        y1.innerText = data[i][0];
+                        y2 = x.insertCell(2);
+                        y2.innerText = data[i][1];
+
+                        y3 = x.insertCell(3);
+                        var checkbox = document.createElement('input');
+                        checkbox.type = "checkbox";
+                        checkbox.name = "chk";
+                        checkbox.value = data[i][3];
+                        checkbox.id = "checkbox";
+                        y3.appendChild(checkbox);
+                    }
+                });
+        }
+        function restore() {
+            var q = document.querySelectorAll("input[type=checkbox][name=chk]"), l = q.length, i;
+            for (i = 0; i < l; i++) {
+                if (q[i].checked == true) {
+                    $.post("http://localhost:8080/attendance_war_exploded/global/backup_services/restore",
+                        {param1: q[i].value},
+                        function (data) {
+                            if(data=="1")
+                                alert("Restore Successful...!!!");
+                            else
+                                alert("Something went wrong...!!!");
+                        });
+                }
+            }
+            fetch();
+        }
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-8 text-center">
+                    <br>
+                    <table class="table text-center table-bordered" id="ques1">
+                        <tbody>
+                        <tr class="text-center"><th colspan="4">Backup List</th></tr>
+                        <tr class="text-center">
+                            <th>Sr.No.</th>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Select</th>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="col-sm-4">
+                    <br>
+                    <button type="submit" class="btn btn-block btn-danger" onclick="restore()">Restore</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>
