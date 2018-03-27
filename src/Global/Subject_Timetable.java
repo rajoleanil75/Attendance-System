@@ -11,6 +11,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Anil on 26/03/2018
@@ -22,7 +27,7 @@ public class Subject_Timetable {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("add")
-    public String add(@FormParam("param1")int slot, @FormParam("param2") int day, @FormParam("param3")String sid, @FormParam("param4") String did,@FormParam("param5")int clid)
+    public String add(@FormParam("param1")int slot, @FormParam("param2") int day, @FormParam("param3")String sid, @FormParam("param4") String did, @FormParam("param5")int clid, @FormParam("param6")String t1, @FormParam("param7")String t2)
     {
         Session session = Global.getSession();
         Transaction transaction = session.beginTransaction();
@@ -34,6 +39,13 @@ public class Subject_Timetable {
             subjectTimetable.setDay(day);
             subjectTimetable.setDivision(division);
             subjectTimetable.setSubject(subject);
+
+            LocalTime l1=LocalTime.parse(t1);
+            LocalTime l2=LocalTime.parse(t2);
+            subjectTimetable.setStime(l1);
+            subjectTimetable.setEtime(l2);
+
+
             session.persist(subjectTimetable);
             transaction.commit();
             session.close();

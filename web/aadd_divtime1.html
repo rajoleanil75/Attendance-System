@@ -34,11 +34,24 @@
         var cur=1;
         var subject=[[],[]];
         var total=0;
+        var tm;
+        var interval;
         function fetch()
         {
             validate_admin();
             var clid=sessionStorage.getItem("clid");
             var did=sessionStorage.getItem("did");
+            tm=sessionStorage.getItem("time");
+            interval=sessionStorage.getItem("interval");
+
+            var t = document.createElement("INPUT");
+            t.setAttribute("type", "time");
+            t.setAttribute("value", tm);
+            t.setAttribute("id","timeid");
+            t.hidden=true;
+            document.body.appendChild(t);
+
+
             // var tbl = document.getElementById('tbl');
             $.post("http://localhost:8080/attendance_war_exploded/global/subject_services/getClassWise",
                 {param1: clid},
@@ -52,18 +65,51 @@
                     }
                 });
         }
+        function changetmid() {
+            var tmid = document.getElementById('timeid');
+            var x1 = document.getElementById(cur-1+"_t1");
+            tmid.value=x1.value;
+            tmid.stepUp(interval);
+            var x2 = document.getElementById(cur-1+"_t2");
+            x2.value=tmid.value;
+        }
         function addrow() {
             var tbl = document.getElementById('tbl');
+            var tmid = document.getElementById('timeid');
+
             var lastRow = tbl.rows.length;
             var iteration = lastRow - 1;
             var row = tbl.insertRow(lastRow);
             var y0 = row.insertCell(0);
             y0.innerText=cur;
 
+            var y1 = row.insertCell(1);
+            var x = document.createElement("INPUT");
+            x.setAttribute("type", "time");
+            x.setAttribute("value",tmid.value);
+            var a=cur+"_t1";
+            x.setAttribute("id",a);
+            x.onchange=function ()
+            {
+                changetmid();
+            };
+            y1.appendChild(x);
+
+            tmid.stepUp(interval);
+          //  alert(tm);
+            // alert(time(tm)+interval);
+
+            var y2 = row.insertCell(2);
+            var x1 = document.createElement("INPUT");
+            x1.setAttribute("type", "time");
+            x1.setAttribute("value",tmid.value);
+            a=cur+"_t2";
+            x1.setAttribute("id",a);
+            y2.appendChild(x1);
 
             for (j=0;j<=5;j++)
             {
-                y=row.insertCell(j+1);
+                y=row.insertCell(j+3);
                 var select = document.createElement("select");
                 select.className="form-control";
                 select.id=cur+""+j;
@@ -110,6 +156,10 @@
 
             for(i=1;i<tcur;i++)
             {
+                var temp=i+"_t1";
+                var tmid1=document.getElementById(temp);
+                temp=i+"_t2";
+                var tmid2=document.getElementById(temp);
                 for(j=0;j<=5;j++)
                 {
                     var t_id=i+""+j;
@@ -117,7 +167,7 @@
                     if(subj.value=="-1")
                         continue;
                     $.post("http://localhost:8080/attendance_war_exploded/global/subject_time_services/add",
-                        {param1: i, param2: j+1, param3: subj.value, param4: did, param5:clid },
+                        {param1: i, param2: j+1, param3: subj.value, param4: did, param5:clid ,param6:tmid1.value, param7:tmid2.value},
                         function (data) {
                             if(data=='1')
                             {
@@ -181,9 +231,11 @@
 
                     <table class="table text-left table-bordered" id="tbl">
                         <tbody>
-                        <tr class="text-center"><th colspan="7">Add Timetable</th></tr>
+                        <tr class="text-center"><th colspan="9">Add Timetable</th></tr>
                         <tr class="text-center">
                             <th>Slot No.</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
                             <th>MON</th>
                             <th>TUE</th>
                             <th>WED</th>

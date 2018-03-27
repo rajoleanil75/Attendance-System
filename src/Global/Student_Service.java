@@ -98,19 +98,39 @@ public class Student_Service {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("delete")
-    public String delete(@FormParam("param1") int tid,@FormParam("param2")int clid, @FormParam("param3")String dname)
+    public String delete(@FormParam("param1") int rol,@FormParam("param2")int clid, @FormParam("param3")String dname)
     {
         Session session= Global.getSession();
         Transaction t=session.beginTransaction();
-        DB.Student student= (Student) session.createQuery("from Student s where s.roll=:id and s.division.name=:id1 and s.division.csClass.id=:id2").setParameter("id",tid).setParameter("id1",dname).setParameter("id2",clid).uniqueResult();
+        DB.Student student= (Student) session.createQuery("from Student s where s.roll=:id and s.division.name=:id1 and s.division.csClass.id=:id2").setParameter("id",rol).setParameter("id1",dname).setParameter("id2",clid).uniqueResult();
         if (student==null) {
 
             return "0";
         }
         else
         {
+//            Query query=session.createQuery("delete from SubjectAttendance s where s.student.roll=:id and s.student.division.name=:id1 and s.student.division.csClass.id=:id2").setParameter("id",rol).setParameter("id1",dname).setParameter("id2",clid);
+//            Query query1=session.createQuery("delete from LabAttendance s where s.student.roll=:id and s.student.division.name=:id1 and s.student.division.csClass.id=:id2").setParameter("id",rol).setParameter("id1",dname).setParameter("id2",clid);
+//            query.executeUpdate();
+//            query1.executeUpdate();
+
+            List<SubjectAttendance> slist=session.createQuery("from SubjectAttendance s where s.student.roll=:id and s.student.division.name=:id1 and s.student.division.csClass.id=:id2").setParameter("id",rol).setParameter("id1",dname).setParameter("id2",clid).list();
+            for(Iterator iterator = slist.iterator(); iterator.hasNext();)
+            {
+                SubjectAttendance subjectAttendance= (SubjectAttendance) iterator.next();
+                session.delete(subjectAttendance);
+            }
+            List<LabAttendance> llist=session.createQuery("from LabAttendance s where s.student.roll=:id and s.student.division.name=:id1 and s.student.division.csClass.id=:id2").setParameter("id",rol).setParameter("id1",dname).setParameter("id2",clid).list();
+            for(Iterator iterator = llist.iterator(); iterator.hasNext();)
+            {
+                LabAttendance subjectAttendance= (LabAttendance) iterator.next();
+                session.delete(subjectAttendance);
+            }
+            session.delete(student);
+            t.commit();
+            session.close();
         }
-        t.commit();
+//        t.commit();
         session.close();
         return "1";
     }

@@ -70,10 +70,17 @@
             var cid=document.getElementById("cid");
             var clid=document.getElementById("clid");
             var did=document.getElementById("did");
+            var time=document.getElementById("time");
+
+            //alert(time.value);
+
+            var interval=document.getElementById("interval");
             var clid_name=clid.options[clid.selectedIndex].text;
             sessionStorage.setItem("clid_name",clid_name);
             sessionStorage.setItem("clid",clid.value);
             sessionStorage.setItem("did",did.value);
+            sessionStorage.setItem("time",time.value);
+            sessionStorage.setItem("interval",interval.value);
             window.location = "http://localhost:8080/attendance_war_exploded/aadd_divtime1.html";
         }
     </script>
@@ -106,8 +113,15 @@
                     <div class="form-group text-left" >
                         <label>Select Division : </label>
                         <select name="did" id="did" class="form-control">
-
                         </select>
+                    </div>
+                    <div class="form-group text-left" >
+                        <label>Select Start Time : </label>
+                        <input type="time" class="form-control" id="time"/>
+                    </div>
+                    <div class="form-group text-left" >
+                        <label>Enter Interval in Minute : </label>
+                        <input type="number" class="form-control" id="interval" required>
                     </div>
 
                     <button type="submit" class="btn btn-block btn-danger" onclick="addLab()">Next</button>

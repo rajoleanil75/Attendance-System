@@ -70,10 +70,14 @@
             var cid=document.getElementById("cid");
             var clid=document.getElementById("clid");
             var did=document.getElementById("did");
+            var stime=document.getElementById("stime");
+            var etime=document.getElementById("etime");
             var clid_name=clid.options[clid.selectedIndex].text;
             sessionStorage.setItem("clid_name",clid_name);
             sessionStorage.setItem("clid",clid.value);
             sessionStorage.setItem("did",did.value);
+            sessionStorage.setItem("stime",stime.value);
+            sessionStorage.setItem("etime",etime.value);
             window.location = "http://localhost:8080/attendance_war_exploded/aadd_labtime1.html";
         }
     </script>
@@ -109,6 +113,15 @@
 
                         </select>
                     </div>
+                    <div class="form-group text-left" >
+                        <label>Select Start Time : </label>
+                        <input type="time" class="form-control" id="stime"/>
+                    </div>
+                    <div class="form-group text-left" >
+                        <label>Select End Time : </label>
+                        <input type="time" class="form-control" id="etime"/>
+                    </div>
+
 
                     <button type="submit" class="btn btn-block btn-danger" onclick="addLab()">Next</button>
 

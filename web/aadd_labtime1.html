@@ -39,7 +39,11 @@
             validate_admin();
             var clid=sessionStorage.getItem("clid");
             var did=sessionStorage.getItem("did");
+            var stime=sessionStorage.getItem("stime");
+            var etime=sessionStorage.getItem("etime");
             // var tbl = document.getElementById('tbl');
+            var lbl=document.getElementById("lbl");
+            lbl.innerText="Start Time: "+stime+", End Time: "+etime+"";
             $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getClassDivWise",
                 {param1: clid,param2:did},
                 function (data) {
@@ -52,7 +56,12 @@
                         // document.getElementById("cid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
                     }
                 });
+            setTimeout(function () {
+                for(var i=0;i<total;i++)
+                    addrow();
+            },2000);
         }
+
         function addrow() {
             var tbl = document.getElementById('tbl');
             var lastRow = tbl.rows.length;
@@ -61,35 +70,54 @@
             var y0 = row.insertCell(0);
             y0.innerText=cur;
 
+            var y1=row.insertCell(1);
+            var select = document.createElement("label");
+            select.className="form-control";
+            // select.text=subject[cur-1][0];
+            select.innerText=subject[cur-1][0];
+
+            y1.appendChild(select);
+
 
             for (j=0;j<=5;j++)
             {
-                y=row.insertCell(j+1);
-                var select = document.createElement("select");
-                select.className="form-control";
-                select.id=cur+""+j;
+                y2=row.insertCell(j+2);
+                // var select = document.createElement("checkbox");
+                // select.className="form-control";
+                // select.id=cur+""+j;
+                // // select.setAttribute("tid",subject[k][2]);
+                // y2.appendChild(select);
 
+                var checkbox = document.createElement('input');
+                checkbox.type = "checkbox";
+                checkbox.name = "chk";
+                checkbox.value =j+1;
+                checkbox.id = subject[cur-1][1];
+                checkbox.setAttribute("tid",subject[cur-1][2]);
+                checkbox.setAttribute("lid",subject[cur-1][1]);
+                checkbox.className="form-control";
+                y2.appendChild(checkbox);
 
-                var option = document.createElement("option");
-                // option.value = lastRow+""+j+""+k;
-                option.value="-1";
-                option.text ="Select LabBatch";
-                select.add(option);
-                for(k=0;k<total;k++)
-                {
-                    var option = document.createElement("option");
-                    // option.value = lastRow+""+j+""+k;
-                    option.value=subject[k][1];
-                    option.text =subject[k][0];
-                    option.setAttribute("tid",subject[k][2]);
-                    select.add(option);
-                }
                 // var option = document.createElement("option");
+                // // option.value = lastRow+""+j+""+k;
+                // option.value="-1";
+                // option.text ="Select LabBatch";
+                // select.add(option);
+                // for(k=0;k<total;k++)
+                // {
+                //     var option = document.createElement("option");
+                //     // option.value = lastRow+""+j+""+k;
+                //     option.value=subject[k][1];
+                //     option.text =subject[k][0];
+                //     option.setAttribute("tid",subject[k][2]);
+                //     select.add(option);
+                // }
+                // // var option = document.createElement("option");
                 // option.value = 1;
                 // option.text = "NewJob";
                 // select.add(option);
 
-                y.appendChild(select);
+
             }
             cur++;
 
@@ -108,37 +136,74 @@
         function addLab() {
             var clid=sessionStorage.getItem("clid");
             var did=sessionStorage.getItem("did");
+            var stime=sessionStorage.getItem("stime");
+            var etime=sessionStorage.getItem("etime");
             // var tbl=document.getElementById("tbl");
             var tcur=cur;
 
-            for(i=1;i<tcur;i++)
-            {
-                for(j=0;j<=5;j++)
-                {
-                    var t_id=i+""+j;
-                    var subj=document.getElementById(t_id);
-                    var tid=subj.options[subj.selectedIndex].getAttribute('tid')
-                    if(subj.value=="-1")
-                        continue;
+            var q = document.querySelectorAll("input[type=checkbox][name=chk]"), l = q.length, i;
+            for (i = 0; i < l; i++) {
+                if (q[i].checked == true) {
+
+                    // alert(q[i].getAttribute('tid'));
+                    // alert(q[i].value);
+                    // alert(q[i].getAttribute('lid'));
                     $.post("http://localhost:8080/attendance_war_exploded/global/lab_time_services/add",
-                        { param1: j+1, param2: subj.value,param3:tid, param4: did, param5:clid },
-                        function (data) {
-                            if(data=='1')
-                            {
+                                { param1: q[i].value, param2: q[i].getAttribute('lid'),param3:q[i].getAttribute('tid'), param4: did, param5:clid, param6:stime, param7:etime },
+                                function (data) {
+                                    if(data=='1')
+                                    {
 
-                            }
-                            else
-                            {
+                                    }
+                                    else
+                                    {
 
-                            }
-                        });
-
-
-                    // alert(subj.value);
-                    // alert(i);
-                    // alert(j);
+                                    }
+                                });
+                    // $.post("http://localhost:8080/Feedback_System_war_exploded/admin/student_services/delete",
+                    //     {param1: q[i].value},
+                    //     function (data) {
+                    //         // alert(data);
+                    //         if(data=="0")
+                    //             alert("Student Not Deleted...!!!");
+                    //         else if(data=="1") {
+                    //             alert("Student Deleted...!!!");
+                    //         }
+                    //         else
+                    //             alert("Something went wrong...!!!");
+                    //     });
                 }
             }
+
+
+            // for(i=1;i<tcur;i++)
+            // {
+            //     for(j=0;j<=5;j++)
+            //     {
+            //         var t_id=i+""+j;
+            //         var subj=document.getElementById(t_id);
+            //         var tid=subj.options[subj.selectedIndex].getAttribute('tid')
+            //         if(subj.value=="-1")
+            //             continue;
+            //         $.post("http://localhost:8080/attendance_war_exploded/global/lab_time_services/add",
+            //             { param1: j+1, param2: subj.value,param3:tid, param4: did, param5:clid },
+            //             function (data) {
+            //                 if(data=='1')
+            //                 {
+            //
+            //                 }
+            //                 else
+            //                 {
+            //
+            //                 }
+            //             });
+            //
+            //
+            //         // alert(subj.value);
+            //         // alert(i);
+            //         // alert(j);
+            //     }
+            // }
             var uid=sessionStorage.getItem("uname");
             var clid_name=sessionStorage.getItem("clid_name");
             $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/admin_notification",
@@ -164,13 +229,14 @@
                 <!--<div class="col-sm-2">-->
                 <!--</div>-->
                 <div class="col-sm-12 text-center">
-                    <h4><label>Add Timetable</label></h4><br>
+                    <h4><label>Add Lab Batch Timetable</label></h4><br>
 
-                    <table class="table text-left table-bordered" id="tbl">
+                    <table class="table text-center table-bordered" id="tbl">
                         <tbody>
-                        <tr class="text-center"><th colspan="7">Add Timetable</th></tr>
+                        <tr class="text-center"><th colspan="8" id="lbl">Add Timetable</th></tr>
                         <tr class="text-center">
-                            <th>Slot No.</th>
+                            <th>Sr.No.</th>
+                            <th>Lab Batch</th>
                             <th>MON</th>
                             <th>TUE</th>
                             <th>WED</th>
@@ -181,8 +247,6 @@
 
                         </tbody>
                     </table>
-                    <input type="button" value="Insert Slot" onclick="addrow()">
-                    <br>
                     <br>
                     <div class="dec">
                         <button type="submit" class="btn btn-block btn-danger" onclick="addLab()">Add</button>

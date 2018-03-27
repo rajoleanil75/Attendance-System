@@ -101,15 +101,38 @@ public class LabBatch_Service {
         session.close();
         return list;
     }
+    @POST
+    @Path("getClassDivWise1")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List getClassDivWise1(@FormParam("param1") int cid,@FormParam("param2")String dname)
+    {
+        Session session= Global.getSession();
+        Transaction t=session.beginTransaction();
+        List<LabBatch> tlist=session.createQuery("from LabBatch s where s.division.csClass.id=:id and s.division.name=:id1").setParameter("id1",dname).setParameter("id",cid).list();
+        List list=new ArrayList();
+        for(Iterator iterator = tlist.iterator(); iterator.hasNext();)
+        {
+            LabBatch labBatch= (LabBatch) iterator.next();
+            List list1=new ArrayList();
+//            list1.add(labBatch.getId());
+            list1.add(labBatch.getName());
+            list1.add(labBatch.getFrom());
+            list1.add(labBatch.getTo());
+            list.add(list1);
+        }
+        t.commit();
+        session.close();
+        return list;
+    }
 
     @POST
     @Path("getTeacherWise")
     @Produces(MediaType.APPLICATION_JSON)
-    public List getTeacherWise(@FormParam("param1") int cid)
+    public List getTeacherWise(@FormParam("param1") int tid,@FormParam("param2") int cid,@FormParam("param3")String dname)
     {
         Session session= Global.getSession();
         Transaction t=session.beginTransaction();
-        List<LabInstructor> tlist=session.createQuery("from LabInstructor s where s.teacher.id=:id").setParameter("id",cid).list();
+        List<LabInstructor> tlist=session.createQuery("from LabInstructor s where s.teacher.id=:id and s.labBatch.division.csClass.id=:id1 and s.labBatch.division.name=:id2").setParameter("id1",cid).setParameter("id2",dname).setParameter("id",tid).list();
         List list=new ArrayList();
         for(Iterator iterator=tlist.iterator();iterator.hasNext();)
         {
@@ -139,12 +162,31 @@ public class LabBatch_Service {
             return "0";
         }
         else {
-            Query query=session.createQuery("delete from LabAttendance s where s.labTimetable.labInstructor.labBatch.name=:id and s.labTimetable.labInstructor.labBatch.division.name=:id1 and s.labTimetable.labInstructor.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid);
-            Query query1=session.createQuery("delete from LabTimetable s where s.labInstructor.labBatch.name=:id and s.labInstructor.labBatch.division.name=:id1 and s.labInstructor.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid);
-            Query query2=session.createQuery("delete from LabInstructor s where s.labBatch.name=:id and s.labBatch.division.name=:id1 and s.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid);
-            query.executeUpdate();
-            query1.executeUpdate();
-            query2.executeUpdate();
+            List<LabAttendance> list=session.createQuery("from LabAttendance s where s.labTimetable.labInstructor.labBatch.name=:id and s.labTimetable.labInstructor.labBatch.division.name=:id1 and s.labTimetable.labInstructor.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid).list();
+            for(Iterator iterator = list.iterator(); iterator.hasNext();)
+            {
+                LabAttendance obj= (LabAttendance) iterator.next();
+                session.delete(obj);
+            }
+            List<LabTimetable> list1=session.createQuery("from LabTimetable s where s.labInstructor.labBatch.name=:id and s.labInstructor.labBatch.division.name=:id1 and s.labInstructor.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid).list();
+            for(Iterator iterator = list1.iterator(); iterator.hasNext();)
+            {
+                LabTimetable obj= (LabTimetable) iterator.next();
+                session.delete(obj);
+            }
+            List<LabInstructor> list2=session.createQuery("from LabInstructor s where s.labBatch.name=:id and s.labBatch.division.name=:id1 and s.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid).list();
+            for(Iterator iterator = list2.iterator(); iterator.hasNext();)
+            {
+                LabInstructor obj= (LabInstructor) iterator.next();
+                session.delete(obj);
+            }
+
+//            Query query=session.createQuery("delete from LabAttendance s where s.labTimetable.labInstructor.labBatch.name=:id and s.labTimetable.labInstructor.labBatch.division.name=:id1 and s.labTimetable.labInstructor.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid);
+//            Query query1=session.createQuery("delete from LabTimetable s where s.labInstructor.labBatch.name=:id and s.labInstructor.labBatch.division.name=:id1 and s.labInstructor.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid);
+//            Query query2=session.createQuery("delete from LabInstructor s where s.labBatch.name=:id and s.labBatch.division.name=:id1 and s.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid);
+//            query.executeUpdate();
+//            query1.executeUpdate();
+//            query2.executeUpdate();
             session.delete(labBatch);
             t.commit();
             session.close();
@@ -165,7 +207,7 @@ public class LabBatch_Service {
         {
             LabInstructor labInstructor= (LabInstructor) iterator.next();
             List list1=new ArrayList();
-            list1.add(labInstructor.getLabBatch().getName()+"-"+labInstructor.getTeacher().getName());
+            list1.add(labInstructor.getLabBatch().getName()+", "+labInstructor.getTeacher().getName());
             list1.add(labInstructor.getLabBatch().getName());
             list1.add(labInstructor.getTeacher().getId());
             list.add(list1);

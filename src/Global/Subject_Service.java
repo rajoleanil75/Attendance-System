@@ -1,9 +1,6 @@
 package Global;
 
-import DB.CSClass;
-import DB.Student;
-import DB.Global;
-import DB.Subject;
+import DB.*;
 import DB.Teacher;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -96,6 +93,27 @@ public class Subject_Service
         return list;
     }
     @POST
+    @Path("getClassWise1")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List getClassWise1(@FormParam("param1") int cid)
+    {
+        Session session= Global.getSession();
+        Transaction t=session.beginTransaction();
+        List<Subject> tlist=session.createQuery("from Subject s where s.CSClass.id=:id").setParameter("id",cid).list();
+        List list=new ArrayList();
+        for(Iterator iterator=tlist.iterator();iterator.hasNext();)
+        {
+            Subject subject= (Subject) iterator.next();
+            List list1=new ArrayList();
+            list1.add(subject.getId());
+            list1.add(subject.getName());
+            list.add(list1);
+        }
+        t.commit();
+        session.close();
+        return list;
+    }
+    @POST
     @Path("getCourseTeachWise")
     @Produces(MediaType.APPLICATION_JSON)
     public List getCourseTeachWise(@FormParam("param1") int cid,@FormParam("param2") int tid)
@@ -132,7 +150,7 @@ public class Subject_Service
                 Subject subject = (Subject) iterator.next();
                 List list1 = new ArrayList();
                 list1.add(subject.getId());
-                list1.add(subject.getName());
+                list1.add(subject.getName()+", "+subject.getTeacher().getName());
                 list.add(list1);
             }
             t.commit();
@@ -219,18 +237,36 @@ public class Subject_Service
     {
         Session session= Global.getSession();
         Transaction t=session.beginTransaction();
-        Subject subject= session.load(Subject.class,tid);
+        Subject subject= (Subject) session.createQuery("from Subject s where s.id=:id").setParameter("id",tid).uniqueResult();
         if (subject==null) {
 
             return "0";
         }
         else
         {
-            Query query=session.createQuery("delete from SubjectAttendance s where s.subject.id=:id").setParameter("id",tid);
-            Query query1=session.createQuery("delete from SubjectTimetable s where s.subject.id=:id").setParameter("id",tid);
+            List<SubjectAttendance> list=session.createQuery("from SubjectAttendance s where s.subject.id=:id").setParameter("id",tid).list();
+            for(Iterator iterator = list.iterator(); iterator.hasNext();)
+            {
+                SubjectAttendance obj= (SubjectAttendance) iterator.next();
+                session.delete(obj);
+            }
+            List<SubjectTimetable> list1=session.createQuery("from SubjectTimetable s where s.subject.id=:id").setParameter("id",tid).list();
+            for(Iterator iterator = list1.iterator(); iterator.hasNext();)
+            {
+                SubjectTimetable obj= (SubjectTimetable) iterator.next();
+                session.delete(obj);
+            }
+
+
+//            Query query=session.createQuery("delete from SubjectAttendance s where s.subject.id=:id").setParameter("id",tid);
+//            Query query1=session.createQuery("delete from SubjectTimetable s where s.subject.id=:id").setParameter("id",tid);
+//            query.executeUpdate();
+//            query1.executeUpdate();
+//            session.delete(subject);
+
+            Query query=session.createQuery("delete Subject s where s.id=:id").setParameter("id",tid);
             query.executeUpdate();
-            query1.executeUpdate();
-            session.delete(subject);
+
             t.commit();
             session.close();
             return "1";

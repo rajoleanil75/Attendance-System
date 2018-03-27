@@ -116,7 +116,7 @@
             while(tbl.rows.length > 1) {
                 tbl.deleteRow(1);
             }
-            $.post("http://localhost:8080/attendance_war_exploded/global/subject_services/getClassWise",
+            $.post("http://localhost:8080/attendance_war_exploded/global/subject_services/getClassWise1",
                 {param1: cid.value},
                 function (data) {
                     var tbl = document.getElementById('tbl');
@@ -182,6 +182,7 @@
                         });
                 }
             }
+            clidchange();
         }
     </script>
 </head>

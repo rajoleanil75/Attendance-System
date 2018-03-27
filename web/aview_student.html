@@ -77,7 +77,7 @@
                         var checkbox = document.createElement('input');
                         checkbox.type = "checkbox";
                         checkbox.name = "chk";
-                        checkbox.value = data[i-1]["0"];;
+                        checkbox.value = data[i-1]["0"];
                         checkbox.id = "checkbox";
                         y.appendChild(checkbox);
                     }
@@ -103,6 +103,7 @@
                         });
                 }
             }
+            didchange();
         }
         function searchStudent()
         {
