@@ -32,7 +32,9 @@
     </style>
     <script>
         var cur=1;
-        var subject=[[],[]];
+        // var subj=[[],[]];
+        // var subject=[][2];
+        var gbl;
         var total=0;
         var tm;
         var interval;
@@ -57,12 +59,13 @@
                 {param1: clid},
                 function (data) {
                     total=data.length;
-                    for(var i=0;i<(data.length);i++)
-                    {
-                        subject[i][0]=data[i]["0"];
-                        subject[i][1]=data[i]["1"]
-                        // document.getElementById("cid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
-                    }
+                    gbl=data;
+                    // for(var i=0;i<(data.length);i++)
+                    // {
+                    //     subj[i][0]=data[i]["0"];
+                    //     subj[i][1]=data[i]["1"];
+                    //     // document.getElementById("cid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
+                    // }
                 });
         }
         function changetmid() {
@@ -119,12 +122,14 @@
                 option.value="-1";
                 option.text ="Select Subject";
                 select.add(option);
-                for(k=0;k<total;k++)
+                for(var k=0;k<total;k++)
                 {
                     var option = document.createElement("option");
                     // option.value = lastRow+""+j+""+k;
-                    option.value=subject[k][0];
-                    option.text =subject[k][1];
+                    // option.value=subj[k][0];
+                    // option.text =subj[k][1];
+                    option.value=gbl[k]["0"];
+                    option.text =gbl[k]["1"];
                     select.add(option);
                 }
                 // var option = document.createElement("option");
@@ -141,8 +146,8 @@
             // el.type = 'text';
             // el.name = 'name_' + i;
             // el.id = 'name_' + i;
-            // el.size = 20;
             // el.maxlength = 20;
+            // el.size = 20;
             // firstCell.appendChild(el);
             //
 

@@ -49,6 +49,12 @@
         <property name="ans">
             <column name="ans" sql-type="varchar(20)"/>
         </property>
+        <property name="date">
+            <column name="llogindate" sql-type="date"/>
+        </property>
+        <property name="time">
+            <column name="llogintime" sql-type="time"/>
+        </property>
     </class>
 
     <class name="DB.Student" table="student">

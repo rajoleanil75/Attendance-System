@@ -32,7 +32,8 @@
     </style>
     <script>
         var cur=1;
-        var subject=[[],[],[]];
+        // var subject=[[],[],[]];
+        var gbl;
         var total=0;
         function fetch()
         {
@@ -48,13 +49,14 @@
                 {param1: clid,param2:did},
                 function (data) {
                     total=data.length;
-                    for(var i=0;i<(data.length);i++)
-                    {
-                        subject[i][0]=data[i]["0"];
-                        subject[i][1]=data[i]["1"]
-                        subject[i][2]=data[i]["2"]
-                        // document.getElementById("cid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
-                    }
+                    gbl=data;
+                    // for(var i=0;i<(data.length);i++)
+                    // {
+                    //     subject[i][0]=data[i]["0"];
+                    //     subject[i][1]=data[i]["1"];
+                    //     subject[i][2]=data[i]["2"];
+                    //     // document.getElementById("cid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
+                    // }
                 });
             setTimeout(function () {
                 for(var i=0;i<total;i++)
@@ -74,7 +76,8 @@
             var select = document.createElement("label");
             select.className="form-control";
             // select.text=subject[cur-1][0];
-            select.innerText=subject[cur-1][0];
+            // select.innerText=subject[cur-1][0];
+            select.innerText=gbl[cur-1]["0"];
 
             y1.appendChild(select);
 
@@ -92,9 +95,9 @@
                 checkbox.type = "checkbox";
                 checkbox.name = "chk";
                 checkbox.value =j+1;
-                checkbox.id = subject[cur-1][1];
-                checkbox.setAttribute("tid",subject[cur-1][2]);
-                checkbox.setAttribute("lid",subject[cur-1][1]);
+                checkbox.id = gbl[cur-1]["1"];
+                checkbox.setAttribute("tid",gbl[cur-1]["2"]);
+                checkbox.setAttribute("lid",gbl[cur-1]["1"]);
                 checkbox.className="form-control";
                 y2.appendChild(checkbox);
 
@@ -211,7 +214,7 @@
                 function (data) {
                 });
             alert("Timetable Added Successfully...!!!");
-            window.location="http://localhost:8080/attendance_war_exploded/aadd_divtime.html";
+            window.location="http://localhost:8080/attendance_war_exploded/aadd_labtime1.html";
 
         }
     </script>

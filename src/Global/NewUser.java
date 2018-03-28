@@ -1,5 +1,6 @@
 package Global;
 
+import DB.Teacher;
 import DB.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -47,6 +48,33 @@ public class NewUser {
         {
 //            t.commit();
             session.close();
+            return "E";
+        }
+    }
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("add_teacher")
+    public String add_teacher(@FormParam("param1")int tid, @FormParam("param2") String pass, @FormParam("param3")String ques,@FormParam("param4")String ans)
+    {
+        Session session = DB.Global.getSession();
+        Transaction t = session.beginTransaction();
+        try {
+            DB.Teacher teacher= (DB.Teacher) session.createQuery("from Teacher s where s.id=:id").setParameter("id",tid).uniqueResult();
+            teacher.setPass(pass);
+            teacher.setQues(ques);
+            teacher.setAns(ans);
+            teacher.setDate(LocalDate.now());
+            teacher.setTime(LocalTime.now());
+            session.persist(teacher);
+            t.commit();
+            session.close();
+            return "1";
+        }
+        catch (Exception e)
+        {
+//            t.commit();
+            session.close();
+//            return String.valueOf(e);
             return "E";
         }
     }

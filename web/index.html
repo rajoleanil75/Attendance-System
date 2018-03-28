@@ -35,7 +35,7 @@
             else {
                 // var uname = document.getElementById('uname');
                 var pass = document.getElementById('pass');
-                $.post("http://localhost:8080/Feedback_System_war_exploded/global/Login/login_check_teacher",
+                $.post("http://localhost:8080/attendance_war_exploded/global/login_services/teacher_login",
                     {param1: uname.value, param2: pass.value},
                     function (data) {
                         // alert(data);
@@ -43,32 +43,13 @@
                             alert("Invalid Username or Password...!!!");
                         else if (data=='E')
                             alert("Something went wrong...!!!");
-                        else if(data=='B')
-                            alert("You are Blocked, Please Contact System Administrator...!!!");
-                        else if(data=="-1")
-                            alert("Invalid Password, Remaing chances : 2");
-                        else if(data=="-2")
-                            alert("Invalid Password, Remaing chances : 1");
-                        else if(data=="-3")
-                            alert("Invalid Password, Remaing chances : 0");
                         else
                         {
                             var user=JSON.parse(data);
-                            sessionStorage.setItem("uid",user.uid);
-                            sessionStorage.setItem("uname",user.uname);
                             sessionStorage.setItem("id",user.id);
-                            sessionStorage.setItem("role",user.role);
+                            sessionStorage.setItem("uname",user.uname);
                             sessionStorage.setItem("llogin",user.llogin);
-                            $.post("http://localhost:8080/Feedback_System_war_exploded/admin/teacher_services/gettname",
-                                {param1: user.id },
-                                function (data) {
-                                    if (data == "E")
-                                        alert("Teacher Details not found...!!!");
-                                    else {
-                                        sessionStorage.setItem("tname", data);
-                                        window.location = "http://localhost:8080/Feedback_System_war_exploded/thome.html";
-                                    }
-                                });
+                            window.location = "http://localhost:8080/attendance_war_exploded/thome.html";
                         }
                     });
             }
@@ -84,7 +65,7 @@
         <nav class="navbar navbar-expand-xl">
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <div class="font-color"><a class="nav-link dropdown" href="http://localhost:8080/Feedback_System_war_exploded/index.html">
+                    <div class="font-color"><a class="nav-link dropdown" href="http://localhost:8080/attendance_war_exploded/">
                         Home
                     </a>
                     </div>
@@ -94,11 +75,10 @@
     </div>
     <div class="row content">
         <div class="col-sm-8 mainnav">
-            <h1>Welcome To Feedback Portal</h1>
+            <h1>Welcome To Attendance Portal</h1>
+            <br>
             <hr>
-            <p> The <b>FEEDBACK PORTAL</b> is a system designed by<br> <b>COMPUTER SCIENCE DEPARTMENT.</b> <br>This system helps to take the feedback from
-                Students for a particular<br> Teacher,Subject and Practical Sessions.<br> This system analysis the feedback and gives reports
-                in the form of<br> Graphs as well as Report.</p>
+            <p><h5>Welcome to Attendence portal of Department of Computer Science, now manage your attendence on the move</h5></p>
             <hr>
         </div>
         <div class="col-sm-4 sidenav">
@@ -118,16 +98,16 @@
                         <option value="2">Teacher</option>
                     </select>
                     <!--<br>-->
-                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
-                    <input class="btn btn-dark" type="reset" value="Reset">
                     &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
                     <input class="btn btn-dark" type="submit" value="Login">
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
+                    <input class="btn btn-dark" type="reset" value="Reset">
                 </div>
             </form>
             &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-            <a href="http://localhost:8080/Feedback_System_war_exploded/new_user3.html">new user?</a>
+            <a href="http://localhost:8080/attendance_war_exploded/new_teacher.html">new user?</a>
             &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-            <a href="http://localhost:8080/Feedback_System_war_exploded/forgetpass1.html">Forget Password</a>
+            <a href="http://localhost:8080/attendance_war_exploded/forget_teacher.html">Forget Password</a>
         </div>
         <div class="footer">
             <hr>

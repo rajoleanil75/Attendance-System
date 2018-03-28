@@ -1,5 +1,6 @@
 package Global;
 
+import DB.Teacher;
 import DB.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -59,6 +60,58 @@ public class ForgetUser {
         try {
             User user = session.load(User.class,name);
             user.setPassword(pass);
+            session.persist(user);
+            t.commit();
+            session.close();
+            return "1";
+        }
+        catch (Exception e)
+        {
+//            t.commit();
+//            session.close();
+            return String.valueOf(e);
+        }
+    }
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("check_teacher")
+    public String add_teacher(@FormParam("param1")int tid, @FormParam("param2")String ques, @FormParam("param3")String ans)
+    {
+
+        Session session = DB.Global.getSession();
+        Transaction t = session.beginTransaction();
+        try {
+
+            DB.Teacher user = session.load(Teacher.class, tid);
+            if(user==null)
+                return "E";
+            else
+            {
+                if (user.getQues().equals(ques) && user.getAns().equals(ans))
+                {
+                    return "1";
+                }
+                else
+                    return "E";
+            }
+        }
+        catch (Exception e)
+        {
+            t.commit();
+            session.close();
+            return "E";
+        }
+    }
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("forget_teacher")
+    public String forget_teacher(@FormParam("param1")int tid, @FormParam("param2") String pass)
+    {
+        Session session = DB.Global.getSession();
+        Transaction t = session.beginTransaction();
+        try {
+            Teacher user = session.load(Teacher.class, tid);
+            user.setPass(pass);
             session.persist(user);
             t.commit();
             session.close();
