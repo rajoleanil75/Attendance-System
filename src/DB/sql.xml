@@ -125,10 +125,13 @@
     <class name="DB.LabBatch" table="lab_batch">
         <composite-id>
             <key-property name="name" column="lname"/>
-            <key-many-to-one name="division" class="DB.Division">
-                <column name="dname"/>
+            <key-many-to-one name="csClass" class="DB.CSClass">
                 <column name="csclass_id"/>
             </key-many-to-one>
+            <!--<key-many-to-one name="division" class="DB.Division">-->
+                <!--<column name="dname"/>-->
+                <!--<column name="csclass_id"/>-->
+            <!--</key-many-to-one>-->
         </composite-id>
 
         <property name="from">
@@ -144,7 +147,6 @@
             <key-many-to-one name="teacher" class="DB.Teacher" column="teacher_id"/>
             <key-many-to-one name="labBatch" class="DB.LabBatch">
                 <column name="lname"/>
-                <column name="dname"/>
                 <column name="csclass_id"/>
             </key-many-to-one>
         </composite-id>
@@ -156,7 +158,6 @@
             <key-many-to-one name="labInstructor" class="DB.LabInstructor">
                 <column name="teacher_id"/>
                 <column name="lname"/>
-                <column name="dname"/>
                 <column name="csclass_id"/>
             </key-many-to-one>
         </composite-id>
@@ -174,7 +175,6 @@
                 <column name="day"/>
                 <column name="teacher_id"/>
                 <column name="lname"/>
-                <column name="dname"/>
                 <column name="csclass_id"/>
             </key-many-to-one>
             <key-many-to-one name="student" class="DB.Student">

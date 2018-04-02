@@ -21,12 +21,12 @@ public class Lab_Timetable {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("add")
-    public String add(@FormParam("param1") int day, @FormParam("param2")String lid, @FormParam("param3") int tid, @FormParam("param4")String did,@FormParam("param5")int clid,@FormParam("param6")String t1, @FormParam("param7")String t2)
+    public String add(@FormParam("param1") int day, @FormParam("param2")String lid, @FormParam("param3") int tid,@FormParam("param5")int clid,@FormParam("param6")String t1, @FormParam("param7")String t2)
     {
         Session session = Global.getSession();
         Transaction transaction = session.beginTransaction();
         try {
-            LabInstructor labInstructor= (LabInstructor) session.createQuery("from LabInstructor s where s.teacher.id=:id and s.labBatch.name=:id1 and s.labBatch.division.name=:id2 and s.labBatch.division.csClass.id=:id3").setParameter("id",tid).setParameter("id1",lid).setParameter("id2",did).setParameter("id3",clid).uniqueResult();
+            LabInstructor labInstructor= (LabInstructor) session.createQuery("from LabInstructor s where s.teacher.id=:id and s.labBatch.name=:id1 and s.labBatch.csClass.id=:id3").setParameter("id",tid).setParameter("id1",lid).setParameter("id3",clid).uniqueResult();
             LabTimetable labTimetable=new LabTimetable();
             labTimetable.setLabInstructor(labInstructor);
             labTimetable.setDay(day);

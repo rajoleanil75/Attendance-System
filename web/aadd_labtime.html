@@ -20,13 +20,13 @@
         });
     </script>
     <style>
-        .col-sm-8{
+        .pad{
             padding-left: 190px;
             padding-right: 190px;
         }
     </style>
     <script>
-
+        var cur=1;
         function fetch()
         {
             validate_admin();
@@ -53,32 +53,148 @@
                     }
                 });
         }
-        function clidchange() {
-            var cid=document.getElementById("clid");
-            document.getElementById("did").length = 0;
-            $.post("http://localhost:8080/attendance_war_exploded/global/division_services/getClassWise",
-                {param1: cid.value},
-                function (data) {
-                    document.getElementById("did").options[0]=new Option("Select Division","-1");
-                    for(var i=0;i<(data.length);i++)
-                    {
-                        document.getElementById("did").options[i+1]=new Option(data[i]["0"],data[i]["0"]);
-                    }
-                });
+        function addrow() {
+            var tbl = document.getElementById('tbl');
+
+            var lastRow = tbl.rows.length;
+            var iteration = lastRow - 1;
+            var row = tbl.insertRow(lastRow);
+            var y0 = row.insertCell(0);
+            y0.innerText=cur;
+
+            var y1 = row.insertCell(1);
+            var x = document.createElement("INPUT");
+            x.setAttribute("type", "time");
+            x.className="form-control";
+            var a=cur+"_t1";
+            x.setAttribute("id",a);
+            y1.appendChild(x);
+
+            var y2 = row.insertCell(2);
+            var x2 = document.createElement("INPUT");
+            x2.setAttribute("type", "time");
+            x2.className="form-control";
+            var a1=cur+"_t2";
+            x2.setAttribute("id",a1);
+            y2.appendChild(x2);
+
+            cur++;
         }
+
+        // function clidchange() {
+        //     var cid=document.getElementById("clid");
+        //     document.getElementById("did").length = 0;
+        //     $.post("http://localhost:8080/attendance_war_exploded/global/division_services/getClassWise",
+        //         {param1: cid.value},
+        //         function (data) {
+        //             document.getElementById("did").options[0]=new Option("Select Division","-1");
+        //             for(var i=0;i<(data.length);i++)
+        //             {
+        //                 document.getElementById("did").options[i+1]=new Option(data[i]["0"],data[i]["0"]);
+        //             }
+        //         });
+        // }
         function addLab() {
+            var tcur=cur;
+            var flg=1;
+            for(i=1;i<tcur;i++)
+            {
+                var t1=i+"_t1";
+                var t2=i+"_t2";
+                var tmid1=document.getElementById(t1);
+                var tmid2=document.getElementById(t2);
+                // tar1.push(tmid1.value);
+                // tar2.push(tmid2.value)
+                if(tmid1.value==""||tmid2.value=="")
+                {
+                    flg=0;
+                    break;
+                }
+            }
             var cid=document.getElementById("cid");
             var clid=document.getElementById("clid");
-            var did=document.getElementById("did");
-            var stime=document.getElementById("stime");
-            var etime=document.getElementById("etime");
-            var clid_name=clid.options[clid.selectedIndex].text;
-            sessionStorage.setItem("clid_name",clid_name);
-            sessionStorage.setItem("clid",clid.value);
-            sessionStorage.setItem("did",did.value);
-            sessionStorage.setItem("stime",stime.value);
-            sessionStorage.setItem("etime",etime.value);
-            window.location = "http://localhost:8080/attendance_war_exploded/aadd_labtime1.html";
+            if(flg==1 && clid.value!="-1" && clid.value!="" && cur>1)
+            {
+                var tar1=[];
+                var tar2=[];
+                var ent=[[]];
+
+                var x = new Array(6);
+                for (var i = 0; i < 6; i++) {
+                    x[i] = new Array(2);
+                }
+
+                for(var i=1;i<tcur;i++)
+                {
+                    var t1=i+"_t1";
+                    var t2=i+"_t2";
+                    var tmid1=document.getElementById(t1);
+                    var tmid2=document.getElementById(t2);
+                    x[i-1][0]=tmid1.value;
+                    x[i-1][1]=tmid2.value;
+
+                    //
+                    // tar1.push(tmid1.value);
+                    // tar2.push(tmid2.value);
+                }
+                alert(x);
+
+                // var ent={};
+                // var ent1={};
+                // for(var i=0;i<tar1.length;i++)
+                // {
+                //     ent.srid=i+1;
+                //     ent.stime=tar1[i];
+                //     ent.etime=tar2[i];
+                //
+                //     ent1[i]=ent;
+                // }
+                var tbldt=JSON.stringify(x,null,",");
+                alert(tbldt);
+
+
+                // var did=document.getElementById("did");
+                // var stime=document.getElementById("stime");
+                // var etime=document.getElementById("etime");
+
+                var clid_name=clid.options[clid.selectedIndex].text;
+                sessionStorage.setItem("tslots",cur);
+                sessionStorage.setItem("slot_arr",x);
+                sessionStorage.setItem("clid_name",clid_name);
+                sessionStorage.setItem("clid",clid.value);
+                // sessionStorage.setItem("did",did.value);
+
+                // sessionStorage.setItem("stime",stime.value);
+                // sessionStorage.setItem("etime",etime.value);
+
+                // var p=sessionStorage.getItem("slot_arr");
+                // var p2=sessionStorage.getItem("tslots");
+                // var p1=p.split(",");
+                // for (var i=0,j=0;j<p2-1;j++)
+                // {
+                //     alert(p1[i++]);
+                //     alert(p1[i++]);
+                //
+                // }
+
+                // alert(p1[0]);
+                // alert(p1[1]);
+                // alert(p1[2]);
+                // alert(p1[3]);
+                // alert(p1[4]);
+
+                alert("Success");
+                // window.location = "http://localhost:8080/attendance_war_exploded/aadd_labtime1.html";
+            }
+            else{
+                if(clid.value=="-1" || clid.value=="")
+                    alert("Please select Class...!!!");
+                else if(cur<=1)
+                    alert("Please enter at least one slot...!!!");
+                else
+                    alert("Please enter Start and End Time of Batch");
+            }
+
         }
     </script>
 </head>
@@ -95,6 +211,8 @@
                 <div class="col-sm-2">
                 </div>
                 <div class="col-sm-8 text-center">
+                    <div class="pad">
+
                     <h4><label>Add LabBatch Timetable</label></h4><br>
                     <div class="form-group text-left" >
                         <label>Select Course : </label>
@@ -103,28 +221,44 @@
                     </div>
                     <div class="form-group text-left" >
                         <label>Select Class : </label>
-                        <select name="clid" id="clid" class="form-control" onchange="clidchange()">
+                        <select name="clid" id="clid" class="form-control">
 
                         </select>
                     </div>
-                    <div class="form-group text-left" >
-                        <label>Select Division : </label>
-                        <select name="did" id="did" class="form-control">
+                    <!--<div class="form-group text-left" >-->
+                        <!--<label>Select Division : </label>-->
+                        <!--<select name="did" id="did" class="form-control">-->
 
-                        </select>
-                    </div>
-                    <div class="form-group text-left" >
-                        <label>Select Start Time : </label>
-                        <input type="time" class="form-control" id="stime"/>
-                    </div>
-                    <div class="form-group text-left" >
-                        <label>Select End Time : </label>
-                        <input type="time" class="form-control" id="etime"/>
+                        <!--</select>-->
+                    <!--</div>-->
                     </div>
 
+                    <table class="table text-center table-bordered" id="tbl">
+                        <tbody>
+                        <tr class="text-center"><th colspan="3">Add Time Slots</th></tr>
+                        <tr class="text-center">
+                            <th>Slot No.</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input type="button" value="Insert Slot" onclick="addrow()">
 
+                    <!--<div class="form-group text-left" >-->
+                        <!--<label>Select Start Time : </label>-->
+                        <!--<input type="time" class="form-control" id="stime"/>-->
+                    <!--</div>-->
+                    <!--<div class="form-group text-left" >-->
+                        <!--<label>Select End Time : </label>-->
+                        <!--<input type="time" class="form-control" id="etime"/>-->
+                    <!--</div>-->
+
+                    <br>
+                    <br>
+                    <div class="pad">
                     <button type="submit" class="btn btn-block btn-danger" onclick="addLab()">Next</button>
-
+                    </div>
                 </div>
                 <div class="col-sm-2">
                 </div>

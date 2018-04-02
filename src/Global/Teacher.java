@@ -136,24 +136,32 @@ public class Teacher {
 //                LabInstructor obj= (LabInstructor) iterator.next();
 //                session.delete(obj);
 //            }
-            List<SubjectAttendance> list4=session.createQuery("from SubjectAttendance s where s.teacher.id=:id").setParameter("id",tid).list();
-            for(Iterator iterator = list4.iterator(); iterator.hasNext();)
-            {
-                SubjectAttendance obj= (SubjectAttendance) iterator.next();
-                session.delete(obj);
-            }
-            List<SubjectTimetable> list5=session.createQuery("from SubjectTimetable s where s.subject.teacher.id=:id").setParameter("id",tid).list();
-            for(Iterator iterator = list5.iterator(); iterator.hasNext();)
-            {
-                SubjectTimetable obj= (SubjectTimetable) iterator.next();
-                session.delete(obj);
-            }
+//            List<SubjectAttendance> list4=session.createQuery("from SubjectAttendance s where s.teacher.id=:id").setParameter("id",tid).list();
+//            for(Iterator iterator = list4.iterator(); iterator.hasNext();)
+//            {
+//                SubjectAttendance obj= (SubjectAttendance) iterator.next();
+//                session.delete(obj);
+//            }
 //            List<Subject> list6=session.createQuery("from Subject s where s.teacher.id=:id").setParameter("id",tid).list();
 //            for(Iterator iterator = list6.iterator(); iterator.hasNext();)
 //            {
 //                Subject obj= (Subject) iterator.next();
 //                session.delete(obj);
 //            }
+            org.hibernate.query.Query query4=session.createQuery("delete SubjectAttendance s where s.teacher.id=:id").setParameter("id",tid);
+            query4.executeUpdate();
+//            org.hibernate.query.Query query5=session.createQuery("delete SubjectTimetable s where s.subject.teacher.id=:id").setParameter("id",tid);
+//            query5.executeUpdate();
+            List<SubjectTimetable> list5=session.createQuery("from SubjectTimetable s where s.subject.teacher.id=:id").setParameter("id",tid).list();
+
+
+            for(Iterator iterator = list5.iterator(); iterator.hasNext();)
+            {
+                SubjectTimetable obj= (SubjectTimetable) iterator.next();
+                session.delete(obj);
+            }
+            t.commit();
+            t.begin();
             org.hibernate.query.Query query=session.createQuery("delete Subject s where s.teacher.id=:id").setParameter("id",tid);
             query.executeUpdate();
 

@@ -244,28 +244,28 @@ public class Subject_Service
         }
         else
         {
-            List<SubjectAttendance> list=session.createQuery("from SubjectAttendance s where s.subject.id=:id").setParameter("id",tid).list();
-            for(Iterator iterator = list.iterator(); iterator.hasNext();)
-            {
-                SubjectAttendance obj= (SubjectAttendance) iterator.next();
-                session.delete(obj);
-            }
-            List<SubjectTimetable> list1=session.createQuery("from SubjectTimetable s where s.subject.id=:id").setParameter("id",tid).list();
-            for(Iterator iterator = list1.iterator(); iterator.hasNext();)
-            {
-                SubjectTimetable obj= (SubjectTimetable) iterator.next();
-                session.delete(obj);
-            }
+//            List<SubjectAttendance> list=session.createQuery("from SubjectAttendance s where s.subject.id=:id").setParameter("id",tid).list();
+//            for(Iterator iterator = list.iterator(); iterator.hasNext();)
+//            {
+//                SubjectAttendance obj= (SubjectAttendance) iterator.next();
+//                session.delete(obj);
+//            }
+//            List<SubjectTimetable> list1=session.createQuery("from SubjectTimetable s where s.subject.id=:id").setParameter("id",tid).list();
+//            for(Iterator iterator = list1.iterator(); iterator.hasNext();)
+//            {
+//                SubjectTimetable obj= (SubjectTimetable) iterator.next();
+//                session.delete(obj);
+//            }
 
 
-//            Query query=session.createQuery("delete from SubjectAttendance s where s.subject.id=:id").setParameter("id",tid);
-//            Query query1=session.createQuery("delete from SubjectTimetable s where s.subject.id=:id").setParameter("id",tid);
-//            query.executeUpdate();
-//            query1.executeUpdate();
+            Query query=session.createQuery("delete SubjectAttendance s where s.subject.id=:id").setParameter("id",tid);
+            Query query1=session.createQuery("delete SubjectTimetable s where s.subject.id=:id").setParameter("id",tid);
+            query.executeUpdate();
+            query1.executeUpdate();
 //            session.delete(subject);
 
-            Query query=session.createQuery("delete Subject s where s.id=:id").setParameter("id",tid);
-            query.executeUpdate();
+            Query query2=session.createQuery("delete Subject s where s.id=:id").setParameter("id",tid);
+            query2.executeUpdate();
 
             t.commit();
             session.close();

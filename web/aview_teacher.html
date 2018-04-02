@@ -20,7 +20,10 @@
             validate_admin();
             $.post("http://localhost:8080/attendance_war_exploded/global/teacher_services/viewAll",
                 function (data) {
-                    var tbl = document.getElementById('tbl')
+                    var tbl = document.getElementById('tbl');
+                    while(tbl.rows.length > 1) {
+                        tbl.deleteRow(1);
+                    }
                     for(var i=1;i<(data.length+1);i++)
                     {
                         var x=tbl.insertRow(i);

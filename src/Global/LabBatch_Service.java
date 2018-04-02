@@ -25,20 +25,20 @@ public class LabBatch_Service {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("add")
-    public String add(@FormParam("param1") String lname, @FormParam("param2") int from, @FormParam("param3") int to, @FormParam("param4") int cid, @FormParam("param5") String did)
+    public String add(@FormParam("param1") String lname, @FormParam("param2") int from, @FormParam("param3") int to, @FormParam("param4") int cid)
     {
         Session session = Global.getSession();
         Transaction transaction = session.beginTransaction();
         try {
 
-//            CSClass csClass = (CSClass) session.createQuery("from CSClass c where c.id= :id").setParameter("id", cid).uniqueResult();
-            Division division =(Division) session.createQuery("from Division c where c.name= :id and c.csClass.id=:id1").setParameter("id1",cid).setParameter("id", did).uniqueResult();
+            CSClass csClass = (CSClass) session.createQuery("from CSClass c where c.id= :id").setParameter("id", cid).uniqueResult();
+//            Division division =(Division) session.createQuery("from Division c where c.name= :id and c.csClass.id=:id1").setParameter("id1",cid).setParameter("id", did).uniqueResult();
             LabBatch labBatch=new LabBatch();
             labBatch.setName(lname);
             labBatch.setFrom(from);
             labBatch.setTo(to);
-//            labBatch.setCSClass(csClass);
-            labBatch.setDivision(division);
+            labBatch.setCsClass(csClass);
+//            labBatch.setDivision(division);
             session.persist(labBatch);
 //            int i=labBatch.getId();
             transaction.commit();
@@ -55,14 +55,14 @@ public class LabBatch_Service {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("addteacherlab")
-    public String add(@FormParam("param1") int tname, @FormParam("param2") String lname,@FormParam("param3")int cid,@FormParam("param4")String did)
+    public String add(@FormParam("param1") int tname, @FormParam("param2") String lname,@FormParam("param3")int cid)
     {
         Session session = Global.getSession();
         Transaction transaction = session.beginTransaction();
         try {
 
             DB.Teacher teacher= (Teacher) session.createQuery("from Teacher c where c.id= :id").setParameter("id", tname).uniqueResult();
-            LabBatch labBatch= (LabBatch) session.createQuery("from LabBatch c where c.name= :id and c.division.name=:id1 and c.division.csClass.id=:id2").setParameter("id1",did).setParameter("id2",cid).setParameter("id", lname).uniqueResult();
+            LabBatch labBatch= (LabBatch) session.createQuery("from LabBatch c where c.name= :id and c.csClass.id=:id2").setParameter("id2",cid).setParameter("id", lname).uniqueResult();
             LabInstructor labInstructor=new LabInstructor();
             labInstructor.setLabBatch(labBatch);
             labInstructor.setTeacher(teacher);
@@ -85,7 +85,7 @@ public class LabBatch_Service {
     {
         Session session= Global.getSession();
         Transaction t=session.beginTransaction();
-        List<LabBatch> tlist=session.createQuery("from LabBatch s where s.division.csClass.id=:id").setParameter("id",cid).list();
+        List<LabBatch> tlist=session.createQuery("from LabBatch s where s.csClass.id=:id").setParameter("id",cid).list();
         List list=new ArrayList();
         for(Iterator iterator = tlist.iterator(); iterator.hasNext();)
         {
@@ -128,11 +128,11 @@ public class LabBatch_Service {
     @POST
     @Path("getTeacherWise")
     @Produces(MediaType.APPLICATION_JSON)
-    public List getTeacherWise(@FormParam("param1") int tid,@FormParam("param2") int cid,@FormParam("param3")String dname)
+    public List getTeacherWise(@FormParam("param1") int tid,@FormParam("param2") int cid)
     {
         Session session= Global.getSession();
         Transaction t=session.beginTransaction();
-        List<LabInstructor> tlist=session.createQuery("from LabInstructor s where s.teacher.id=:id and s.labBatch.division.csClass.id=:id1 and s.labBatch.division.name=:id2").setParameter("id1",cid).setParameter("id2",dname).setParameter("id",tid).list();
+        List<LabInstructor> tlist=session.createQuery("from LabInstructor s where s.teacher.id=:id and s.labBatch.csClass.id=:id1").setParameter("id1",cid).setParameter("id",tid).list();
         List list=new ArrayList();
         for(Iterator iterator=tlist.iterator();iterator.hasNext();)
         {
@@ -151,30 +151,30 @@ public class LabBatch_Service {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("delete")
-    public String delete(@FormParam("param1")String lid,@FormParam("param2")String did,@FormParam("param3")int clid)
+    public String delete(@FormParam("param1")String lid,@FormParam("param3")int clid)
     {
         Session session = DB.Global.getSession();
         Transaction t = session.beginTransaction();
-        LabBatch labBatch= (LabBatch) session.createQuery("from LabBatch c where c.name= :id and c.division.name=:id1 and c.division.csClass.id=:id2").setParameter("id1",did).setParameter("id2",clid).setParameter("id", lid).uniqueResult();
+        LabBatch labBatch= (LabBatch) session.createQuery("from LabBatch c where c.name= :id and c.csClass.id=:id2").setParameter("id2",clid).setParameter("id", lid).uniqueResult();
         if (labBatch== null){
             t.commit();
             session.close();
             return "0";
         }
         else {
-            List<LabAttendance> list=session.createQuery("from LabAttendance s where s.labTimetable.labInstructor.labBatch.name=:id and s.labTimetable.labInstructor.labBatch.division.name=:id1 and s.labTimetable.labInstructor.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid).list();
+            List<LabAttendance> list=session.createQuery("from LabAttendance s where s.labTimetable.labInstructor.labBatch.name=:id and s.labTimetable.labInstructor.labBatch.csClass.id=:id2").setParameter("id",lid).setParameter("id2",clid).list();
             for(Iterator iterator = list.iterator(); iterator.hasNext();)
             {
                 LabAttendance obj= (LabAttendance) iterator.next();
                 session.delete(obj);
             }
-            List<LabTimetable> list1=session.createQuery("from LabTimetable s where s.labInstructor.labBatch.name=:id and s.labInstructor.labBatch.division.name=:id1 and s.labInstructor.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid).list();
+            List<LabTimetable> list1=session.createQuery("from LabTimetable s where s.labInstructor.labBatch.name=:id and s.labInstructor.labBatch.csClass.id=:id2").setParameter("id",lid).setParameter("id2",clid).list();
             for(Iterator iterator = list1.iterator(); iterator.hasNext();)
             {
                 LabTimetable obj= (LabTimetable) iterator.next();
                 session.delete(obj);
             }
-            List<LabInstructor> list2=session.createQuery("from LabInstructor s where s.labBatch.name=:id and s.labBatch.division.name=:id1 and s.labBatch.division.csClass.id=:id2").setParameter("id",lid).setParameter("id1",did).setParameter("id2",clid).list();
+            List<LabInstructor> list2=session.createQuery("from LabInstructor s where s.labBatch.name=:id and s.labBatch.csClass.id=:id2").setParameter("id",lid).setParameter("id2",clid).list();
             for(Iterator iterator = list2.iterator(); iterator.hasNext();)
             {
                 LabInstructor obj= (LabInstructor) iterator.next();
@@ -197,11 +197,11 @@ public class LabBatch_Service {
     @POST
     @Path("getClassDivWise")
     @Produces(MediaType.APPLICATION_JSON)
-    public List getClassDivWise(@FormParam("param1") int cid,@FormParam("param2")String did)
+    public List getClassDivWise(@FormParam("param1") int cid)
     {
         Session session= Global.getSession();
         Transaction t=session.beginTransaction();
-        List<LabInstructor> tlist=session.createQuery("from LabInstructor s where s.labBatch.division.name=:id and s.labBatch.division.csClass.id=:id1").setParameter("id",did).setParameter("id1",cid).list();
+        List<LabInstructor> tlist=session.createQuery("from LabInstructor s where s.labBatch.csClass.id=:id1").setParameter("id1",cid).list();
         List list=new ArrayList();
         for(Iterator iterator = tlist.iterator(); iterator.hasNext();)
         {

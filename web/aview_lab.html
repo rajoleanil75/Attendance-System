@@ -74,83 +74,74 @@
 
             }
             else {
-                $.post("http://localhost:8080/attendance_war_exploded/global/division_services/getClassWise",
+                var tbl = document.getElementById('tbl');
+                while(tbl.rows.length > 1) {
+                    tbl.deleteRow(1);
+                }
+                $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getClassWise",
                     {param1: cid.value},
                     function (data) {
-                        document.getElementById("did").options[0] = new Option("Select Division", "-1");
-                        for (var i = 0; i < (data.length); i++) {
-                            document.getElementById("did").options[i + 1] = new Option(data[i]["0"], data[i]["0"]);
+                        var tbl = document.getElementById('tbl');
+                        for(var i=1;i<(data.length+1);i++)
+                        {
+                            var x=tbl.insertRow(i);
+                            x.insertCell(0);
+                            x.insertCell(1);
+                            x.insertCell(2);
+                            var y=x.insertCell(3);
+                            tbl.rows[i].cells[0].innerHTML=data[i-1]["0"];
+                            tbl.rows[i].cells[1].innerHTML=data[i-1]["1"];
+                            tbl.rows[i].cells[2].innerHTML=data[i-1]["2"];
+                            var checkbox = document.createElement('input');
+                            checkbox.type = "checkbox";
+                            checkbox.name = "chk";
+                            checkbox.value = data[i-1]["0"];
+                            checkbox.id = "checkbox";
+                            y.appendChild(checkbox);
                         }
                     });
             }
-
-            var tbl = document.getElementById('tbl');
-            while(tbl.rows.length > 1) {
-                tbl.deleteRow(1);
-            }
-            // $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getClassWise",
-            //     {param1: cid.value},
-            //     function (data) {
-            //         var tbl = document.getElementById('tbl');
-            //         for(var i=1;i<(data.length+1);i++)
-            //         {
-            //             var x=tbl.insertRow(i);
-            //             x.insertCell(0);
-            //             x.insertCell(1);
-            //             x.insertCell(2);
-            //             var y=x.insertCell(3);
-            //             tbl.rows[i].cells[0].innerHTML=data[i-1]["0"];
-            //             tbl.rows[i].cells[1].innerHTML=data[i-1]["1"];
-            //             tbl.rows[i].cells[2].innerHTML=data[i-1]["2"];
-            //             var checkbox = document.createElement('input');
-            //             checkbox.type = "checkbox";
-            //             checkbox.name = "chk";
-            //             checkbox.value = data[i-1]["0"];
-            //             checkbox.id = "checkbox";
-            //             y.appendChild(checkbox);
-            //         }
-            //     });
         }
-        function didchange() {
-            var cid = document.getElementById("clid");
-            var did = document.getElementById("did");
-            var tbl = document.getElementById('tbl');
-            while(tbl.rows.length > 1) {
-                tbl.deleteRow(1);
-            }
-            $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getClassDivWise1",
-                {param1: cid.value,param2:did.value},
-                function (data) {
-                    var tbl = document.getElementById('tbl');
-                    for(var i=1;i<(data.length+1);i++)
-                    {
-                        var x=tbl.insertRow(i);
-                        x.insertCell(0);
-                        x.insertCell(1);
-                        x.insertCell(2);
-                        var y=x.insertCell(3);
-                        tbl.rows[i].cells[0].innerHTML=data[i-1]["0"];
-                        tbl.rows[i].cells[1].innerHTML=data[i-1]["1"];
-                        tbl.rows[i].cells[2].innerHTML=data[i-1]["2"];
-                        var checkbox = document.createElement('input');
-                        checkbox.type = "checkbox";
-                        checkbox.name = "chk";
-                        checkbox.value = data[i-1]["0"];
-                        checkbox.id = "checkbox";
-                        y.appendChild(checkbox);
-                    }
-                });
-        }
+        // function didchange() {
+        //     var cid = document.getElementById("clid");
+        //     var did = document.getElementById("did");
+        //     var tbl = document.getElementById('tbl');
+        //     while(tbl.rows.length > 1) {
+        //         tbl.deleteRow(1);
+        //     }
+        //     $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getClassDivWise1",
+        //         {param1: cid.value,param2:did.value},
+        //         function (data) {
+        //             var tbl = document.getElementById('tbl');
+        //             for(var i=1;i<(data.length+1);i++)
+        //             {
+        //                 var x=tbl.insertRow(i);
+        //                 x.insertCell(0);
+        //                 x.insertCell(1);
+        //                 x.insertCell(2);
+        //                 var y=x.insertCell(3);
+        //                 tbl.rows[i].cells[0].innerHTML=data[i-1]["0"];
+        //                 tbl.rows[i].cells[1].innerHTML=data[i-1]["1"];
+        //                 tbl.rows[i].cells[2].innerHTML=data[i-1]["2"];
+        //                 var checkbox = document.createElement('input');
+        //                 checkbox.type = "checkbox";
+        //                 checkbox.name = "chk";
+        //                 checkbox.value = data[i-1]["0"];
+        //                 checkbox.id = "checkbox";
+        //                 y.appendChild(checkbox);
+        //             }
+        //         });
+        // }
         function tidchange() {
             var tid=document.getElementById("tid");
             var cid = document.getElementById("clid");
-            var did = document.getElementById("did");
+            // var did = document.getElementById("did");
             var tbl = document.getElementById('tbl');
             while(tbl.rows.length > 1) {
                 tbl.deleteRow(1);
             }
             $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getTeacherWise",
-                {param1: tid.value,param2:cid.value, param3:did.value},
+                {param1: tid.value,param2:cid.value},
                 function (data) {
                     var tbl = document.getElementById('tbl');
                     for(var i=1;i<(data.length+1);i++)
@@ -175,13 +166,13 @@
 
         function delete_sub(){
             var cid = document.getElementById("clid");
-            var did = document.getElementById("did");
+            // var did = document.getElementById("did");
             var q = document.querySelectorAll("input[type=checkbox][name=chk]"), l = q.length, i;
             for (i = 0; i < l; i++) {
                 if (q[i].checked == true) {
                     // alert(q[i].value);
                     $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/delete",
-                        {param1: q[i].value,param2:did.value, param3:cid.value},
+                        {param1: q[i].value, param3:cid.value},
                         function (data) {
                         // alert(data);
                             if(data=="0")
@@ -194,7 +185,7 @@
                         });
                 }
             }
-            didchange();
+            clidchange();
         }
     </script>
 </head>
@@ -243,11 +234,11 @@
 
                                 </select>
                             </div>
-                            <div class="form-group text-left" >
-                                <select name="did" id="did" class="form-control" onchange="didchange()">
+                            <!--<div class="form-group text-left" >-->
+                                <!--<select name="did" id="did" class="form-control" onchange="didchange()">-->
 
-                                </select>
-                            </div>
+                                <!--</select>-->
+                            <!--</div>-->
 
                             <div class="form-group text-left" >
 

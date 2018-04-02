@@ -16,7 +16,7 @@ function validate_hod() {
 function validate_teacher() {
     var sid=sessionStorage.getItem("role");
     if(sid!=2)
-        window.location="http://localhost:8080/attendance_war_exploded/teacher.html";
+        window.location="http://localhost:8080/attendance_war_exploded/";
 }
 function logout() {
     sessionStorage.setItem("role","0");
@@ -36,5 +36,5 @@ function logout_hod() {
 }
 function logout_teacher() {
     sessionStorage.setItem("role","0");
-    window.location="http://localhost:8080/attendance_war_exploded/teacher.html";
+    window.location="http://localhost:8080/attendance_war_exploded/";
 }

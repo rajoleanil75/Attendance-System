@@ -39,14 +39,14 @@
         {
             validate_admin();
             var clid=sessionStorage.getItem("clid");
-            var did=sessionStorage.getItem("did");
+            // var did=sessionStorage.getItem("did");
             var stime=sessionStorage.getItem("stime");
             var etime=sessionStorage.getItem("etime");
             // var tbl = document.getElementById('tbl');
             var lbl=document.getElementById("lbl");
             lbl.innerText="Start Time: "+stime+", End Time: "+etime+"";
             $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getClassDivWise",
-                {param1: clid,param2:did},
+                {param1: clid},
                 function (data) {
                     total=data.length;
                     gbl=data;
@@ -138,7 +138,7 @@
 
         function addLab() {
             var clid=sessionStorage.getItem("clid");
-            var did=sessionStorage.getItem("did");
+            // var did=sessionStorage.getItem("did");
             var stime=sessionStorage.getItem("stime");
             var etime=sessionStorage.getItem("etime");
             // var tbl=document.getElementById("tbl");
@@ -152,7 +152,7 @@
                     // alert(q[i].value);
                     // alert(q[i].getAttribute('lid'));
                     $.post("http://localhost:8080/attendance_war_exploded/global/lab_time_services/add",
-                                { param1: q[i].value, param2: q[i].getAttribute('lid'),param3:q[i].getAttribute('tid'), param4: did, param5:clid, param6:stime, param7:etime },
+                                { param1: q[i].value, param2: q[i].getAttribute('lid'),param3:q[i].getAttribute('tid'), param5:clid, param6:stime, param7:etime },
                                 function (data) {
                                     if(data=='1')
                                     {
@@ -210,11 +210,11 @@
             var uid=sessionStorage.getItem("uname");
             var clid_name=sessionStorage.getItem("clid_name");
             $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/admin_notification",
-                {param1: "LabBatch Timetable added, Class Name: "+clid_name+", Division: "+did  , param2: uid},
+                {param1: "LabBatch Timetable added, Class Name: "+clid_name+"" , param2: uid},
                 function (data) {
                 });
             alert("Timetable Added Successfully...!!!");
-            window.location="http://localhost:8080/attendance_war_exploded/aadd_labtime1.html";
+            window.location="http://localhost:8080/attendance_war_exploded/aadd_labtime.html";
 
         }
     </script>

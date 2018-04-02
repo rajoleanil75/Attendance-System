@@ -9,15 +9,16 @@ public class LabBatch implements Serializable {
     private String name;
     private int from;
     private int to;
-    private Division division;
+    private CSClass csClass;
+//    private Division division;
 
-    public Division getDivision() {
-        return division;
-    }
+//    public Division getDivision() {
+//        return division;
+//    }
 
-    public void setDivision(Division division) {
-        this.division = division;
-    }
+//    public void setDivision(Division division) {
+//        this.division = division;
+//    }
     public int getTo() {
         return to;
     }
@@ -40,5 +41,13 @@ public class LabBatch implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public CSClass getCsClass() {
+        return csClass;
+    }
+
+    public void setCsClass(CSClass csClass) {
+        this.csClass = csClass;
     }
 }

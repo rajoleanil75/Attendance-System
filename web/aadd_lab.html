@@ -61,23 +61,23 @@
                     }
                 });
         }
-        function clidchange() {
-            var cid=document.getElementById("clid");
-            document.getElementById("did").length = 0;
-            $.post("http://localhost:8080/attendance_war_exploded/global/division_services/getClassWise",
-                {param1: cid.value},
-                function (data) {
-                    document.getElementById("did").options[0]=new Option("Select Division","-1");
-                    for(var i=0;i<(data.length);i++)
-                    {
-                        document.getElementById("did").options[i+1]=new Option(data[i]["0"],data[i]["0"]);
-                    }
-                });
-        }
+        // function clidchange() {
+        //     var cid=document.getElementById("clid");
+        //     document.getElementById("did").length = 0;
+        //     $.post("http://localhost:8080/attendance_war_exploded/global/division_services/getClassWise",
+        //         {param1: cid.value},
+        //         function (data) {
+        //             document.getElementById("did").options[0]=new Option("Select Division","-1");
+        //             for(var i=0;i<(data.length);i++)
+        //             {
+        //                 document.getElementById("did").options[i+1]=new Option(data[i]["0"],data[i]["0"]);
+        //             }
+        //         });
+        // }
         function addLab() {
             var cid=document.getElementById("cid");
             var clid=document.getElementById("clid");
-            var did=document.getElementById("did");
+            // var did=document.getElementById("did");
             var lname=document.getElementById("lname");
             var from=document.getElementById("from");
             var to=document.getElementById("to");
@@ -86,14 +86,14 @@
                 alert("Please select Course...!!!");
             else if(clid.value=="-1")
                 alert("Please select Class...!!!");
-            else if(did.value=="-1")
-                alert("Please select Division...!!!");
+            // else if(did.value=="-1")
+            //     alert("Please select Division...!!!");
             else if(values.length==0)
                 alert("Please select at least one Instructor...!!!");
             else
             {
                 $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/add",
-                    {param1: lname.value, param2: from.value, param3: to.value,param4:clid.value,param5:did.value},
+                    {param1: lname.value, param2: from.value, param3: to.value,param4:clid.value},
                     function (data) {
                         if (data == 'E') {
                             alert("Invalid Details...!!!");
@@ -102,7 +102,7 @@
                         {
                             for(i=0;i<values.length;i++) {
                                 $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/addteacherlab",
-                                    {param1: values[i], param2: lname.value,param3:clid.value,param4:did.value},
+                                    {param1: values[i], param2: lname.value,param3:clid.value},
                                     function (data) {
                                         if (data == 'E') {
                                             alert("Invalid Details...!!!");
@@ -113,7 +113,7 @@
                             }
                             var uid=sessionStorage.getItem("uname");
                             $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/admin_notification",
-                                {param1: "Lab Batch added, Name: "+lname.value+", Class: "+clid.options[clid.selectedIndex].text+", Division: "+did.options[did.selectedIndex].text, param2: uid},
+                                {param1: "Lab Batch added, Name: "+lname.value+", Class: "+clid.options[clid.selectedIndex].text, param2: uid},
                                 function (data) {
                                 });
                             alert("Lab batch Added Successfully...!!!");
@@ -155,16 +155,16 @@
                     </div>
                     <div class="form-group text-left" >
                         <label>Select Class : </label>
-                        <select name="clid" id="clid" class="form-control" onchange="clidchange()">
+                        <select name="clid" id="clid" class="form-control">
 
                         </select>
                     </div>
-                    <div class="form-group text-left" >
-                        <label>Select Division : </label>
-                        <select name="did" id="did" class="form-control">
+                    <!--<div class="form-group text-left" >-->
+                        <!--<label>Select Division : </label>-->
+                        <!--<select name="did" id="did" class="form-control">-->
 
-                        </select>
-                    </div>
+                        <!--</select>-->
+                    <!--</div>-->
 
                     <div class="form-group text-left">
                         <label>From Roll No.</label>
