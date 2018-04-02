@@ -31,128 +31,131 @@
         }
     </style>
     <script>
-        var cur=1;
-        // var subject=[[],[],[]];
         var gbl;
         var total=0;
+
+
         function fetch()
         {
             validate_admin();
             var clid=sessionStorage.getItem("clid");
-            // var did=sessionStorage.getItem("did");
-            var stime=sessionStorage.getItem("stime");
-            var etime=sessionStorage.getItem("etime");
-            // var tbl = document.getElementById('tbl');
-            var lbl=document.getElementById("lbl");
-            lbl.innerText="Start Time: "+stime+", End Time: "+etime+"";
+
             $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getClassDivWise",
                 {param1: clid},
                 function (data) {
                     total=data.length;
                     gbl=data;
-                    // for(var i=0;i<(data.length);i++)
-                    // {
-                    //     subject[i][0]=data[i]["0"];
-                    //     subject[i][1]=data[i]["1"];
-                    //     subject[i][2]=data[i]["2"];
-                    //     // document.getElementById("cid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
-                    // }
                 });
             setTimeout(function () {
-                for(var i=0;i<total;i++)
-                    addrow();
+                fun();
             },2000);
         }
 
-        function addrow() {
-            var tbl = document.getElementById('tbl');
-            var lastRow = tbl.rows.length;
-            var iteration = lastRow - 1;
-            var row = tbl.insertRow(lastRow);
-            var y0 = row.insertCell(0);
-            y0.innerText=cur;
-
-            var y1=row.insertCell(1);
-            var select = document.createElement("label");
-            select.className="form-control";
-            // select.text=subject[cur-1][0];
-            // select.innerText=subject[cur-1][0];
-            select.innerText=gbl[cur-1]["0"];
-
-            y1.appendChild(select);
-
-
-            for (j=0;j<=5;j++)
+        function fun() {
+            var p=sessionStorage.getItem("slot_arr");
+            var p2=sessionStorage.getItem("tslots");
+            var p1=p.split(",");
+            for (var i=0,j=0;j<p2-1;j++)
             {
-                y2=row.insertCell(j+2);
-                // var select = document.createElement("checkbox");
-                // select.className="form-control";
-                // select.id=cur+""+j;
-                // // select.setAttribute("tid",subject[k][2]);
-                // y2.appendChild(select);
+                var tbl=document.getElementById("tbl");
+                var table = document.createElement('table');
+                table.setAttribute("id",i);
+                table.className="table text-center table-bordered";
+                tbl.appendChild(table);
 
-                var checkbox = document.createElement('input');
-                checkbox.type = "checkbox";
-                checkbox.name = "chk";
-                checkbox.value =j+1;
-                checkbox.id = gbl[cur-1]["1"];
-                checkbox.setAttribute("tid",gbl[cur-1]["2"]);
-                checkbox.setAttribute("lid",gbl[cur-1]["1"]);
-                checkbox.className="form-control";
-                y2.appendChild(checkbox);
+                var row=table.insertRow(0);
+                // row.colSpan=8;
+                var c=row.insertCell(0);
+                c.colSpan=8;
+                var stime=p1[i++];
+                var etime=p1[i++];
+                c.innerText="Start Time: "+tConvert(stime)+", End Time: "+tConvert(etime)+"";
+                var row1=table.insertRow(1);
+                var q=row1.insertCell(0);
+                q.innerText="Sr.No.";
+                q=row1.insertCell(1);
+                q.innerText="Lab Batch";
+                q=row1.insertCell(2);
+                q.innerText="MON";
+                q=row1.insertCell(3);
+                q.innerText="TUE";
+                q=row1.insertCell(4);
+                q.innerText="WED";
+                q=row1.insertCell(5);
+                q.innerText="THU";
+                q=row1.insertCell(6);
+                q.innerText="FRI";
+                q=row1.insertCell(7);
+                q.innerText="SAT";
+                for(var k=0;k<total;k++)
+                {
+                    var row2 = table.insertRow(k+2);
+                    var y0 = row2.insertCell(0);
+                    y0.innerText=k+1;
 
-                // var option = document.createElement("option");
-                // // option.value = lastRow+""+j+""+k;
-                // option.value="-1";
-                // option.text ="Select LabBatch";
-                // select.add(option);
-                // for(k=0;k<total;k++)
-                // {
-                //     var option = document.createElement("option");
-                //     // option.value = lastRow+""+j+""+k;
-                //     option.value=subject[k][1];
-                //     option.text =subject[k][0];
-                //     option.setAttribute("tid",subject[k][2]);
-                //     select.add(option);
-                // }
-                // // var option = document.createElement("option");
-                // option.value = 1;
-                // option.text = "NewJob";
-                // select.add(option);
-
-
+                    var y1=row2.insertCell(1);
+                    var select = document.createElement("label");
+                    select.className="form-control";
+                    select.innerText=gbl[k]["0"];
+                    y1.appendChild(select);
+                    for (var l=0;l<=5;l++)
+                    {
+                        y2=row2.insertCell(l+2);
+                        var checkbox = document.createElement('input');
+                        checkbox.type = "checkbox";
+                        checkbox.name = "chk";
+                        checkbox.value =l+1;
+                        checkbox.id = gbl[k]["1"];
+                        checkbox.setAttribute("tid",gbl[k]["2"]);
+                        checkbox.setAttribute("lid",gbl[k]["1"]);
+                        checkbox.setAttribute("stime",stime);
+                        checkbox.setAttribute("etime",etime);
+                        checkbox.className="form-control";
+                        y2.appendChild(checkbox);
+                    }
+                }
             }
-            cur++;
-
-            // var el = document.createElement('input');
-            //
-            // el.type = 'text';
-            // el.name = 'name_' + i;
-            // el.id = 'name_' + i;
-            // el.size = 20;
-            // el.maxlength = 20;
-            // firstCell.appendChild(el);
-            //
-
         }
+
+
+        // function addrow() {
+        //     var tbl = document.getElementById('tbl');
+        //     var lastRow = tbl.rows.length;
+        //     var iteration = lastRow - 1;
+        //     var row = tbl.insertRow(lastRow);
+        //     var y0 = row.insertCell(0);
+        //     y0.innerText=cur;
+        //
+        //     var y1=row.insertCell(1);
+        //     var select = document.createElement("label");
+        //     select.className="form-control";
+        //     select.innerText=gbl[cur-1]["0"];
+        //     y1.appendChild(select);
+        //     for (j=0;j<=5;j++)
+        //     {
+        //         y2=row.insertCell(j+2);
+        //         var checkbox = document.createElement('input');
+        //         checkbox.type = "checkbox";
+        //         checkbox.name = "chk";
+        //         checkbox.value =j+1;
+        //         checkbox.id = gbl[cur-1]["1"];
+        //         checkbox.setAttribute("tid",gbl[cur-1]["2"]);
+        //         checkbox.setAttribute("lid",gbl[cur-1]["1"]);
+        //         checkbox.className="form-control";
+        //         y2.appendChild(checkbox);
+        //     }
+        //     cur++;
+        // }
 
         function addLab() {
             var clid=sessionStorage.getItem("clid");
-            // var did=sessionStorage.getItem("did");
-            var stime=sessionStorage.getItem("stime");
-            var etime=sessionStorage.getItem("etime");
-            // var tbl=document.getElementById("tbl");
-            var tcur=cur;
+            // var tcur=cur;
 
             var q = document.querySelectorAll("input[type=checkbox][name=chk]"), l = q.length, i;
             for (i = 0; i < l; i++) {
                 if (q[i].checked == true) {
-
-                    // alert(q[i].getAttribute('tid'));
-                    // alert(q[i].value);
-                    // alert(q[i].getAttribute('lid'));
                     $.post("http://localhost:8080/attendance_war_exploded/global/lab_time_services/add",
-                                { param1: q[i].value, param2: q[i].getAttribute('lid'),param3:q[i].getAttribute('tid'), param5:clid, param6:stime, param7:etime },
+                                { param1: q[i].value, param2: q[i].getAttribute('lid'),param3:q[i].getAttribute('tid'), param5:clid, param6:q[i].getAttribute('stime'), param7:q[i].getAttribute('etime') },
                                 function (data) {
                                     if(data=='1')
                                     {
@@ -163,50 +166,8 @@
 
                                     }
                                 });
-                    // $.post("http://localhost:8080/Feedback_System_war_exploded/admin/student_services/delete",
-                    //     {param1: q[i].value},
-                    //     function (data) {
-                    //         // alert(data);
-                    //         if(data=="0")
-                    //             alert("Student Not Deleted...!!!");
-                    //         else if(data=="1") {
-                    //             alert("Student Deleted...!!!");
-                    //         }
-                    //         else
-                    //             alert("Something went wrong...!!!");
-                    //     });
                 }
             }
-
-
-            // for(i=1;i<tcur;i++)
-            // {
-            //     for(j=0;j<=5;j++)
-            //     {
-            //         var t_id=i+""+j;
-            //         var subj=document.getElementById(t_id);
-            //         var tid=subj.options[subj.selectedIndex].getAttribute('tid')
-            //         if(subj.value=="-1")
-            //             continue;
-            //         $.post("http://localhost:8080/attendance_war_exploded/global/lab_time_services/add",
-            //             { param1: j+1, param2: subj.value,param3:tid, param4: did, param5:clid },
-            //             function (data) {
-            //                 if(data=='1')
-            //                 {
-            //
-            //                 }
-            //                 else
-            //                 {
-            //
-            //                 }
-            //             });
-            //
-            //
-            //         // alert(subj.value);
-            //         // alert(i);
-            //         // alert(j);
-            //     }
-            // }
             var uid=sessionStorage.getItem("uname");
             var clid_name=sessionStorage.getItem("clid_name");
             $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/admin_notification",
@@ -233,23 +194,10 @@
                 <!--</div>-->
                 <div class="col-sm-12 text-center">
                     <h4><label>Add Lab Batch Timetable</label></h4><br>
+                    <div id="tbl">
+                    </div>
 
-                    <table class="table text-center table-bordered" id="tbl">
-                        <tbody>
-                        <tr class="text-center"><th colspan="8" id="lbl">Add Timetable</th></tr>
-                        <tr class="text-center">
-                            <th>Sr.No.</th>
-                            <th>Lab Batch</th>
-                            <th>MON</th>
-                            <th>TUE</th>
-                            <th>WED</th>
-                            <th>THU</th>
-                            <th>FRI</th>
-                            <th>SAT</th>
-                        </tr>
 
-                        </tbody>
-                    </table>
                     <br>
                     <div class="dec">
                         <button type="submit" class="btn btn-block btn-danger" onclick="addLab()">Add</button>

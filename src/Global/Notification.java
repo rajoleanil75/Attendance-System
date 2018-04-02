@@ -58,7 +58,7 @@ public class Notification {
         Transaction t = session.beginTransaction();
         try {
 
-            java.util.List<DB.Notification> tlist = session.createQuery("from DB.Notification s where s.user.name=:id order by s.date desc ").setParameter("id", uid).setMaxResults(25).list();
+            java.util.List<DB.Notification> tlist = session.createQuery("from DB.Notification s where s.user.name=:id order by s.date desc ,s.time desc ").setParameter("id", uid).setMaxResults(25).list();
             List list = new ArrayList();
             for (Iterator iterator = tlist.iterator(); iterator.hasNext(); ) {
                 DB.Notification subject = (DB.Notification) iterator.next();
