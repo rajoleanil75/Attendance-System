@@ -25,8 +25,9 @@
         function addTeacher()
         {
             var tname = document.getElementById('tname');
+            var tsname = document.getElementById('tsname');
                 $.post("http://localhost:8080/attendance_war_exploded/global/teacher_services/add",
-                    { param1: tname.value},
+                    { param1: tname.value,param2:tsname.value},
                     function (data) {
                         if(data=='1')
                         {
@@ -64,6 +65,10 @@
                         <div class="form-group">
                             <label>Teacher Name:</label>
                             <input type="text" class="form-control" id="tname" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Short Name:</label>
+                            <input type="text" class="form-control" id="tsname" required>
                         </div>
                         <button type="submit" class="btn btn-block btn-danger">Submit</button>
                     </form>

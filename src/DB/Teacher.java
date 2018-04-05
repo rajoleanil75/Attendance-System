@@ -9,6 +9,7 @@ import java.time.LocalTime;
 public class Teacher {
     private int id;
     private String name;
+    private String sf;
     private String pass;
     private String ques;
     private String ans;
@@ -69,5 +70,13 @@ public class Teacher {
 
     public void setTime(LocalTime time) {
         this.time = time;
+    }
+
+    public String getSf() {
+        return sf;
+    }
+
+    public void setSf(String sf) {
+        this.sf = sf;
     }
 }

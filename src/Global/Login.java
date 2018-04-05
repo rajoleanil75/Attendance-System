@@ -332,6 +332,8 @@ public class Login {
                 json.put("id", user.getId());
                 json.put("llogin", time.toString());
                 message = json.toString();
+                user.setDate(LocalDate.now());
+                user.setTime(LocalTime.now());
                 t.commit();
                 session.close();
                 return message;

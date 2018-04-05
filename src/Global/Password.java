@@ -1,5 +1,6 @@
 package Global;
 
+import DB.Teacher;
 import DB.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -45,6 +46,36 @@ public class Password {
 //            transaction.commit();
 //            session.close();
             return "E";
+        }
+    }
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("teacher_update_pass")
+    public String teacher_update_pass(@FormParam("param1")int tid, @FormParam("param2")String opass, @FormParam("param3")String npass)
+    {
+        Session session= DB.Global.getSession();
+        Transaction transaction = session.beginTransaction();
+        try
+        {
+            DB.Teacher user = session.load(Teacher.class,tid);
+            if (opass.equals(user.getPass())) {
+                user.setPass(npass);
+                session.persist(user);
+                transaction.commit();
+                session.close();
+                return "1";
+            }
+            else {
+                transaction.commit();
+                session.close();
+                return "E";
+            }
+        }
+        catch (Exception e){
+//            transaction.commit();
+//            session.close();
+            return "E";
+//            return String.valueOf(e);
         }
     }
 }

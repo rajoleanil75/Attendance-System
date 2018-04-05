@@ -34,7 +34,7 @@ public class Teacher {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("add")
-    public String add( @FormParam("param1")String tname)
+    public String add( @FormParam("param1")String tname,@FormParam("param2")String tsname)
     {
         Session session= DB.Global.getSession();
         Transaction t=session.beginTransaction();
@@ -42,6 +42,7 @@ public class Teacher {
         {
             DB.Teacher teacher=new DB.Teacher();
             teacher.setName(tname);
+            teacher.setSf(tsname);
             session.save(teacher);
             t.commit();
             session.close();
@@ -83,6 +84,7 @@ public class Teacher {
                 List list1=new ArrayList();
                 list1.add(teacher.getId());
                 list1.add(teacher.getName());
+                list1.add(teacher.getSf());
                 list.add(list1);
             }
             transaction.commit();

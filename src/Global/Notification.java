@@ -1,5 +1,6 @@
 package Global;
 
+import DB.Teacher;
 import DB.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -80,6 +81,32 @@ public class Notification {
             session.close();
             return Collections.singletonList(e);
 //            return String.valueOf(e);
+        }
+    }
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("teacher_notification")
+    public String teacher_notification(@FormParam("param1")String name, @FormParam("param2") int tid)
+    {
+        Session session = DB.Global.getSession();
+        Transaction t = session.beginTransaction();
+        try {
+            DB.Teacher user=session.load(Teacher.class,tid);
+            DB.TNotification notification=new DB.TNotification();
+            notification.setName(name);
+            notification.setDate(LocalDate.now());
+            notification.setTime(LocalTime.now());
+            notification.setTeacher(user);
+            session.persist(notification);
+            t.commit();
+            session.close();
+            return "1";
+        }
+        catch (Exception e)
+        {
+//            t.commit();
+            session.close();
+            return "E";
         }
     }
 }

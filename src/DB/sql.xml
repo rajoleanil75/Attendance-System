@@ -40,6 +40,9 @@
         <property name="name">
             <column name="name" sql-type="varchar(40)" not-null="true" length="40"/>
         </property>
+        <property name="sf">
+            <column name="sf" sql-type="varchar(6)" length="6"/>
+        </property>
         <property name="pass">
             <column name="pass" sql-type="varchar(16)"/>
         </property>
