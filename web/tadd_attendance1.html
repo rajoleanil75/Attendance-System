@@ -70,7 +70,7 @@
                     var checkbox = document.createElement('input');
                     checkbox.type = "checkbox";
                     checkbox.name = "chk";
-                    checkbox.value = data1[i-1]["0"];;
+                    checkbox.value = data1[i-1]["0"];
                     checkbox.id = "checkbox";
                     y.appendChild(checkbox);
                 }
@@ -100,7 +100,37 @@
             // $('#tbl input:checkbox').attr('checked',false);
         }
         function add() {
-            
+            var jsonArr=[];
+            var q = document.querySelectorAll("input[type=checkbox][name=chk]"),
+                l = q.length, i;
+            for( i=0; i<l; i++)
+            {
+                if(q[i].checked==true)
+                {
+                    jsonArr.push({roll:q[i].value,flag:1});
+                }
+                else
+                {
+                    jsonArr.push({roll:q[i].value,flag:0});
+                }
+            }
+            var j=JSON.stringify(jsonArr);
+            $.post("http://localhost:8080/attendance_war_exploded/global/subject_att_services/add",
+                {param1: j, param2: sessionStorage.getItem("slotno"), param3:sessionStorage.getItem("day"),param4:sessionStorage.getItem("subjid"),param5:sessionStorage.getItem("dname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
+                function (data) {
+                    if (data == '1') {
+                        var uname=sessionStorage.getItem("id");
+                        $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/teacher_notification",
+                            {param1: "Attendance added. Class: "+ sessionStorage.getItem("clname")+", Division: "+sessionStorage.getItem("dname")+", Slot No.:"+sessionStorage.getItem("slotno")+", Subject :"+sessionStorage.getItem("sname")+" Date: "+sessionStorage.getItem("date")+"", param2: uname},
+                            function (data) {
+                            });
+                        alert("Attendance Added Successfully...!!!");
+                        window.location = "http://localhost:8080/attendance_war_exploded/tadd_attendance.html";
+                    }
+                    else {
+                        alert("Something went wrong...!!!");
+                    }
+                });
         }
     </script>
 </head>
@@ -124,6 +154,9 @@
                     </table>
                 </div>
                 <div class="col-sm-3">
+                    <br>
+                    <br>
+                    <br>
                     <br>
                     <br>
                     <input type=Button name="all" id='check_all' class="btn btn-block btn-danger" value="Select All"  onclick="CheckAll()" />

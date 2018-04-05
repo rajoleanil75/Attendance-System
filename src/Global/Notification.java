@@ -109,4 +109,37 @@ public class Notification {
             return "E";
         }
     }
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("viewAllTeacher")
+    public List viewAllTeacher(@FormParam("param1")int uid)
+    {
+        Session session = DB.Global.getSession();
+        Transaction t = session.beginTransaction();
+        try {
+
+            java.util.List<DB.TNotification> tlist = session.createQuery("from TNotification s where s.teacher.id=:id order by s.date desc ,s.time desc ").setParameter("id", uid).setMaxResults(25).list();
+            List list = new ArrayList();
+            for (Iterator iterator = tlist.iterator(); iterator.hasNext(); ) {
+                DB.TNotification subject = (DB.TNotification) iterator.next();
+                List list1 = new ArrayList();
+                list1.add(subject.getDate());
+                list1.add(subject.getTime());
+                list1.add(subject.getName());
+                list.add(list1);
+            }
+            t.commit();
+            session.close();
+//            return "111";
+            return list;
+
+        }
+        catch (Exception e)
+        {
+//            t.commit();
+            session.close();
+            return Collections.singletonList(e);
+//            return String.valueOf(e);
+        }
+    }
 }

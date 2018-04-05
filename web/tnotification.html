@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "tmenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .col-sm-8{
+            /*padding-left: 50px;*/
+            /*padding-right: 50px;*/
+        }
+    </style>
+    <script>
+        function fetch() {
+            validate_teacher();
+            var ques1 = document.getElementById('ques1');
+            var uid=sessionStorage.getItem("id");
+
+            $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/viewAllTeacher",
+                {param1: uid},
+                function (data) {
+                    // alert(data);
+                    j = 1;
+                    for (var i = 0; i < (data.length); i++) {
+                        var x = ques1.insertRow(++j);
+                        y0 = x.insertCell(0);
+                        y0.innerText = i + 1;
+                        y1 = x.insertCell(1);
+                        y1.innerText = data[i][0];
+                        y2 = x.insertCell(2);
+                        y2.innerText = tConvert(data[i][1]);
+                        y3 = x.insertCell(3);
+                        y3.innerText = data[i][2];
+                    }
+                });
+        }
+
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-10 text-center">
+                    <table class="table text-left table-bordered" id="ques1">
+                        <tbody>
+                        <tr class="text-center"><th colspan="4">Notification</th></tr>
+                        <tr class="text-center">
+                            <th>Sr.No.</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Notification &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="col-sm-1">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>

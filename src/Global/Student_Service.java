@@ -90,9 +90,43 @@ public class Student_Service {
         }
         catch (Exception e)
         {
+//            t.commit();
+            session1.close();
+            return null;
+        }
+    }
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("viewLabBatchWise")
+    public List viewLabBatchWise(@FormParam("param1")String lname,@FormParam("param2")int clid)
+    {
+        Session session1= Global.getSession();
+        Transaction t=session1.beginTransaction();
+        try
+        {
+            LabBatch labBatch= (LabBatch) session1.createQuery("from LabBatch s where s.name=:id and s.csClass.id=:id1").setParameter("id",lname).setParameter("id1",clid).uniqueResult();
+            java.util.List<Student> tlist=session1.createQuery("from Student s where s.division.csClass.id=:id and s.roll between :id1 and :id2").setParameter("id1",labBatch.getFrom()).setParameter("id2",labBatch.getTo()).setParameter("id",clid).list();
+            List list=new ArrayList();
+            for(Iterator iterator = tlist.iterator(); iterator.hasNext();)
+            {
+                Student student= (Student) iterator.next();
+                List list1=new ArrayList();
+                list1.add(student.getRoll());
+                list1.add(student.getName());
+                list1.add(student.getRoll());
+                list1.add(student.getDivision().getName());
+                list.add(list1);
+            }
             t.commit();
             session1.close();
-            return Collections.singletonList("" + e + "");
+            return list;
+        }
+        catch (Exception e)
+        {
+//            t.commit();
+            session1.close();
+//            return Collections.singletonList("" + e + "");
+            return null;
         }
     }
     @POST

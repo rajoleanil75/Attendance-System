@@ -180,12 +180,12 @@
                 <column name="lname"/>
                 <column name="csclass_id"/>
             </key-many-to-one>
+            <key-many-to-one name="teacher" class="DB.Teacher" column="teacher_id_extra"/>
             <key-many-to-one name="student" class="DB.Student">
                 <column name="roll"/>
                 <column name="dname_s"/>
                 <column name="csclass_id_s"/>
             </key-many-to-one>
-            <key-many-to-one name="teacher" class="DB.Teacher" column="teacher_id_extra"/>
             <key-property name="date" column="date"/>
         </composite-id>
         <property name="flag">
