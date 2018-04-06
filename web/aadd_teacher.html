@@ -26,8 +26,9 @@
         {
             var tname = document.getElementById('tname');
             var tsname = document.getElementById('tsname');
+            var sid = document.getElementById("sid");
                 $.post("http://localhost:8080/attendance_war_exploded/global/teacher_services/add",
-                    { param1: tname.value,param2:tsname.value},
+                    { param1: tname.value,param2:tsname.value,param3:sid.value},
                     function (data) {
                         if(data=='1')
                         {
@@ -69,6 +70,15 @@
                         <div class="form-group">
                             <label>Short Name:</label>
                             <input type="text" class="form-control" id="tsname" required>
+                        </div>
+                        <div class="form-group text-left" >
+                            <label>Select Special Subject : </label>
+                            <select name="sid" id="sid" class="form-control">
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Statistics">Statistics</option>
+                                <option value="Electronics">Electronics</option>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-block btn-danger">Submit</button>
                     </form>

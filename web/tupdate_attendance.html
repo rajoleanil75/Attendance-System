@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "tmenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .pad{
+            padding-left: 300px;
+            padding-right: 300px;
+        }
+    </style>
+    <script>
+        var data1;
+        function datechange() {
+
+            var dt=document.getElementById("date");
+            if(dt.value!="")
+            {
+                var d = new Date(dt.value);
+                var day=d.getDay();
+                var tid=sessionStorage.getItem("id");
+                // alert(day);
+                // alert(tid);
+                var tbl = document.getElementById("tbl");
+                tbl.innerText = "";
+                $.post("http://localhost:8080/attendance_war_exploded/global/timetable_services/viewTeacherDayWise",
+                    {param1: day, param2:tid, param3:dt.value},
+                    function (data) {
+                        // alert(data);
+                        // sessionStorage.setItem("temp1",data);
+                        data1=data;
+                    });
+            }
+            setTimeout(function () {
+                ctable();
+            },2000);
+        }
+        function ctable() {
+
+            if(data1=="")
+            {
+                var tbl = document.getElementById("tbl");
+                tbl.innerText = "";
+                alert("No schedule found...!!!")
+            }
+            else {
+                var tbl = document.getElementById("tbl");
+                tbl.innerText = "";
+                var table = document.createElement('table');
+                table.setAttribute("id","tble");
+                table.className = "table text-center table-bordered";
+                tbl.appendChild(table);
+                var row1 = table.insertRow(0);
+                var q = row1.insertCell(0);
+                q.innerHTML = "<b>Sr.No.</b>";
+                q = row1.insertCell(1);
+                q.innerHTML = "<b>Start Time</b>";
+                q = row1.insertCell(2);
+                q.innerHTML = "<b>End Time</b>";
+                q = row1.insertCell(3);
+                q.innerHTML = "<b>Slot No</b>";
+                q = row1.insertCell(4);
+                q.innerHTML = "<b>Subject / Lab Batch</b>";
+                q = row1.insertCell(5);
+                q.innerHTML = "<b>Class</b>";
+                q = row1.insertCell(6);
+                q.innerHTML = "<b>Division</b>";
+                q = row1.insertCell(7);
+                q.innerHTML = "<b>Fill Attendance</b>";
+                for (var i = 0; i < data1.length; i++) {
+                    if (data1[i]["flag"] == "1") {
+                        var row1 = table.insertRow(i + 1);
+                        var q1 = row1.insertCell(0);
+                        q1.innerText = i + 1;
+                        q1 = row1.insertCell(1);
+                        q1.innerText =tConvert(data1[i]["stime"]);
+                        q1 = row1.insertCell(2);
+                        q1.innerText = tConvert(data1[i]["etime"]);
+                        q1 = row1.insertCell(3);
+                        q1.innerText = data1[i]["slotno"];
+                        q1 = row1.insertCell(4);
+                        q1.innerText = data1[i]["sname"];
+                        q1 = row1.insertCell(5);
+                        q1.innerText = data1[i]["clname"];
+                        q1 = row1.insertCell(6);
+                        q1.innerText = data1[i]["dname"];
+                        var y2= row1.insertCell(7);
+                        var checkbox = document.createElement('input');
+                        checkbox.type = "checkbox";
+                        checkbox.name = "chk";
+                        checkbox.value =i+1;
+                        checkbox.id = data1[i]["flag"];
+                        if(data1[i]["flag1"]==0)
+                            checkbox.disabled=true;
+                        checkbox.setAttribute("slotno",data1[i]["slotno"]);
+                        checkbox.setAttribute("clid",data1[i]["clid"]);
+                        checkbox.setAttribute("day",data1[i]["day"]);
+                        checkbox.setAttribute("flag",data1[i]["flag"]);
+                        checkbox.setAttribute("subjid",data1[i]["subjid"]);
+                        checkbox.setAttribute("sname",data1[i]["sname"]);
+                        checkbox.setAttribute("lname","");
+                        checkbox.setAttribute("dname",data1[i]["dname"]);
+                        checkbox.setAttribute("clname",data1[i]["clname"]);
+                        checkbox.setAttribute("stime",data1[i]["stime"]);
+                        checkbox.setAttribute("etime",data1[i]["etime"]);
+                        checkbox.className="form-control";
+                        checkbox.onchange=next;
+                        y2.appendChild(checkbox);
+                    }
+                    else if (data1[i]["flag"] == "0") {
+                        var row1 = table.insertRow(i + 1);
+                        var q1 = row1.insertCell(0);
+                        q1.innerText = i + 1;
+                        q1 = row1.insertCell(1);
+                        q1.innerText = tConvert(data1[i]["stime"]);
+                        q1 = row1.insertCell(2);
+                        q1.innerText = tConvert(data1[i]["etime"]);
+                        q1 = row1.insertCell(3);
+                        q1.innerText = "-";
+                        q1 = row1.insertCell(4);
+                        q1.innerText = data1[i]["lname"];
+                        q1 = row1.insertCell(5);
+                        q1.innerText = data1[i]["clname"];
+                        q1 = row1.insertCell(6);
+                        q1.innerText = "-";
+                        var y2= row1.insertCell(7);
+                        var checkbox = document.createElement('input');
+                        checkbox.type = "checkbox";
+                        checkbox.name = "chk";
+                        checkbox.value =i+1;
+                        if(data1[i]["flag1"]==0)
+                            checkbox.disabled=true;
+                        checkbox.id = data1[i]["flag"];
+                        checkbox.setAttribute("slotno","");
+                        checkbox.setAttribute("clid",data1[i]["clid"]);
+                        checkbox.setAttribute("day",data1[i]["day"]);
+                        checkbox.setAttribute("subjid","");
+                        checkbox.setAttribute("sname","");
+                        checkbox.setAttribute("lname",data1[i]["lname"]);
+                        checkbox.setAttribute("flag",data1[i]["flag"]);
+                        checkbox.setAttribute("dname","");
+                        checkbox.setAttribute("clname",data1[i]["clname"]);
+                        checkbox.setAttribute("stime",data1[i]["stime"]);
+                        checkbox.setAttribute("etime",data1[i]["etime"]);
+                        checkbox.className="form-control";
+                        checkbox.onchange=next;
+                        // checkbox.addEventListener("change", next);
+                        y2.appendChild(checkbox);
+                    }
+                }
+            }
+        }
+        function next() {
+            var q = document.querySelectorAll("input[type=checkbox][name=chk]"), l = q.length, i;
+            for (i = 0; i < l; i++) {
+                if (q[i].checked == true) {
+                    var dt=document.getElementById("date");
+                    sessionStorage.setItem("date",dt.value);
+                    if(q[i].getAttribute("flag")=="1")
+                    {
+                        //subject
+                        sessionStorage.setItem("slotno",q[i].getAttribute("slotno"));
+                        sessionStorage.setItem("clid",q[i].getAttribute("clid"));
+                        sessionStorage.setItem("day",q[i].getAttribute("day"));
+                        sessionStorage.setItem("subjid",q[i].getAttribute("subjid"));
+                        sessionStorage.setItem("sname",q[i].getAttribute("sname"));
+                        sessionStorage.setItem("dname",q[i].getAttribute("dname"));
+                        sessionStorage.setItem("clname",q[i].getAttribute("clname"));
+                        sessionStorage.setItem("stime",q[i].getAttribute("stime"));
+                        sessionStorage.setItem("etime",q[i].getAttribute("etime"));
+                        window.location = "http://localhost:8080/attendance_war_exploded/tupdate_attendance1.html";
+                    }
+                    else if(q[i].getAttribute("flag")=="0")
+                    {
+                        //lab batch
+                        sessionStorage.setItem("clid",q[i].getAttribute("clid"));
+                        sessionStorage.setItem("day",q[i].getAttribute("day"));
+                        sessionStorage.setItem("lname",q[i].getAttribute("lname"));
+                        sessionStorage.setItem("clname",q[i].getAttribute("clname"));
+                        sessionStorage.setItem("stime",q[i].getAttribute("stime"));
+                        sessionStorage.setItem("etime",q[i].getAttribute("etime"));
+                        window.location = "http://localhost:8080/attendance_war_exploded/tupdate_attendance2.html";
+                    }
+                }
+            }
+        }
+
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="validate_teacher()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-10 text-center">
+                    <h4><label>Update Attendance</label></h4>
+                    <form class="form-text text-left">
+                        <div class="pad">
+                            <div class="form-group text-left" >
+                                <label>Select Date : </label>
+                                <input type="date" name="date" id="date" class="form-control" onchange="datechange()"/>
+                            </div>
+                        </div>
+                        <div id="tbl">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>

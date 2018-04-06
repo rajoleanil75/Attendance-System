@@ -40,4 +40,5 @@ public class Subject {
     public void setTeacher(DB.Teacher teacher) {
         Teacher = teacher;
     }
+
 }

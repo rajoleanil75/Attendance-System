@@ -104,11 +104,11 @@ public class LabBatch_Service {
     @POST
     @Path("getClassDivWise1")
     @Produces(MediaType.APPLICATION_JSON)
-    public List getClassDivWise1(@FormParam("param1") int cid,@FormParam("param2")String dname)
+    public List getClassDivWise1(@FormParam("param1") int cid)
     {
         Session session= Global.getSession();
         Transaction t=session.beginTransaction();
-        List<LabBatch> tlist=session.createQuery("from LabBatch s where s.division.csClass.id=:id and s.division.name=:id1").setParameter("id1",dname).setParameter("id",cid).list();
+        List<LabBatch> tlist=session.createQuery("from LabBatch s where s.csClass.id=:id").setParameter("id",cid).list();
         List list=new ArrayList();
         for(Iterator iterator = tlist.iterator(); iterator.hasNext();)
         {
@@ -197,11 +197,11 @@ public class LabBatch_Service {
     @POST
     @Path("getClassDivWise")
     @Produces(MediaType.APPLICATION_JSON)
-    public List getClassDivWise(@FormParam("param1") int cid)
+    public List getClassDivWise(@FormParam("param1") int cid,@FormParam("param2")String sname)
     {
         Session session= Global.getSession();
         Transaction t=session.beginTransaction();
-        List<LabInstructor> tlist=session.createQuery("from LabInstructor s where s.labBatch.csClass.id=:id1").setParameter("id1",cid).list();
+        List<LabInstructor> tlist=session.createQuery("from LabInstructor s where s.labBatch.csClass.id=:id1 and s.teacher.specialsub=:id2").setParameter("id2",sname).setParameter("id1",cid).list();
         List list=new ArrayList();
         for(Iterator iterator = tlist.iterator(); iterator.hasNext();)
         {

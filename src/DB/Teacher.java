@@ -15,6 +15,7 @@ public class Teacher {
     private String ans;
     private java.time.LocalDate date;
     private java.time.LocalTime time;
+    private String specialsub;
 
     public int getId() {
         return id;
@@ -78,5 +79,13 @@ public class Teacher {
 
     public void setSf(String sf) {
         this.sf = sf;
+    }
+
+    public String getSpecialsub() {
+        return specialsub;
+    }
+
+    public void setSpecialsub(String specialsub) {
+        this.specialsub = specialsub;
     }
 }

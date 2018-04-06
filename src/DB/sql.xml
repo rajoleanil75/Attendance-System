@@ -58,6 +58,9 @@
         <property name="time">
             <column name="llogintime" sql-type="time"/>
         </property>
+        <property name="specialsub">
+            <column name="specialsub" sql-type="varchar(20)"/>
+        </property>
     </class>
 
     <class name="DB.Student" table="student">

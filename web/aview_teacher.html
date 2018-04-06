@@ -33,8 +33,8 @@
                         var y=x.insertCell(3);
                         tbl.rows[i].cells[0].innerHTML=i;
                         tbl.rows[i].cells[1].innerHTML=data[i-1]["name"];
-                        if(data[i-1]["sf"]!=undefined)
-                            tbl.rows[i].cells[2].innerHTML=data[i-1]["sf"];
+                        if(data[i-1]["specialsub"]!=undefined)
+                            tbl.rows[i].cells[2].innerHTML=data[i-1]["specialsub"];
                         else
                             tbl.rows[i].cells[2].innerHTML="";
                         var checkbox = document.createElement('input');
@@ -89,8 +89,8 @@
                             var y=x.insertCell(3);
                             tbl.rows[i].cells[0].innerHTML=i;
                             tbl.rows[i].cells[1].innerHTML=data[i-1]["1"];
-                            if(data[i-1]["2"]!=undefined)
-                                tbl.rows[i].cells[2].innerHTML=data[i-1]["2"];
+                            if(data[i-1]["3"]!=undefined)
+                                tbl.rows[i].cells[2].innerHTML=data[i-1]["3"];
                             else
                                 tbl.rows[i].cells[2].innerHTML="";
                             var checkbox = document.createElement('input');
@@ -106,8 +106,8 @@
     </script>
     <style>
         .col-sm-8{
-            padding-left: 100px;
-            padding-right: 100px;
+            padding-left: 40px;
+            padding-right: 20px;
         }
         .borderless td, .borderless th {
             border: none;
@@ -129,7 +129,7 @@
                     <h4><label>Teacher Details</label></h4>
                     <table class="table table-hover text-left" id="tbl">
                         <tbody>
-                        <tr><td>Sr.No.</td><td>Name</td><td>Short Name</td></td><td><input type=Button name="delete" value="Delete" class="btn btn-block btn-danger" onclick="delete_teacher()"/></td></tr>
+                        <tr><td>Sr.No.</td><td>Name</td><td>Special Subject</td></td><td><input type=Button name="delete" value="Delete" class="btn btn-block btn-danger" onclick="delete_teacher()"/></td></tr>
                         </tbody>
                     </table>
                 </div>

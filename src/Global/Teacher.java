@@ -34,7 +34,7 @@ public class Teacher {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("add")
-    public String add( @FormParam("param1")String tname,@FormParam("param2")String tsname)
+    public String add( @FormParam("param1")String tname,@FormParam("param2")String tsname, @FormParam("param3")String special)
     {
         Session session= DB.Global.getSession();
         Transaction t=session.beginTransaction();
@@ -43,6 +43,7 @@ public class Teacher {
             DB.Teacher teacher=new DB.Teacher();
             teacher.setName(tname);
             teacher.setSf(tsname);
+            teacher.setSpecialsub(special);
             session.save(teacher);
             t.commit();
             session.close();
@@ -62,7 +63,7 @@ public class Teacher {
     {
         Session session= DB.Global.getSession();
         Transaction t=session.beginTransaction();
-        java.util.List<DB.Teacher> tlist=session.createQuery("from DB.Teacher").list();
+        java.util.List<DB.Teacher> tlist=session.createQuery("from DB.Teacher order by id asc ").list();
         t.commit();
         session.close();
         return tlist;
@@ -76,7 +77,7 @@ public class Teacher {
         Transaction transaction=session.beginTransaction();
         try {
 
-            java.util.List<DB.Teacher> tlist=session.createQuery("from DB.Teacher s where s.name like :id").setParameter("id","%"+tname+"%").list();
+            java.util.List<DB.Teacher> tlist=session.createQuery("from DB.Teacher s where s.name like :id order by s.id asc ").setParameter("id","%"+tname+"%").list();
             List list=new ArrayList();
             for(Iterator iterator = tlist.iterator(); iterator.hasNext();)
             {
@@ -85,6 +86,7 @@ public class Teacher {
                 list1.add(teacher.getId());
                 list1.add(teacher.getName());
                 list1.add(teacher.getSf());
+                list1.add(teacher.getSpecialsub());
                 list.add(list1);
             }
             transaction.commit();

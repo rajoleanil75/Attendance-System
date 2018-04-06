@@ -39,9 +39,10 @@
         {
             validate_admin();
             var clid=sessionStorage.getItem("clid");
+            var subid=sessionStorage.getItem("sid");
 
             $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_services/getClassDivWise",
-                {param1: clid},
+                {param1: clid,param2:subid},
                 function (data) {
                     total=data.length;
                     gbl=data;

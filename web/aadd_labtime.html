@@ -158,10 +158,12 @@
                 // var etime=document.getElementById("etime");
 
                 var clid_name=clid.options[clid.selectedIndex].text;
+                var sid = document.getElementById("sid");
                 sessionStorage.setItem("tslots",cur);
                 sessionStorage.setItem("slot_arr",x);
                 sessionStorage.setItem("clid_name",clid_name);
                 sessionStorage.setItem("clid",clid.value);
+                sessionStorage.setItem("sid",sid.value);
                 // sessionStorage.setItem("did",did.value);
 
                 // sessionStorage.setItem("stime",stime.value);
@@ -225,6 +227,15 @@
 
                         </select>
                     </div>
+                        <div class="form-group text-left" >
+                            <label>Select Subject : </label>
+                            <select name="sid" id="sid" class="form-control">
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Statistics">Statistics</option>
+                                <option value="Electronics">Electronics</option>
+                            </select>
+                        </div>
                     <!--<div class="form-group text-left" >-->
                         <!--<label>Select Division : </label>-->
                         <!--<select name="did" id="did" class="form-control">-->
