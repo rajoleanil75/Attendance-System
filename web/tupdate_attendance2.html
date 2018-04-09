@@ -34,7 +34,7 @@
                 "<br>Start Time: "+tConvert(sessionStorage.getItem("stime"))+", End Time: "+tConvert(sessionStorage.getItem("etime"))+"<br>Date: "+sessionStorage.getItem("date")+"";
 
             $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_att_services/viewDateWise",
-                { param3:sessionStorage.getItem("day"),param5:sessionStorage.getItem("lname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
+                {param1:sessionStorage.getItem("tid1"),param3:sessionStorage.getItem("day"),param5:sessionStorage.getItem("lname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
                 function (data) {
                     data1=data;
                 });
@@ -48,8 +48,10 @@
                 $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_att_services/findteacher",
                     { param3:sessionStorage.getItem("day"),param5:sessionStorage.getItem("lname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
                     function (data) {
-                        if(data!=""&&data!=null)
-                            alert("Attendance already added by another teacher, Name :"+data);
+                        if(data!=""&&data!=null) {
+                            alert("Attendance added by another teacher, Name :" + data);
+                            window.location = "http://localhost:8080/attendance_war_exploded/tupdate_attendance.html";
+                        }
                         else
                             alert("No Student found in select Division...!!!");
                     });
@@ -126,7 +128,7 @@
             }
             var j=JSON.stringify(jsonArr);
             $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_att_services/update",
-                {param1: j, param3:sessionStorage.getItem("day"),param5:sessionStorage.getItem("lname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
+                {param1: j, param2:sessionStorage.getItem("tid1"),param3:sessionStorage.getItem("day"),param5:sessionStorage.getItem("lname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
                 function (data) {
                     if (data == '1') {
                         var uname=sessionStorage.getItem("id");

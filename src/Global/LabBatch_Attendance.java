@@ -27,7 +27,7 @@ public class LabBatch_Attendance {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("add")
-    public String add(@FormParam("param1")String slist, @FormParam("param3") int day, @FormParam("param5")String lname, @FormParam("param6")int clid, @FormParam("param7")int tid, @FormParam("param8")String dt)
+    public String add(@FormParam("param1")String slist, @FormParam("param3") int day, @FormParam("param5")String lname, @FormParam("param6")int clid, @FormParam("param7")int tid, @FormParam("param8")String dt,@FormParam("param9")int tid1)
     {
         Session session= Global.getSession();
         Transaction transaction=session.beginTransaction();
@@ -40,7 +40,7 @@ public class LabBatch_Attendance {
             arrayObj=(JSONArray) object;
 
             LocalDate date=LocalDate.parse(dt);
-            DB.LabTimetable l= (LabTimetable) session.createQuery("from LabTimetable s where s.day=:id and s.labInstructor.labBatch.name=:id1 and s.labInstructor.teacher.id=:id2 and s.labInstructor.labBatch.csClass.id=:id3").setParameter("id3",clid).setParameter("id2",tid).setParameter("id1",lname).setParameter("id",day).uniqueResult();
+            DB.LabTimetable l= (LabTimetable) session.createQuery("from LabTimetable s where s.day=:id and s.labInstructor.labBatch.name=:id1 and s.labInstructor.teacher.id=:id2 and s.labInstructor.labBatch.csClass.id=:id3").setParameter("id3",clid).setParameter("id2",tid1).setParameter("id1",lname).setParameter("id",day).uniqueResult();
             DB.Teacher teacher= (DB.Teacher) session.createQuery("from Teacher s where s.id=:id").setParameter("id",tid).uniqueResult();
 
             for (int i = 0; i < arrayObj.size(); i++)
@@ -75,14 +75,14 @@ public class LabBatch_Attendance {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("viewDateWise")
-    public List viewDateWise( @FormParam("param3") int day, @FormParam("param5")String lname, @FormParam("param6")int clid, @FormParam("param7")int tid, @FormParam("param8")String dt)
+    public List viewDateWise(@FormParam("param1")int tid1, @FormParam("param3") int day, @FormParam("param5")String lname, @FormParam("param6")int clid, @FormParam("param7")int tid, @FormParam("param8")String dt)
     {
         Session session= Global.getSession();
         Transaction transaction=session.beginTransaction();
         try
         {
             LocalDate date=LocalDate.parse(dt);
-            List<LabAttendance> list=session.createQuery("from LabAttendance s where s.labTimetable.day=:id and s.labTimetable.labInstructor.labBatch.name=:id1 and s.labTimetable.labInstructor.labBatch.csClass.id=:id2 and s.teacher.id=:id3 and s.date=:id4 and s.labTimetable.labInstructor.teacher.id=:id5").setParameter("id",day).setParameter("id1",lname).setParameter("id2",clid).setParameter("id4",date).setParameter("id3",tid).setParameter("id5",tid).list();
+            List<LabAttendance> list=session.createQuery("from LabAttendance s where s.labTimetable.day=:id and s.labTimetable.labInstructor.labBatch.name=:id1 and s.labTimetable.labInstructor.labBatch.csClass.id=:id2 and s.teacher.id=:id3 and s.date=:id4 and s.labTimetable.labInstructor.teacher.id=:id5 order by s.student.roll asc ").setParameter("id",day).setParameter("id1",lname).setParameter("id2",clid).setParameter("id4",date).setParameter("id3",tid).setParameter("id5",tid1).list();
             List list2=new ArrayList();
             for(Iterator iterator = list.iterator(); iterator.hasNext();)
             {
@@ -109,7 +109,7 @@ public class LabBatch_Attendance {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("update")
-    public String update(@FormParam("param1")String slist, @FormParam("param3") int day, @FormParam("param5")String lname, @FormParam("param6")int clid, @FormParam("param7")int tid, @FormParam("param8")String dt)
+    public String update(@FormParam("param1")String slist,@FormParam("param2")int tid1, @FormParam("param3") int day, @FormParam("param5")String lname, @FormParam("param6")int clid, @FormParam("param7")int tid, @FormParam("param8")String dt)
     {
         Session session= Global.getSession();
         Transaction transaction=session.beginTransaction();
@@ -131,7 +131,7 @@ public class LabBatch_Attendance {
                     int roll= Integer.parseInt(String.valueOf(jsonObj.get("roll")));
                     int flag= Integer.parseInt(String.valueOf(jsonObj.get("flag")));
                     String dname= (String) jsonObj.get("dname");
-                    LabAttendance s= (LabAttendance) session.createQuery("from LabAttendance s where s.labTimetable.day=:id and s.labTimetable.labInstructor.labBatch.name=:id1 and s.labTimetable.labInstructor.labBatch.csClass.id=:id2 and s.labTimetable.labInstructor.teacher.id=:id3 and s.date=:id4 and s.teacher.id=:id5 and s.student.roll=:id6 and s.student.division.name=:id7 and s.student.division.csClass.id=:id8").setParameter("id",day).setParameter("id1",lname).setParameter("id2",clid).setParameter("id3",tid).setParameter("id4",date).setParameter("id5",tid).setParameter("id6",roll).setParameter("id7",dname).setParameter("id8",clid).uniqueResult();
+                    LabAttendance s= (LabAttendance) session.createQuery("from LabAttendance s where s.labTimetable.day=:id and s.labTimetable.labInstructor.labBatch.name=:id1 and s.labTimetable.labInstructor.labBatch.csClass.id=:id2 and s.labTimetable.labInstructor.teacher.id=:id3 and s.date=:id4 and s.teacher.id=:id5 and s.student.roll=:id6 and s.student.division.name=:id7 and s.student.division.csClass.id=:id8").setParameter("id",day).setParameter("id1",lname).setParameter("id2",clid).setParameter("id3",tid1).setParameter("id4",date).setParameter("id5",tid).setParameter("id6",roll).setParameter("id7",dname).setParameter("id8",clid).uniqueResult();
                     s.setFlag(flag);
                     session.persist(s);
                 }

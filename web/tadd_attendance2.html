@@ -117,8 +117,9 @@
             }
             var j=JSON.stringify(jsonArr);
             $.post("http://localhost:8080/attendance_war_exploded/global/labbatch_att_services/add",
-                {param1: j, param3:sessionStorage.getItem("day"),param5:sessionStorage.getItem("lname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
+                {param1: j, param3:sessionStorage.getItem("day"),param5:sessionStorage.getItem("lname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date"),param9:sessionStorage.getItem("tid1")},
                 function (data) {
+
                     if (data == '1') {
                         var uname=sessionStorage.getItem("id");
                         $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/teacher_notification",

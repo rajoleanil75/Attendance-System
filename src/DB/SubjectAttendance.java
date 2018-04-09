@@ -13,6 +13,7 @@ public class SubjectAttendance implements Serializable {
     private Teacher teacher;
     private LocalDate date;
     private Subject subject;
+    private int rptflag;
 
     public Subject getSubject() {
         return subject;
@@ -60,5 +61,13 @@ public class SubjectAttendance implements Serializable {
 
     public void setSubjectTimetable(SubjectTimetable subjectTimetable) {
         this.subjectTimetable = subjectTimetable;
+    }
+
+    public int getRptflag() {
+        return rptflag;
+    }
+
+    public void setRptflag(int rptflag) {
+        this.rptflag = rptflag;
     }
 }

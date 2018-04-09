@@ -49,8 +49,10 @@
                 $.post("http://localhost:8080/attendance_war_exploded/global/subject_att_services/findteacher",
                     { param2: sessionStorage.getItem("slotno"), param3:sessionStorage.getItem("day"),param4:sessionStorage.getItem("subjid"),param5:sessionStorage.getItem("dname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
                     function (data) {
-                        if(data!=""&&data!=null)
-                            alert("Attendance already added by another teacher, Name :"+data);
+                        if(data!=""&&data!=null) {
+                            alert("Attendance added by another teacher, Name :" + data);
+                            window.location = "http://localhost:8080/attendance_war_exploded/tupdate_attendance.html";
+                        }
                         else
                             alert("No Student found in select Division...!!!");
                     });

@@ -125,6 +125,9 @@
         <property name="flag">
             <column name="flag" sql-type="int" not-null="true"/>
         </property>
+        <property name="rptflag">
+            <column name="rptflag" sql-type="int"/>
+        </property>
         <many-to-one name="subject" class="DB.Subject" column="subject_id_extra" not-null="false" cascade="all"/>
     </class>
 

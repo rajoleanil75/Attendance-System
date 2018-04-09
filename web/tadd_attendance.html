@@ -20,35 +20,118 @@
             padding-left: 300px;
             padding-right: 300px;
         }
+        .pad1{
+            padding-left: 300px;
+            padding-right: 300px;
+        }
     </style>
     <script>
-        var data1;
+        var data1="";
+        function fetch() {
+            validate_teacher();
+            document.getElementById("cid").length = 0;
+            $.post("http://localhost:8080/attendance_war_exploded/global/course_services/viewAll",
+                function (data) {
+                    document.getElementById("cid").options[0]=new Option("Select Course","-1");
+                    for(var i=0;i<(data.length);i++)
+                    {
+                        document.getElementById("cid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
+                    }
+                });
+        }
+        function cidchange() {
+            var cid=document.getElementById("cid");
+            document.getElementById("clid").length = 0;
+            $.post("http://localhost:8080/attendance_war_exploded/global/class_services/getCourseWise",
+                {param1: cid.value},
+                function (data) {
+                    document.getElementById("clid").options[0]=new Option("Select Class","-1");
+                    for(var i=0;i<(data.length);i++)
+                    {
+                        document.getElementById("clid").options[i+1]=new Option(data[i]["1"],data[i]["0"]);
+                    }
+                });
+        }
         function datechange() {
-
-            var dt=document.getElementById("date");
-            if(dt.value!="")
+            var y=document.getElementById("yes");
+            var n=document.getElementById("no");
+            if(n.checked==true) {
+                var dt = document.getElementById("date");
+                if (dt.value != "") {
+                    var d = new Date(dt.value);
+                    var day = d.getDay();
+                    var tid = sessionStorage.getItem("id");
+                    // alert(day);
+                    // alert(tid);
+                    var tbl = document.getElementById("tbl");
+                    tbl.innerText = "";
+                    $.post("http://localhost:8080/attendance_war_exploded/global/timetable_services/viewTeacherDayWise",
+                        {param1: day, param2: tid, param3: dt.value},
+                        function (data) {
+                            // alert(data);
+                            // sessionStorage.setItem("temp1",data);
+                            data1 = data;
+                        });
+                    setTimeout(function () {
+                        ctable();
+                    }, 2000);
+                }
+                else
+                {
+                    var tbl = document.getElementById("tbl");
+                    tbl.innerText = "";
+                }
+            }
+            else if(y.checked==true)
             {
+                var dt = document.getElementById("date");
+                var clid = document.getElementById("clid");
+                if (dt.value != "" && clid.value!="-1" &&clid.value!="") {
+                    var d = new Date(dt.value);
+                    var day = d.getDay();
+                    var tbl = document.getElementById("tbl");
+                    tbl.innerText = "";
+                    $.post("http://localhost:8080/attendance_war_exploded/global/timetable_services/viewClassDayWise",
+                        {param1: day, param2: clid.value, param3: dt.value},
+                        function (data) {
+                            data1 = data;
+                        });
+                    setTimeout(function () {
+                        ctable();
+                    }, 2000);
+                }
+                else if(dt.value=="" || clid.value=="-1" || clid.value=="")
+                {
+                    var tbl = document.getElementById("tbl");
+                    tbl.innerText = "";
+                }
+            }
+        }
+        function clidchange() {
+            var dt = document.getElementById("date");
+            var clid = document.getElementById("clid");
+            if (dt.value != "" && clid.value!="-1" && clid.value!="") {
                 var d = new Date(dt.value);
-                var day=d.getDay();
-                var tid=sessionStorage.getItem("id");
-                // alert(day);
-                // alert(tid);
+                var day = d.getDay();
                 var tbl = document.getElementById("tbl");
                 tbl.innerText = "";
-                $.post("http://localhost:8080/attendance_war_exploded/global/timetable_services/viewTeacherDayWise",
-                    {param1: day, param2:tid, param3:dt.value},
+                $.post("http://localhost:8080/attendance_war_exploded/global/timetable_services/viewClassDayWise",
+                    {param1: day, param2: clid.value, param3: dt.value},
                     function (data) {
-                        // alert(data);
-                        // sessionStorage.setItem("temp1",data);
-                        data1=data;
+                        data1 = data;
                     });
+                setTimeout(function () {
+                    ctable();
+                }, 2000);
             }
-            setTimeout(function () {
-                ctable();
-            },2000);
+            else if(dt.value=="" || clid.value=="-1" || clid.value=="")
+            {
+                var tbl = document.getElementById("tbl");
+                tbl.innerText = "";
+            }
         }
         function ctable() {
-
+            sessionStorage.setItem("tempdata",JSON.stringify(data1));
             if(data1=="")
             {
                 var tbl = document.getElementById("tbl");
@@ -91,7 +174,10 @@
                         q1 = row1.insertCell(3);
                         q1.innerText = data1[i]["slotno"];
                         q1 = row1.insertCell(4);
-                        q1.innerText = data1[i]["sname"];
+                        if(data1[i]["subtname"]!="")
+                            q1.innerText = data1[i]["subtname"];
+                        else
+                            q1.innerText = data1[i]["extname"];
                         q1 = row1.insertCell(5);
                         q1.innerText = data1[i]["clname"];
                         q1 = row1.insertCell(6);
@@ -130,7 +216,10 @@
                         q1 = row1.insertCell(3);
                         q1.innerText = "-";
                         q1 = row1.insertCell(4);
-                        q1.innerText = data1[i]["lname"];
+                        if(data1[i]["labtname"]!="")
+                            q1.innerText = data1[i]["labtname"];
+                        else
+                            q1.innerText = data1[i]["extname"];
                         q1 = row1.insertCell(5);
                         q1.innerText = data1[i]["clname"];
                         q1 = row1.insertCell(6);
@@ -154,6 +243,7 @@
                         checkbox.setAttribute("clname",data1[i]["clname"]);
                         checkbox.setAttribute("stime",data1[i]["stime"]);
                         checkbox.setAttribute("etime",data1[i]["etime"]);
+                        checkbox.setAttribute("tid1",data1[i]["labtname1"])
                         checkbox.className="form-control";
                         checkbox.onchange=next;
                         // checkbox.addEventListener("change", next);
@@ -163,36 +253,96 @@
             }
         }
         function next() {
-            var q = document.querySelectorAll("input[type=checkbox][name=chk]"), l = q.length, i;
-            for (i = 0; i < l; i++) {
-                if (q[i].checked == true) {
-                    var dt=document.getElementById("date");
-                    sessionStorage.setItem("date",dt.value);
-                    if(q[i].getAttribute("flag")=="1")
-                    {
-                        //subject
-                        sessionStorage.setItem("slotno",q[i].getAttribute("slotno"));
-                        sessionStorage.setItem("clid",q[i].getAttribute("clid"));
-                        sessionStorage.setItem("day",q[i].getAttribute("day"));
-                        sessionStorage.setItem("subjid",q[i].getAttribute("subjid"));
-                        sessionStorage.setItem("sname",q[i].getAttribute("sname"));
-                        sessionStorage.setItem("dname",q[i].getAttribute("dname"));
-                        sessionStorage.setItem("clname",q[i].getAttribute("clname"));
-                        sessionStorage.setItem("stime",q[i].getAttribute("stime"));
-                        sessionStorage.setItem("etime",q[i].getAttribute("etime"));
-                        window.location = "http://localhost:8080/attendance_war_exploded/tadd_attendance1.html";
+                var q = document.querySelectorAll("input[type=checkbox][name=chk]"), l = q.length, i;
+                for (i = 0; i < l; i++) {
+                    if (q[i].checked == true) {
+                        var dt = document.getElementById("date");
+                        sessionStorage.setItem("date", dt.value);
+                        if (q[i].getAttribute("flag") == "1") {
+                            //subject
+                            sessionStorage.setItem("slotno", q[i].getAttribute("slotno"));
+                            sessionStorage.setItem("clid", q[i].getAttribute("clid"));
+                            sessionStorage.setItem("day", q[i].getAttribute("day"));
+                            sessionStorage.setItem("subjid", q[i].getAttribute("subjid"));
+                            sessionStorage.setItem("sname", q[i].getAttribute("sname"));
+                            sessionStorage.setItem("dname", q[i].getAttribute("dname"));
+                            sessionStorage.setItem("clname", q[i].getAttribute("clname"));
+                            sessionStorage.setItem("stime", q[i].getAttribute("stime"));
+                            sessionStorage.setItem("etime", q[i].getAttribute("etime"));
+                            var y=document.getElementById("yes");
+                            if(y.checked==true)
+                                sessionStorage.setItem("extrasub","1");
+                            else
+                                sessionStorage.setItem("extrasub","0");
+                            window.location = "http://localhost:8080/attendance_war_exploded/tadd_attendance1.html";
+                        }
+                        else if (q[i].getAttribute("flag") == "0") {
+                            //lab batch
+                            sessionStorage.setItem("clid", q[i].getAttribute("clid"));
+                            sessionStorage.setItem("day", q[i].getAttribute("day"));
+                            sessionStorage.setItem("lname", q[i].getAttribute("lname"));
+                            sessionStorage.setItem("clname", q[i].getAttribute("clname"));
+                            sessionStorage.setItem("stime", q[i].getAttribute("stime"));
+                            sessionStorage.setItem("etime", q[i].getAttribute("etime"));
+                            sessionStorage.setItem("tid1", q[i].getAttribute("tid1"));
+                            window.location = "http://localhost:8080/attendance_war_exploded/tadd_attendance2.html";
+                        }
                     }
-                    else if(q[i].getAttribute("flag")=="0")
-                    {
-                        //lab batch
-                        sessionStorage.setItem("clid",q[i].getAttribute("clid"));
-                        sessionStorage.setItem("day",q[i].getAttribute("day"));
-                        sessionStorage.setItem("lname",q[i].getAttribute("lname"));
-                        sessionStorage.setItem("clname",q[i].getAttribute("clname"));
-                        sessionStorage.setItem("stime",q[i].getAttribute("stime"));
-                        sessionStorage.setItem("etime",q[i].getAttribute("etime"));
-                        window.location = "http://localhost:8080/attendance_war_exploded/tadd_attendance2.html";
-                    }
+                }
+        }
+        function extrachange() {
+            var y=document.getElementById("yes");
+            var n=document.getElementById("no");
+            if(n.checked==true)
+            {
+                var cid = document.getElementById("cid");
+                var clid = document.getElementById("clid");
+                cid.hidden=true;
+                clid.hidden=true;
+                var dt = document.getElementById("date");
+                if (dt.value != "") {
+                    var d = new Date(dt.value);
+                    var day = d.getDay();
+                    var tid = sessionStorage.getItem("id");
+                    // alert(day);
+                    // alert(tid);
+                    var tbl = document.getElementById("tbl");
+                    tbl.innerText = "";
+                    $.post("http://localhost:8080/attendance_war_exploded/global/timetable_services/viewTeacherDayWise",
+                        {param1: day, param2: tid, param3: dt.value},
+                        function (data) {
+                            // alert(data);
+                            // sessionStorage.setItem("temp1",data);
+                            data1 = data;
+                        });
+                    setTimeout(function () {
+                        ctable();
+                    }, 2000);
+                }
+            }
+            else if(y.checked==true)
+            {
+                var cid = document.getElementById("cid");
+                var clid = document.getElementById("clid");
+                cid.hidden=false;
+                clid.hidden=false;
+                var tbl = document.getElementById("tbl");
+                tbl.innerText = "";
+                var dt = document.getElementById("date");
+                var clid = document.getElementById("clid");
+                if (dt.value != "" && clid.value!="-1" && clid.value!="") {
+                    var d = new Date(dt.value);
+                    var day = d.getDay();
+                    var tbl = document.getElementById("tbl");
+                    tbl.innerText = "";
+                    $.post("http://localhost:8080/attendance_war_exploded/global/timetable_services/viewClassDayWise",
+                        {param1: day, param2: clid.value, param3: dt.value},
+                        function (data) {
+                            data1 = data;
+                        });
+                    setTimeout(function () {
+                        ctable();
+                    }, 2000);
                 }
             }
         }
@@ -200,7 +350,7 @@
     </script>
 </head>
 <title>Attendance Portal</title>
-<body onload="validate_teacher()">
+<body onload="fetch()">
 <div class="container">
     <div id='header'></div>
     <div id='amenu'></div>
@@ -215,10 +365,29 @@
                     <h4><label>Add Attendance</label></h4>
                     <form class="form-text text-left">
                         <div class="pad">
-                        <div class="form-group text-left" >
-                            <label>Select Date : </label>
-                            <input type="date" name="date" id="date" class="form-control" onchange="datechange()"/>
+                            <div class="form-group text-left" >
+                                <label>Select Date : </label>
+                                <input type="date" name="date" id="date" class="form-control" onchange="datechange()"/>
+                            </div>
+                            <div class="form-group text-left" >
+                                <label>Is Extra : </label>&nbsp&nbsp&nbsp
+                                <input type="radio" name="extra" value="Yes" id="yes" onchange="extrachange()"/>&nbspYes&nbsp&nbsp&nbsp&nbsp
+                                <input type="radio" name="extra" value="No" id="no" checked onchange="extrachange()"/>&nbspNo
+                            </div>
+
                         </div>
+                        <div class="pad1">
+                            <div class="form-group text-left" >
+
+                                <select name="cid" id="cid" class="form-control" onchange="cidchange()" hidden>
+                                </select>
+                            </div>
+                            <div class="form-group text-left" >
+
+                                <select name="clid" id="clid" class="form-control" onchange="clidchange()" hidden>
+
+                                </select>
+                            </div>
                         </div>
                         <div id="tbl">
                         </div>

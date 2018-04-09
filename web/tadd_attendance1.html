@@ -27,6 +27,7 @@
     </style>
     <script>
         var data1="";
+        var totalslot=0;
         function fetch() {
             validate_teacher();
             var l=document.getElementById("lbl");
@@ -58,6 +59,29 @@
                 alert("No Student found in select Division...!!!")
             }
             else {
+                var s=sessionStorage.getItem("extrasub");
+                if(s=="1")
+                {
+                    var sid=document.getElementById("sid");
+                    sid.hidden=false;
+                    document.getElementById("sid").length = 0;
+                    $.post("http://localhost:8080/attendance_war_exploded/global/subject_services/getClassTeachWise",
+                        {param1: sessionStorage.getItem("id"),param2:sessionStorage.getItem("clid")},
+                        function (data) {
+                            document.getElementById("sid").options[0]=new Option("Select Subject","-1");
+                            for(var i=0;i<(data.length);i++)
+                            {
+                                document.getElementById("sid").options[i+1]=new Option(data[i]["1"],data[i]["0"]);
+                            }
+                        });
+                }
+                else
+                {
+                    // var sid=document.getElementById("sid");
+                    document.getElementById("sid").length = 0;
+                    document.getElementById("sid").options[0]=new Option(sessionStorage.getItem("sname"),sessionStorage.getItem("subjid"));
+                }
+
                 var tbl = document.getElementById('tbl');
                 for(var i=1;i<(data1.length+1);i++)
                 {
@@ -100,37 +124,112 @@
             // $('#tbl input:checkbox').attr('checked',false);
         }
         function add() {
-            var jsonArr=[];
-            var q = document.querySelectorAll("input[type=checkbox][name=chk]"),
-                l = q.length, i;
-            for( i=0; i<l; i++)
+            var y=document.getElementById("yes");
+            var n=document.getElementById("no");
+            var ttl=0
+            if(n.checked==true)
             {
-                if(q[i].checked==true)
+                ttl=0;
+            }
+            else if(y.checked==true)
+            {
+                var extra=document.getElementById("extra");
+                if(extra.value>=1)
                 {
-                    jsonArr.push({roll:q[i].value,flag:1});
+                    ttl=extra.value;
                 }
-                else
-                {
-                    jsonArr.push({roll:q[i].value,flag:0});
+                else {
+                    ttl=0;
                 }
             }
-            var j=JSON.stringify(jsonArr);
-            $.post("http://localhost:8080/attendance_war_exploded/global/subject_att_services/add",
-                {param1: j, param2: sessionStorage.getItem("slotno"), param3:sessionStorage.getItem("day"),param4:sessionStorage.getItem("subjid"),param5:sessionStorage.getItem("dname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
-                function (data) {
-                    if (data == '1') {
-                        var uname=sessionStorage.getItem("id");
-                        $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/teacher_notification",
-                            {param1: "Attendance added. Class: "+ sessionStorage.getItem("clname")+", Division: "+sessionStorage.getItem("dname")+", Slot No.:"+sessionStorage.getItem("slotno")+", Subject :"+sessionStorage.getItem("sname")+" Date: "+sessionStorage.getItem("date")+"", param2: uname},
-                            function (data) {
-                            });
-                        alert("Attendance Added Successfully...!!!");
-                        window.location = "http://localhost:8080/attendance_war_exploded/tadd_attendance.html";
+            var sid=document.getElementById("sid");
+            if(sid.value!="-1") {
+                var jsonArr = [];
+                var q = document.querySelectorAll("input[type=checkbox][name=chk]"),
+                    l = q.length, i;
+                for (i = 0; i < l; i++) {
+                    if (q[i].checked == true) {
+                        jsonArr.push({roll: q[i].value, flag: 1});
                     }
                     else {
-                        alert("Something went wrong...!!!");
+                        jsonArr.push({roll: q[i].value, flag: 0});
                     }
-                });
+                }
+                var j = JSON.stringify(jsonArr);
+                $.post("http://localhost:8080/attendance_war_exploded/global/subject_att_services/add",
+                    {
+                        param1: j,
+                        param2: sessionStorage.getItem("slotno"),
+                        param3: sessionStorage.getItem("day"),
+                        param4: sessionStorage.getItem("subjid"),
+                        param5: sessionStorage.getItem("dname"),
+                        param6: sessionStorage.getItem("clid"),
+                        param7: sessionStorage.getItem("id"),
+                        param8: sessionStorage.getItem("date"),
+                        param9: sid.value,
+                        param10:ttl
+                    },
+                    function (data) {
+                        if (data == '1') {
+
+                            var uname = sessionStorage.getItem("id");
+                            $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/teacher_notification",
+                                {
+                                    param1: "Attendance added. Class: " + sessionStorage.getItem("clname") + ", Division: " + sessionStorage.getItem("dname") + ", Slot No.:" + sessionStorage.getItem("slotno") + ", Subject :" + sid.options[sid.selectedIndex].text + " Date: " + sessionStorage.getItem("date") + "",
+                                    param2: uname
+                                },
+                                function (data) {
+                                });
+                            alert("Attendance Added Successfully...!!!");
+                            window.location = "http://localhost:8080/attendance_war_exploded/tadd_attendance.html";
+                        }
+                        else {
+                            alert("Something went wrong...!!!");
+                        }
+                    });
+            }
+            else {
+                alert("Please select your subject...!!!");
+            }
+
+        }
+        function extrachange() {
+            var y=document.getElementById("yes");
+            var n=document.getElementById("no");
+            if(n.checked==true)
+            {
+                var extra = document.getElementById("extra");
+                extra.hidden=true;
+            }
+            else if(y.checked==true)
+            {
+                $.post("http://localhost:8080/attendance_war_exploded/global/timetable_services/check_slots",
+                    {
+                        param1: sessionStorage.getItem("slotno"),
+                        param2: sessionStorage.getItem("day"),
+                        param3: sessionStorage.getItem("dname"),
+                        param4: sessionStorage.getItem("clid"),
+                        param5: sessionStorage.getItem("date")
+                    },
+                    function (data) {
+                        totalslot=data;
+                        // alert(data);
+                    });
+                setTimeout(function () {
+                    if(totalslot=="1"||totalslot=="0")
+                    {
+                        alert("Continue lecture not available...!!!")
+                        var extra = document.getElementById("extra");
+                        extra.hidden=true;
+                        n.checked=true;
+                    }
+                    else {
+                        var extra = document.getElementById("extra");
+                        extra.setAttribute("max", totalslot-1);
+                        extra.hidden = false;
+                    }
+                },2000);
+            }
         }
     </script>
 </head>
@@ -159,11 +258,21 @@
                     <br>
                     <br>
                     <br>
+                    <label>Continue Lecture? </label>&nbsp&nbsp&nbsp
+                    <br>
+                    <input type="radio" name="extra" value="Yes" id="yes" onchange="extrachange()"/>&nbspYes&nbsp&nbsp&nbsp&nbsp
+                    <input type="radio" name="extra" value="No" id="no" checked onchange="extrachange()"/>&nbspNo
+                    <br>
+                    <input type="number" min="1" max="10" class="form-control" id="extra" hidden>
+                    <br>
                     <input type=Button name="all" id='check_all' class="btn btn-block btn-danger" value="Select All"  onclick="CheckAll()" />
                     <br>
                     <input type=Button name="invert" id="invert" value="Invert Selection" class="btn btn-block btn-danger" onclick="invertAll()"/>
                     <br>
                     <input type=Button name="disseleect" id="opposite" value="Deselect All" class="btn btn-block btn-danger" onclick="UnCheckAll()"/>
+                    <br>
+                    <select name="sid" id="sid" class="form-control" hidden>
+                    </select>
                     <br>
                     <br>
                     <input type="submit" id="submit" value="Submit" class="btn btn-block btn-danger" name="submit" onclick="add()" />

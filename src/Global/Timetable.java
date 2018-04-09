@@ -11,8 +11,8 @@ import java.util.Date;
  * Created by Anil on 04/04/2018
  */
 public class Timetable {
-    private int slotno, day,clid,flag,flag1;
-    private String sname,lname,dname,clname, subjid;
+    private int slotno, day, clid, flag, flag1, subtname1, labtname1;
+    private String sname, lname, dname, clname, subjid, subtname, labtname, extname;
     private LocalTime stime, etime;
 
     public int getSlotno() {
@@ -109,6 +109,46 @@ public class Timetable {
 
     public void setFlag1(int flag1) {
         this.flag1 = flag1;
+    }
+
+    public String getSubtname() {
+        return subtname;
+    }
+
+    public void setSubtname(String subtname) {
+        this.subtname = subtname;
+    }
+
+    public String getLabtname() {
+        return labtname;
+    }
+
+    public void setLabtname(String labtname) {
+        this.labtname = labtname;
+    }
+
+    public int getSubtname1() {
+        return subtname1;
+    }
+
+    public void setSubtname1(int subtname1) {
+        this.subtname1 = subtname1;
+    }
+
+    public int getLabtname1() {
+        return labtname1;
+    }
+
+    public void setLabtname1(int labtname1) {
+        this.labtname1 = labtname1;
+    }
+
+    public String getExtname() {
+        return extname;
+    }
+
+    public void setExtname(String extname) {
+        this.extname = extname;
     }
 }
 class Sortbytime implements Comparator<Timetable>
