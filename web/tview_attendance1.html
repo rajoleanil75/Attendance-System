@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "tmenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .col-sm-3{
+            padding-left: 30px;
+            padding-right: 60px;
+        }
+        .col-sm-9{
+            padding-left: 90px;
+            padding-right: 70px;
+        }
+    </style>
+    <script>
+        var data1="";
+        function fetch() {
+            validate_teacher();
+            var l=document.getElementById("lbl");
+            l.innerHTML="View Attendance<br>Class: "+sessionStorage.getItem("clname")+", Division: "+sessionStorage.getItem("dname")+"<br>Subject: "+sessionStorage.getItem("sname")+"" +
+                "<br>Start Time: "+tConvert(sessionStorage.getItem("stime"))+", End Time: "+tConvert(sessionStorage.getItem("etime"))+"<br>Date: "+sessionStorage.getItem("date")+"";
+
+            $.post("http://localhost:8080/attendance_war_exploded/global/subject_att_services/viewDateWise",
+                { param2: sessionStorage.getItem("slotno"), param3:sessionStorage.getItem("day"),param4:sessionStorage.getItem("subjid"),param5:sessionStorage.getItem("dname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
+                function (data) {
+                    data1=data;
+                });
+
+            setTimeout(function () {
+                ctable();
+            },2000);
+        }
+        function ctable() {
+            if(data1=="")
+            {
+                $.post("http://localhost:8080/attendance_war_exploded/global/subject_att_services/findteacher",
+                    { param2: sessionStorage.getItem("slotno"), param3:sessionStorage.getItem("day"),param4:sessionStorage.getItem("subjid"),param5:sessionStorage.getItem("dname"),param6:sessionStorage.getItem("clid"),param7:sessionStorage.getItem("id"),param8:sessionStorage.getItem("date")},
+                    function (data) {
+                        if(data!=""&&data!=null) {
+                            alert("Attendance added by another teacher, Name :" + data);
+                            window.location = "http://localhost:8080/attendance_war_exploded/tview_attendance.html";
+                        }
+                        else
+                            alert("No Student found in select Division...!!!");
+                    });
+                var tbl = document.getElementById("tbl");
+                tbl.innerText = "";
+
+            }
+            else {
+                var tbl = document.getElementById('tbl');
+                for(var i=1;i<(data1.length+1);i++)
+                {
+                    var x=tbl.insertRow(i);
+                    x.insertCell(0);
+                    x.insertCell(1);
+                    var y=x.insertCell(2);
+                    tbl.rows[i].cells[0].innerHTML=data1[i-1]["2"];
+                    tbl.rows[i].cells[1].innerHTML=data1[i-1]["1"];
+                    var checkbox = document.createElement('input');
+                    checkbox.type = "checkbox";
+                    checkbox.name = "chk";
+                    checkbox.value = data1[i-1]["0"];
+                    checkbox.id = "checkbox";
+                    // checkbox.disabled=true;
+                    if(data1[i-1]["3"]=="1")
+                        checkbox.checked=true;
+                    y.appendChild(checkbox);
+                }
+            }
+        }
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-2">
+                    <br>
+                </div>
+                <div class="col-sm-8 text-center">
+                    <h5><label id="lbl"></label></h5>
+                    <table class="table table-hover text-left" id="tbl">
+                        <tbody>
+                        <tr><td>Roll No</td><td>Name</td><td>Select</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-2">
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>

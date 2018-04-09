@@ -187,6 +187,7 @@ public class Subject_Attendance {
                     SubjectAttendance s= (SubjectAttendance) session.createQuery("from SubjectAttendance s where s.subjectTimetable.slotno=:id and s.subjectTimetable.day=:id1 and s.subjectTimetable.subject.id=:id2 and s.subjectTimetable.division.name=:id3 and s.subjectTimetable.division.csClass.id=:id4 and s.teacher.id=:id5 and s.date=:id6 and s.student.roll=:id7 and s.student.division.name=:id8 and s.student.division.csClass.id=:id9").setParameter("id9",clid).setParameter("id8",dname).setParameter("id7",roll).setParameter("id6",date).setParameter("id5",tid).setParameter("id4",clid).setParameter("id3",dname).setParameter("id2",subjid).setParameter("id1",day).setParameter("id",slotno).uniqueResult();
                     rptflag=s.getRptflag();
 //                    session.persist(s);
+
                 }
             }
             transaction.commit();
