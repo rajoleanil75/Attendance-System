@@ -361,4 +361,520 @@ public class Timetable_service {
             return "0";
         }
     }
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("viewTeacherWeekWise")
+    public List viewTeacherWeekWise(@FormParam("param1") int tid)
+    {
+        Session session = DB.Global.getSession();
+        Transaction transaction=session.beginTransaction();
+        try {
+
+            java.util.List<DB.SubjectTimetable> sday1=session.createQuery("from SubjectTimetable s where s.day=:id and s.subject.teacher.id=:id1 order by s.stime asc ").setParameter("id",1).setParameter("id1",tid).list();
+            List<LabTimetable> lday1=session.createQuery("from LabTimetable s where s.day=:id and s.labInstructor.teacher.id=:id1 order by s.stime asc ").setParameter("id",1).setParameter("id1",tid).list();
+            java.util.List<DB.SubjectTimetable> sday2=session.createQuery("from SubjectTimetable s where s.day=:id and s.subject.teacher.id=:id1 order by s.stime asc ").setParameter("id",2).setParameter("id1",tid).list();
+            List<LabTimetable> lday2=session.createQuery("from LabTimetable s where s.day=:id and s.labInstructor.teacher.id=:id1 order by s.stime asc ").setParameter("id",2).setParameter("id1",tid).list();
+            java.util.List<DB.SubjectTimetable> sday3=session.createQuery("from SubjectTimetable s where s.day=:id and s.subject.teacher.id=:id1 order by s.stime asc ").setParameter("id",3).setParameter("id1",tid).list();
+            List<LabTimetable> lday3=session.createQuery("from LabTimetable s where s.day=:id and s.labInstructor.teacher.id=:id1 order by s.stime asc ").setParameter("id",3).setParameter("id1",tid).list();
+            java.util.List<DB.SubjectTimetable> sday4=session.createQuery("from SubjectTimetable s where s.day=:id and s.subject.teacher.id=:id1 order by s.stime asc ").setParameter("id",4).setParameter("id1",tid).list();
+            List<LabTimetable> lday4=session.createQuery("from LabTimetable s where s.day=:id and s.labInstructor.teacher.id=:id1 order by s.stime asc ").setParameter("id",4).setParameter("id1",tid).list();
+            java.util.List<DB.SubjectTimetable> sday5=session.createQuery("from SubjectTimetable s where s.day=:id and s.subject.teacher.id=:id1 order by s.stime asc ").setParameter("id",5).setParameter("id1",tid).list();
+            List<LabTimetable> lday5=session.createQuery("from LabTimetable s where s.day=:id and s.labInstructor.teacher.id=:id1 order by s.stime asc ").setParameter("id",5).setParameter("id1",tid).list();
+            java.util.List<DB.SubjectTimetable> sday6=session.createQuery("from SubjectTimetable s where s.day=:id and s.subject.teacher.id=:id1 order by s.stime asc ").setParameter("id",6).setParameter("id1",tid).list();
+            List<LabTimetable> lday6=session.createQuery("from LabTimetable s where s.day=:id and s.labInstructor.teacher.id=:id1 order by s.stime asc ").setParameter("id",6).setParameter("id1",tid).list();
+/////////////////////////////Day 1////////////////////////////
+            ArrayList<Timetable> day1=new ArrayList<Timetable>();
+            for( Iterator iterator = sday1.iterator(); iterator.hasNext();)
+            {
+                DB.SubjectTimetable st= (SubjectTimetable) iterator.next();
+                Timetable t = new Timetable();
+                t.setSlotno(st.getSlotno());
+                t.setDay(st.getDay());
+                t.setSubjid(st.getSubject().getId());
+                t.setClid(st.getDivision().getCsClass().getId());
+                t.setFlag(1);
+                t.setSname(st.getSubject().getName());
+                t.setLname("-");
+                t.setDname(st.getDivision().getName());
+                t.setClname(st.getDivision().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(st.getSubject().getTeacher().getId());
+                t.setLabtname1(-1);
+                t.setExtname("");
+                t.setFlag1(0);
+                day1.add(t);
+            }
+            for( Iterator iterator = lday1.iterator(); iterator.hasNext();)
+            {
+                DB.LabTimetable st= (LabTimetable) iterator.next();
+                Timetable t=new Timetable();
+                t.setSlotno(0);
+                t.setDay(st.getDay());
+                t.setSubjid("-");
+                t.setClid(st.getLabInstructor().getLabBatch().getCsClass().getId());
+                t.setFlag(0);
+                t.setSname("-");
+                t.setLname(st.getLabInstructor().getLabBatch().getName());
+                t.setDname("-");
+                t.setClname(st.getLabInstructor().getLabBatch().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(-1);
+                t.setLabtname1(st.getLabInstructor().getTeacher().getId());
+                t.setExtname("");
+                t.setFlag1(0);
+                day1.add(t);
+            }
+            Collections.sort(day1,new Sortbytime());
+/////////////////////////////Day 2////////////////////////////
+            ArrayList<Timetable> day2=new ArrayList<Timetable>();
+            for( Iterator iterator = sday2.iterator(); iterator.hasNext();)
+            {
+                DB.SubjectTimetable st= (SubjectTimetable) iterator.next();
+                Timetable t = new Timetable();
+                t.setSlotno(st.getSlotno());
+                t.setDay(st.getDay());
+                t.setSubjid(st.getSubject().getId());
+                t.setClid(st.getDivision().getCsClass().getId());
+                t.setFlag(1);
+                t.setSname(st.getSubject().getName());
+                t.setLname("-");
+                t.setDname(st.getDivision().getName());
+                t.setClname(st.getDivision().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(st.getSubject().getTeacher().getId());
+                t.setLabtname1(-1);
+                t.setExtname("");
+                t.setFlag1(0);
+                day2.add(t);
+            }
+            for( Iterator iterator = lday2.iterator(); iterator.hasNext();)
+            {
+                DB.LabTimetable st= (LabTimetable) iterator.next();
+                Timetable t=new Timetable();
+                t.setSlotno(0);
+                t.setDay(st.getDay());
+                t.setSubjid("-");
+                t.setClid(st.getLabInstructor().getLabBatch().getCsClass().getId());
+                t.setFlag(0);
+                t.setSname("-");
+                t.setLname(st.getLabInstructor().getLabBatch().getName());
+                t.setDname("-");
+                t.setClname(st.getLabInstructor().getLabBatch().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(-1);
+                t.setLabtname1(st.getLabInstructor().getTeacher().getId());
+                t.setExtname("");
+                t.setFlag1(0);
+                day2.add(t);
+            }
+            Collections.sort(day2,new Sortbytime());
+/////////////////////////////Day 3////////////////////////////
+            ArrayList<Timetable> day3=new ArrayList<Timetable>();
+            for( Iterator iterator = sday3.iterator(); iterator.hasNext();)
+            {
+                DB.SubjectTimetable st= (SubjectTimetable) iterator.next();
+                Timetable t = new Timetable();
+                t.setSlotno(st.getSlotno());
+                t.setDay(st.getDay());
+                t.setSubjid(st.getSubject().getId());
+                t.setClid(st.getDivision().getCsClass().getId());
+                t.setFlag(1);
+                t.setSname(st.getSubject().getName());
+                t.setLname("-");
+                t.setDname(st.getDivision().getName());
+                t.setClname(st.getDivision().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(st.getSubject().getTeacher().getId());
+                t.setLabtname1(-1);
+                t.setExtname("");
+                t.setFlag1(0);
+                day3.add(t);
+            }
+            for( Iterator iterator = lday3.iterator(); iterator.hasNext();)
+            {
+                DB.LabTimetable st= (LabTimetable) iterator.next();
+                Timetable t=new Timetable();
+                t.setSlotno(0);
+                t.setDay(st.getDay());
+                t.setSubjid("-");
+                t.setClid(st.getLabInstructor().getLabBatch().getCsClass().getId());
+                t.setFlag(0);
+                t.setSname("-");
+                t.setLname(st.getLabInstructor().getLabBatch().getName());
+                t.setDname("-");
+                t.setClname(st.getLabInstructor().getLabBatch().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(-1);
+                t.setLabtname1(st.getLabInstructor().getTeacher().getId());
+                t.setExtname("");
+                t.setFlag1(0);
+                day3.add(t);
+            }
+            Collections.sort(day3,new Sortbytime());
+/////////////////////////////Day 4////////////////////////////
+            ArrayList<Timetable> day4=new ArrayList<Timetable>();
+            for( Iterator iterator = sday4.iterator(); iterator.hasNext();)
+            {
+                DB.SubjectTimetable st= (SubjectTimetable) iterator.next();
+                Timetable t = new Timetable();
+                t.setSlotno(st.getSlotno());
+                t.setDay(st.getDay());
+                t.setSubjid(st.getSubject().getId());
+                t.setClid(st.getDivision().getCsClass().getId());
+                t.setFlag(1);
+                t.setSname(st.getSubject().getName());
+                t.setLname("-");
+                t.setDname(st.getDivision().getName());
+                t.setClname(st.getDivision().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(st.getSubject().getTeacher().getId());
+                t.setLabtname1(-1);
+                t.setExtname("");
+                t.setFlag1(0);
+                day4.add(t);
+            }
+            for( Iterator iterator = lday4.iterator(); iterator.hasNext();)
+            {
+                DB.LabTimetable st= (LabTimetable) iterator.next();
+                Timetable t=new Timetable();
+                t.setSlotno(0);
+                t.setDay(st.getDay());
+                t.setSubjid("-");
+                t.setClid(st.getLabInstructor().getLabBatch().getCsClass().getId());
+                t.setFlag(0);
+                t.setSname("-");
+                t.setLname(st.getLabInstructor().getLabBatch().getName());
+                t.setDname("-");
+                t.setClname(st.getLabInstructor().getLabBatch().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(-1);
+                t.setLabtname1(st.getLabInstructor().getTeacher().getId());
+                t.setExtname("");
+                t.setFlag1(0);
+                day4.add(t);
+            }
+            Collections.sort(day4,new Sortbytime());
+/////////////////////////////Day 5////////////////////////////
+            ArrayList<Timetable> day5=new ArrayList<Timetable>();
+            for( Iterator iterator = sday5.iterator(); iterator.hasNext();)
+            {
+                DB.SubjectTimetable st= (SubjectTimetable) iterator.next();
+                Timetable t = new Timetable();
+                t.setSlotno(st.getSlotno());
+                t.setDay(st.getDay());
+                t.setSubjid(st.getSubject().getId());
+                t.setClid(st.getDivision().getCsClass().getId());
+                t.setFlag(1);
+                t.setSname(st.getSubject().getName());
+                t.setLname("-");
+                t.setDname(st.getDivision().getName());
+                t.setClname(st.getDivision().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(st.getSubject().getTeacher().getId());
+                t.setLabtname1(-1);
+                t.setExtname("");
+                t.setFlag1(0);
+                day5.add(t);
+            }
+            for( Iterator iterator = lday5.iterator(); iterator.hasNext();)
+            {
+                DB.LabTimetable st= (LabTimetable) iterator.next();
+                Timetable t=new Timetable();
+                t.setSlotno(0);
+                t.setDay(st.getDay());
+                t.setSubjid("-");
+                t.setClid(st.getLabInstructor().getLabBatch().getCsClass().getId());
+                t.setFlag(0);
+                t.setSname("-");
+                t.setLname(st.getLabInstructor().getLabBatch().getName());
+                t.setDname("-");
+                t.setClname(st.getLabInstructor().getLabBatch().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(-1);
+                t.setLabtname1(st.getLabInstructor().getTeacher().getId());
+                t.setExtname("");
+                t.setFlag1(0);
+                day5.add(t);
+            }
+            Collections.sort(day5,new Sortbytime());
+/////////////////////////////Day 6////////////////////////////
+            ArrayList<Timetable> day6=new ArrayList<Timetable>();
+            for( Iterator iterator = sday6.iterator(); iterator.hasNext();)
+            {
+                DB.SubjectTimetable st= (SubjectTimetable) iterator.next();
+                Timetable t = new Timetable();
+                t.setSlotno(st.getSlotno());
+                t.setDay(st.getDay());
+                t.setSubjid(st.getSubject().getId());
+                t.setClid(st.getDivision().getCsClass().getId());
+                t.setFlag(1);
+                t.setSname(st.getSubject().getName());
+                t.setLname("-");
+                t.setDname(st.getDivision().getName());
+                t.setClname(st.getDivision().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(st.getSubject().getTeacher().getId());
+                t.setLabtname1(-1);
+                t.setExtname("");
+                t.setFlag1(0);
+                day6.add(t);
+            }
+            for( Iterator iterator = lday6.iterator(); iterator.hasNext();)
+            {
+                DB.LabTimetable st= (LabTimetable) iterator.next();
+                Timetable t=new Timetable();
+                t.setSlotno(0);
+                t.setDay(st.getDay());
+                t.setSubjid("-");
+                t.setClid(st.getLabInstructor().getLabBatch().getCsClass().getId());
+                t.setFlag(0);
+                t.setSname("-");
+                t.setLname(st.getLabInstructor().getLabBatch().getName());
+                t.setDname("-");
+                t.setClname(st.getLabInstructor().getLabBatch().getCsClass().getName());
+                t.setStime(st.getStime());
+                t.setEtime(st.getEtime());
+                t.setSubtname("");
+                t.setLabtname("");
+                t.setSubtname1(-1);
+                t.setLabtname1(st.getLabInstructor().getTeacher().getId());
+                t.setExtname("");
+                t.setFlag1(0);
+                day6.add(t);
+            }
+            Collections.sort(day6,new Sortbytime());
+////////////////////////////////////////////////////////////////////////////
+            Iterator d1=day1.iterator();
+            Iterator d2=day2.iterator();
+            Iterator d3=day3.iterator();
+            Iterator d4=day4.iterator();
+            Iterator d5=day5.iterator();
+            Iterator d6=day6.iterator();
+            ArrayList<Timetable> total=new ArrayList<Timetable>();
+            while(d1.hasNext()||d2.hasNext()||d3.hasNext()||d4.hasNext()||d5.hasNext()||d6.hasNext())
+            {
+                ////////////////////// day 1 ///////////
+                if(d1.hasNext())
+                {
+                    Timetable t1= (Timetable) d1.next();
+                    Timetable t=new Timetable();
+                    if(t1.getFlag()==1)
+                    {
+                        t.setClname(t1.getClname()+" ("+t1.getDname()+")");
+                        t.setSname(t1.getSname());
+                        t.setLname("");
+                        t.setSlotno(t1.getSlotno());
+                    }
+                    else if(t1.getFlag()==0)
+                    {
+                        t.setClname(t1.getClname());
+                        t.setSname("");
+                        t.setLname(t1.getLname());
+                        t.setSlotno(0);
+                    }
+                    total.add(t);
+                }
+                else
+                {
+                    Timetable t=new Timetable();
+                    t.setClname("");
+                    t.setSname("-");
+                    t.setLname("-");
+                    t.setSlotno(-1);
+                    total.add(t);
+                }
+                ////////////////////// day 2 ///////////
+                if(d2.hasNext())
+                {
+                    Timetable t1= (Timetable) d2.next();
+                    Timetable t=new Timetable();
+                    if(t1.getFlag()==1)
+                    {
+                        t.setClname(t1.getClname()+" ("+t1.getDname()+")");
+                        t.setSname(t1.getSname());
+                        t.setLname("");
+                        t.setSlotno(t1.getSlotno());
+                    }
+                    else if(t1.getFlag()==0)
+                    {
+                        t.setClname(t1.getClname());
+                        t.setSname("");
+                        t.setLname(t1.getLname());
+                        t.setSlotno(0);
+                    }
+                    total.add(t);
+                }
+                else
+                {
+                    Timetable t=new Timetable();
+                    t.setClname("");
+                    t.setSname("-");
+                    t.setLname("-");
+                    t.setSlotno(-1);
+                    total.add(t);
+                }
+                ////////////////////// day 3 ///////////
+                if(d3.hasNext())
+                {
+                    Timetable t1= (Timetable) d3.next();
+                    Timetable t=new Timetable();
+                    if(t1.getFlag()==1)
+                    {
+                        t.setClname(t1.getClname()+" ("+t1.getDname()+")");
+                        t.setSname(t1.getSname());
+                        t.setLname("");
+                        t.setSlotno(t1.getSlotno());
+                    }
+                    else if(t1.getFlag()==0)
+                    {
+                        t.setClname(t1.getClname());
+                        t.setSname("");
+                        t.setLname(t1.getLname());
+                        t.setSlotno(0);
+                    }
+                    total.add(t);
+                }
+                else
+                {
+                    Timetable t=new Timetable();
+                    t.setClname("");
+                    t.setSname("-");
+                    t.setLname("-");
+                    t.setSlotno(-1);
+                    total.add(t);
+                }
+                ////////////////////// day 4 ///////////
+                if(d4.hasNext())
+                {
+                    Timetable t1= (Timetable) d4.next();
+                    Timetable t=new Timetable();
+                    if(t1.getFlag()==1)
+                    {
+                        t.setClname(t1.getClname()+" ("+t1.getDname()+")");
+                        t.setSname(t1.getSname());
+                        t.setLname("");
+                        t.setSlotno(t1.getSlotno());
+                    }
+                    else if(t1.getFlag()==0)
+                    {
+                        t.setClname(t1.getClname());
+                        t.setSname("");
+                        t.setLname(t1.getLname());
+                        t.setSlotno(0);
+                    }
+                    total.add(t);
+                }
+                else
+                {
+                    Timetable t=new Timetable();
+                    t.setClname("");
+                    t.setSname("-");
+                    t.setLname("-");
+                    t.setSlotno(-1);
+                    total.add(t);
+                }
+                ////////////////////// day 5 ///////////
+                if(d5.hasNext())
+                {
+                    Timetable t1= (Timetable) d5.next();
+                    Timetable t=new Timetable();
+                    if(t1.getFlag()==1)
+                    {
+                        t.setClname(t1.getClname()+" ("+t1.getDname()+")");
+                        t.setSname(t1.getSname());
+                        t.setLname("");
+                        t.setSlotno(t1.getSlotno());
+                    }
+                    else if(t1.getFlag()==0)
+                    {
+                        t.setClname(t1.getClname());
+                        t.setSname("");
+                        t.setLname(t1.getLname());
+                        t.setSlotno(0);
+                    }
+                    total.add(t);
+                }
+                else
+                {
+                    Timetable t=new Timetable();
+                    t.setClname("");
+                    t.setSname("-");
+                    t.setLname("-");
+                    t.setSlotno(-1);
+                    total.add(t);
+                }
+                ////////////////////// day 6 ///////////
+                if(d6.hasNext())
+                {
+                    Timetable t1= (Timetable) d6.next();
+                    Timetable t=new Timetable();
+                    if(t1.getFlag()==1)
+                    {
+                        t.setClname(t1.getClname()+" ("+t1.getDname()+")");
+                        t.setSname(t1.getSname());
+                        t.setLname("");
+                        t.setSlotno(t1.getSlotno());
+                    }
+                    else if(t1.getFlag()==0)
+                    {
+                        t.setClname(t1.getClname());
+                        t.setSname("");
+                        t.setLname(t1.getLname());
+                        t.setSlotno(0);
+                    }
+                    total.add(t);
+                }
+                else
+                {
+                    Timetable t=new Timetable();
+                    t.setClname("");
+                    t.setSname("-");
+                    t.setLname("-");
+                    t.setSlotno(-1);
+                    total.add(t);
+                }
+            }
+            transaction.commit();
+            session.close();
+            return total;
+        }
+        catch (Exception e)
+        {
+            session.close();
+            return null;
+        }
+    }
 }
