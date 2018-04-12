@@ -3,8 +3,10 @@ package Global;
 import DB.CSClass;
 import DB.Division;
 import DB.Global;
+import DB.Subject;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.kohsuke.rngom.ast.builder.Div;
 
 import javax.jws.WebService;
 import javax.ws.rs.FormParam;
@@ -25,11 +27,33 @@ public class Division_Service {
     @POST
     @Path("getClassWise")
     @Produces(MediaType.APPLICATION_JSON)
-    public List viewAll(@FormParam("param1") int cid)
+    public List getClassWise(@FormParam("param1") int cid)
     {
         Session session= Global.getSession();
         Transaction t=session.beginTransaction();
         List<Division> tlist=session.createQuery("from Division s where s.csClass.id=:id").setParameter("id",cid).list();
+        List list=new ArrayList();
+        for(Iterator iterator = tlist.iterator(); iterator.hasNext();)
+        {
+            Division division= (Division) iterator.next();
+            List list1=new ArrayList();
+            list1.add(division.getName());
+            list.add(list1);
+        }
+        t.commit();
+        session.close();
+        return list;
+    }
+    @POST
+    @Path("getSubjectClassWise")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List getSubjectClassWise(@FormParam("param1") String cid)
+    {
+        Session session= Global.getSession();
+        Transaction t=session.beginTransaction();
+        Subject subject=session.load(Subject.class,cid);
+        int clid=subject.getCSClass().getId();
+        List<Division> tlist=session.createQuery("from Division s where s.csClass.id=:id").setParameter("id",clid).list();
         List list=new ArrayList();
         for(Iterator iterator = tlist.iterator(); iterator.hasNext();)
         {

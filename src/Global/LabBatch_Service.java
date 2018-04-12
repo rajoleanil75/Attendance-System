@@ -149,6 +149,28 @@ public class LabBatch_Service {
         return list;
     }
     @POST
+    @Path("getTeacherWise1")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List getTeacherWise1(@FormParam("param1") int tid)
+    {
+        Session session= Global.getSession();
+        Transaction t=session.beginTransaction();
+        List<LabInstructor> tlist=session.createQuery("from LabInstructor s where s.teacher.id=:id ").setParameter("id",tid).list();
+        List list=new ArrayList();
+        for(Iterator iterator=tlist.iterator();iterator.hasNext();)
+        {
+            LabInstructor teacher_labBatch= (LabInstructor) iterator.next();
+            List list1=new ArrayList();
+            list1.add(teacher_labBatch.getLabBatch().getName());
+            list1.add(teacher_labBatch.getLabBatch().getCsClass().getId());
+            list1.add(teacher_labBatch.getLabBatch().getName()+" ("+teacher_labBatch.getLabBatch().getCsClass().getName()+")");
+            list.add(list1);
+        }
+        t.commit();
+        session.close();
+        return list;
+    }
+    @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Path("delete")
     public String delete(@FormParam("param1")String lid,@FormParam("param3")int clid)

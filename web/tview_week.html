@@ -16,7 +16,10 @@
         });
     </script>
     <style>
-
+        .btnprt{
+            padding-left: 400px;
+            padding-right: 400px;
+        }
     </style>
     <script>
         var data1;
@@ -48,12 +51,12 @@
                 tbl.innerText = "";
                 var table = document.createElement('table');
                 table.setAttribute("id","tble");
-                table.className = "table table-bordered text-center";
+                table.className = "table table-bordered table-condensed text-center";
                 // table.style.border="border-color:green;";
                 tbl.appendChild(table);
 
                 var row1 = table.insertRow(0);
-                // row1.className="border-info";
+                row1.className="info";
                 var q = row1.insertCell(0);
                 q.innerHTML = "<b>Sr.No.</b>";
                 // q.className="border-right-0";
@@ -79,6 +82,8 @@
                 var j=0;
                 for(i=0;i<srlen;i++)
                 {
+                    var temp=document.createElement("tr");
+                    temp.className="table-warning";
                     var row1 = table.insertRow(rw++);
                     // row1.className="border-warning";
                     var row2 = table.insertRow(rw++);
@@ -90,9 +95,9 @@
                     // q1.className="border-warning";
                     q1.rowSpan=3;
                     var q1 = row2.insertCell(0);
-                    q1.innerText = "Subject/Lab Batch";
+                    q1.innerHTML = "<b>Subject/Lab Batch</b>";
                     var q1 = row3.insertCell(0);
-                    q1.innerText = "Slot No";
+                    q1.innerText = "Start-End Time";
 
                     var q1 = row1.insertCell(1);
                     q1.innerText = "Class/Div";
@@ -115,22 +120,31 @@
                             var q1 = row1.insertCell(k);
                             q1.innerText = data[j]["clname"];
                             var q1 = row2.insertCell(k-1);
-                            q1.innerText = data[j]["lname"];
+                            q1.innerHTML = "<b>"+data[j]["lname"]+"</b>";
                             var q1 = row3.insertCell(k-1);
-                            q1.innerText = "";
+                            // q1.innerText = "";
+                            q1.innerText = tConvert(data[j]["stime"])+"-"+tConvert(data[j]["etime"]);
                         }
                         else
                         {
                             var q1 = row1.insertCell(k);
                             q1.innerText = data[j]["clname"];
                             var q1 = row2.insertCell(k-1);
-                            q1.innerText = data[j]["sname"];
+                            q1.innerHTML = "<b>"+data[j]["sname"]+"</b>";
                             var q1 = row3.insertCell(k-1);
-                            q1.innerText =data[j]["slotno"];
+                            // q1.innerText =data[j]["slotno"];
+                            q1.innerText = tConvert(data[j]["stime"])+"-"+tConvert(data[j]["etime"]);
                         }
                     }
                 }
             }
+        }
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
         }
     </script>
 </head>
@@ -145,12 +159,15 @@
         <div class="container">
             <div class="row content1">
 
-                <div class="col-sm-12 text-center">
+                <div class="col-sm-12 text-center" id="prt">
                     <h4><label>Week Timetable</label></h4>
                     <form class="form-text text-left">
                         <div id="tbl">
                         </div>
                     </form>
+                </div>
+                <div class="btnprt">
+                    <button type="submit" id="save" class="btn btn-block btn-danger" onclick="printDiv('prt')">Print</button>
                 </div>
 
             </div>

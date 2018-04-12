@@ -696,13 +696,18 @@ public class Timetable_service {
                         t.setClname(t1.getClname()+" ("+t1.getDname()+")");
                         t.setSname(t1.getSname());
                         t.setLname("");
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setSlotno(t1.getSlotno());
                     }
                     else if(t1.getFlag()==0)
                     {
                         t.setClname(t1.getClname());
                         t.setSname("");
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setLname(t1.getLname());
+
                         t.setSlotno(0);
                     }
                     total.add(t);
@@ -726,6 +731,8 @@ public class Timetable_service {
                         t.setClname(t1.getClname()+" ("+t1.getDname()+")");
                         t.setSname(t1.getSname());
                         t.setLname("");
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setSlotno(t1.getSlotno());
                     }
                     else if(t1.getFlag()==0)
@@ -733,6 +740,8 @@ public class Timetable_service {
                         t.setClname(t1.getClname());
                         t.setSname("");
                         t.setLname(t1.getLname());
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setSlotno(0);
                     }
                     total.add(t);
@@ -756,12 +765,16 @@ public class Timetable_service {
                         t.setClname(t1.getClname()+" ("+t1.getDname()+")");
                         t.setSname(t1.getSname());
                         t.setLname("");
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setSlotno(t1.getSlotno());
                     }
                     else if(t1.getFlag()==0)
                     {
                         t.setClname(t1.getClname());
                         t.setSname("");
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setLname(t1.getLname());
                         t.setSlotno(0);
                     }
@@ -786,6 +799,8 @@ public class Timetable_service {
                         t.setClname(t1.getClname()+" ("+t1.getDname()+")");
                         t.setSname(t1.getSname());
                         t.setLname("");
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setSlotno(t1.getSlotno());
                     }
                     else if(t1.getFlag()==0)
@@ -793,6 +808,8 @@ public class Timetable_service {
                         t.setClname(t1.getClname());
                         t.setSname("");
                         t.setLname(t1.getLname());
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setSlotno(0);
                     }
                     total.add(t);
@@ -816,12 +833,16 @@ public class Timetable_service {
                         t.setClname(t1.getClname()+" ("+t1.getDname()+")");
                         t.setSname(t1.getSname());
                         t.setLname("");
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setSlotno(t1.getSlotno());
                     }
                     else if(t1.getFlag()==0)
                     {
                         t.setClname(t1.getClname());
                         t.setSname("");
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setLname(t1.getLname());
                         t.setSlotno(0);
                     }
@@ -846,12 +867,16 @@ public class Timetable_service {
                         t.setClname(t1.getClname()+" ("+t1.getDname()+")");
                         t.setSname(t1.getSname());
                         t.setLname("");
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setSlotno(t1.getSlotno());
                     }
                     else if(t1.getFlag()==0)
                     {
                         t.setClname(t1.getClname());
                         t.setSname("");
+                        t.setStime(t1.getStime());
+                        t.setEtime(t1.getEtime());
                         t.setLname(t1.getLname());
                         t.setSlotno(0);
                     }

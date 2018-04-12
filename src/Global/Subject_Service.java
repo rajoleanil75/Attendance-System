@@ -201,12 +201,36 @@ public class Subject_Service
             List list1=new ArrayList();
             list1.add(subject.getId());
             list1.add(subject.getName());
+            list1.add(subject.getName()+" ("+subject.getCSClass().getName()+")");
             list.add(list1);
         }
         t.commit();
         session.close();
         return list;
     }
+//    @POST
+//    @Path("getTeacherWise1")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public List getTeacherWise1(@FormParam("param1") int cid)
+//    {
+//        Session session= Global.getSession();
+//        Transaction t=session.beginTransaction();
+//        List<Subject> tlist=session.createQuery("from Subject s where s.teacher.id=:id").setParameter("id",cid).list();
+//        List list=new ArrayList();
+//        for(Iterator iterator=tlist.iterator();iterator.hasNext();)
+//        {
+//            Subject subject= (Subject) iterator.next();
+//            List list1=new ArrayList();
+//            list1.add(subject.getId());
+//            list1.add(subject.getName());
+////            list1.add(subject.getName()+" ("+subject.getCSClass().getName()+")");
+//            list.add(list1);
+//        }
+//        t.commit();
+//        session.close();
+//        return list;
+//    }
+
     @POST
     @Path("getsname")
     @Produces(MediaType.TEXT_PLAIN)
