@@ -74,7 +74,7 @@ public class Login {
                 BufferedWriter out = null;
                 try
                 {
-//                    FileWriter fstream = new FileWriter("/opt/Feedback_System_war_exploded/WEB-INF/classes/hibernate.cfg.xml", false); //true tells to append data.
+//                    FileWriter fstream = new FileWriter("/opt/attendance_war_exploded/WEB-INF/classes/hibernate.cfg.xml", false); //true tells to append data.
                     FileWriter fstream = new FileWriter("F:\\IdeaProjects\\REST\\attendance\\out\\artifacts\\attendance_war_exploded\\WEB-INF\\classes\\hibernate.cfg.xml", false);
                     out = new BufferedWriter(fstream);
                     out.write("<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -143,7 +143,7 @@ public class Login {
         BufferedWriter out = null;
         try
         {
-//            FileWriter fstream = new FileWriter("/opt/Feedback_System_war_exploded/WEB-INF/classes/hibernate.cfg.xml", false); //true tells to append data.
+//            FileWriter fstream = new FileWriter("/opt/attendance_war_exploded/WEB-INF/classes/hibernate.cfg.xml", false); //true tells to append data.
             FileWriter fstream = new FileWriter("F:\\IdeaProjects\\REST\\attendance\\out\\artifacts\\attendance_war_exploded\\WEB-INF\\classes\\hibernate.cfg.xml", false);
             out = new BufferedWriter(fstream);
 //                                String dbnme="temp1";
@@ -212,7 +212,7 @@ public class Login {
         BufferedWriter out = null;
         try
         {
-//            FileWriter fstream = new FileWriter("/opt/Feedback_System_war_exploded/WEB-INF/classes/hibernate.cfg.xml", false); //true tells to append data.
+//            FileWriter fstream = new FileWriter("/opt/attendance_war_exploded/WEB-INF/classes/hibernate.cfg.xml", false); //true tells to append data.
             FileWriter fstream = new FileWriter("F:\\IdeaProjects\\REST\\attendance\\out\\artifacts\\attendance_war_exploded\\WEB-INF\\classes\\hibernate.cfg.xml", false);
             out = new BufferedWriter(fstream);
 //                                String dbnme="temp1";
@@ -283,7 +283,7 @@ public class Login {
         BufferedWriter out = null;
         try
         {
-//                    FileWriter fstream = new FileWriter("/opt/Feedback_System_war_exploded/WEB-INF/classes/hibernate.cfg.xml", false); //true tells to append data.
+//                    FileWriter fstream = new FileWriter("/opt/attendance_war_exploded/WEB-INF/classes/hibernate.cfg.xml", false); //true tells to append data.
             FileWriter fstream = new FileWriter("F:\\IdeaProjects\\REST\\attendance\\out\\artifacts\\attendance_war_exploded\\WEB-INF\\classes\\hibernate.cfg.xml", false);
             out = new BufferedWriter(fstream);
             out.write("<?xml version='1.0' encoding='utf-8'?>\n" +

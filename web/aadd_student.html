@@ -72,11 +72,11 @@
             var clid=document.getElementById("clid");
             var did=document.getElementById("did");
             if(cid.value=="-1")
-                alert("Please selec Course...!!!");
+                alert("Please select Course...!!!");
             else if(clid.value=="-1")
-                alert("Please selec Class...!!!");
+                alert("Please select Class...!!!");
             else if(did.value=="-1")
-                alert("Please selec Division...!!!");
+                alert("Please select Division...!!!");
             else {
                 var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xlsx|.xls)$/;
                 if (regex.test($("#excelfile").val().toLowerCase())) {

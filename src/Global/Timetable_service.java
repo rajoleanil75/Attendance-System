@@ -684,6 +684,7 @@ public class Timetable_service {
             Iterator d5=day5.iterator();
             Iterator d6=day6.iterator();
             ArrayList<Timetable> total=new ArrayList<Timetable>();
+
             while(d1.hasNext()||d2.hasNext()||d3.hasNext()||d4.hasNext()||d5.hasNext()||d6.hasNext())
             {
                 ////////////////////// day 1 ///////////

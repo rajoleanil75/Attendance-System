@@ -150,10 +150,8 @@ public class Backup_Services {
             stmt.executeUpdate(sql);
         }catch(SQLException se){
             se.printStackTrace();
-            return String.valueOf(se);
         }catch(Exception e){
             e.printStackTrace();
-            return String.valueOf(e);
         }finally{
             try{
                 if(stmt!=null)
@@ -174,8 +172,8 @@ public class Backup_Services {
         try
         {
 
-//            FileWriter fstream = new FileWriter("/opt/Feedback_System_war_exploded/WEB-INF/classes/hibernate.cfg.xml", false); //true tells to append data.
-            FileWriter fstream = new FileWriter("F:\\IdeaProjects\\REST\\attendance\\out\\artifacts\\attendance_war_exploded\\WEB-INF\\classes\\hibernate.cfg.xml", false);
+            FileWriter fstream = new FileWriter("/opt/attendance_war_exploded/WEB-INF/classes/hibernate.cfg.xml", false); //true tells to append data.
+//            FileWriter fstream = new FileWriter("F:\\IdeaProjects\\REST\\attendance\\out\\artifacts\\attendance_war_exploded\\WEB-INF\\classes\\hibernate.cfg.xml", false);
             out = new BufferedWriter(fstream);
 //                                String dbnme="temp1";
             out.write("<?xml version='1.0' encoding='utf-8'?>\n" +
@@ -232,15 +230,11 @@ public class Backup_Services {
 
         try
         {
-//            final String cmd = "C:\\Program Files (x86)\\PostgreSQL\\9.3\\bin\\pg_dump.exe  -a -t course -t csclass -t division -t teacher -U feedback_2017_2018 > C:\\Program Files (x86)\\PostgreSQL\\9.3\\bin\\attendance.sql";
-//
-//            java.lang.Runtime rt = java.lang.Runtime.getRuntime();
-//            java.lang.Process p = rt.exec(cmd);
-
+            //////////////////for centos
             Process p;
             ProcessBuilder pb;
             pb = new ProcessBuilder(
-                    "C:\\Program Files (x86)\\PostgreSQL\\9.3\\bin\\pg_dump.exe",
+                    "pg_dump",
                     "-a",
                     "-t",
                     "course",
@@ -255,7 +249,7 @@ public class Backup_Services {
                     "-d",
                     ""+oldbackup+"",
                     "-f",
-                    "attendance.sql");
+                    "qz.sql");
             pb.redirectErrorStream(true);
             p = pb.start();
             InputStream is = p.getInputStream();
@@ -265,34 +259,31 @@ public class Backup_Services {
             while ((ll = br.readLine()) != null) {
                 System.out.println(ll);
             }
-        }
-        catch (IOException e)
-        {
-            System.out.print(e);
-            e.printStackTrace();
-        }
 
-        ///////////////////////////////////////////////////////////////////////////////
-////////////////pg_restore for ubuntu/////////////////
+            ////////////////////////////////// centos end
 
-//        try
-//        {
-////            Runtime r = Runtime.getRuntime();
+/// Note:- Remove -d option in centos
+
+            ///////////////////////////////////For win 10//////////////////////////
 //            Process p;
 //            ProcessBuilder pb;
-////            r = Runtime.getRuntime();
-//
-////            pb1 = new ProcessBuilder("C:\\Program Files (x86)\\PostgreSQL\\9.3\\bin\\psql.exe -U postgres -d "+dbname+" -l -f qz.sql");
-//
 //            pb = new ProcessBuilder(
-//                    "psql",
+//                    "C:\\Program Files (x86)\\PostgreSQL\\9.3\\bin\\pg_dump.exe",
+//                    "-a",
+//                    "-t",
+//                    "course",
+//                    "-t",
+//                    "csclass",
+//                    "-t",
+//                    "division",
+//                    "-t",
+//                    "teacher",
 //                    "-U",
 //                    "postgres",
 //                    "-d",
-//                    ""+dbname+"",
-//                    "-1",
+//                    ""+oldbackup+"",
 //                    "-f",
-//                    "/opt/qz.sql");
+//                    "attendance.sql");
 //            pb.redirectErrorStream(true);
 //            p = pb.start();
 //            InputStream is = p.getInputStream();
@@ -302,38 +293,30 @@ public class Backup_Services {
 //            while ((ll = br.readLine()) != null) {
 //                System.out.println(ll);
 //            }
-//
-//
-//        }
-//        catch (Exception e)
-//        {
-//            System.out.print(e);
-//        }
+        }
+        catch (IOException e)
+        {
+            System.out.print(e);
+            e.printStackTrace();
+        }
+        //////////////////////////////////end for win10////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////
+////////////////pg_restore for ubuntu/////////////////
 
-        //////////////////////////////////////////////////////
-
-
-
-
-//        ////////////////pg_restore for windows//////////////
         try
         {
-            Runtime r = Runtime.getRuntime();
+            ////////////for centos start
             Process p;
             ProcessBuilder pb;
-            r = Runtime.getRuntime();
-
-//            pb1 = new ProcessBuilder("C:\\Program Files (x86)\\PostgreSQL\\9.3\\bin\\psql.exe -U postgres -d "+dbname+" -l -f qz.sql");
-
             pb = new ProcessBuilder(
-                    "C:\\Program Files (x86)\\PostgreSQL\\9.3\\bin\\psql.exe",
+                    "psql",
                     "-U",
                     "postgres",
                     "-d",
                     ""+dbname+"",
-                    "-l",
+                    "-1",
                     "-f",
-                    "attendance.sql");
+                    "qz.sql");
             pb.redirectErrorStream(true);
             p = pb.start();
             InputStream is = p.getInputStream();
@@ -343,16 +326,38 @@ public class Backup_Services {
             while ((ll = br.readLine()) != null) {
                 System.out.println(ll);
             }
-
-//            String s="C:\\Program Files (x86)\\PostgreSQL\\9.3\\bin\\psql.exe  -U postgres -d "+dbname+" -l -f qz.sql";
-//            Runtime.getRuntime().exec("cmd /c start cmd.exe /K \""+s+"\"");
-        } catch (IOException e) {
-            System.out.print(e);
-            e.printStackTrace();
+        //////////////////for centos end
+//        ////////////////for win 10 start
+//            Runtime r = Runtime.getRuntime();
+//            Process p;
+//            ProcessBuilder pb;
+//            r = Runtime.getRuntime();
+//            pb = new ProcessBuilder(
+//                    "C:\\Program Files (x86)\\PostgreSQL\\9.3\\bin\\psql.exe",
+//                    "-U",
+//                    "postgres",
+//                    "-d",
+//                    ""+dbname+"",
+//                    "-l",
+//                    "-f",
+//                    "attendance.sql");
+//            pb.redirectErrorStream(true);
+//            p = pb.start();
+//            InputStream is = p.getInputStream();
+//            InputStreamReader isr = new InputStreamReader(is);
+//            BufferedReader br = new BufferedReader(isr);
+//            String ll;
+//            while ((ll = br.readLine()) != null) {
+//                System.out.println(ll);
+//            }
+//            ///////////////for win 10 end
         }
-        ///////////////////////////////////////
+        catch (Exception e)
+        {
+            System.out.print(e);
+        }
 
-
+        //////////////////////////////////////////////////////
         return "1";
     }
 }
