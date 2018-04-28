@@ -69,6 +69,18 @@ public class Teacher {
         return tlist;
     }
     @POST
+    @Path("viewAllEx")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List viewAllEx(@FormParam("param1")int tid)
+    {
+        Session session= DB.Global.getSession();
+        Transaction t=session.beginTransaction();
+        java.util.List<DB.Teacher> tlist=session.createQuery("from DB.Teacher s where s.id!=:id order by id asc ").setParameter("id",tid).list();
+        t.commit();
+        session.close();
+        return tlist;
+    }
+    @POST
     @Path("search")
     @Produces(MediaType.APPLICATION_JSON)
     public List  search(@FormParam("param1") String tname)

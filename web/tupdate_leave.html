@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "tmenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .col-sm-8{
+            /*padding-left: 50px;*/
+            /*padding-right: 50px;*/
+        }
+    </style>
+    <script>
+        function fetch() {
+            validate_teacher();
+            var ques1 = document.getElementById('ques1');
+            var uid=sessionStorage.getItem("id");
+
+            $.post("http://localhost:8080/attendance_war_exploded/global/leave_services/viewTeacherWise",
+                {param1: uid},
+                function (data) {
+                    // alert(data);
+                    j = 1;
+                    for (var i = 0; i < (data.length); i++) {
+                        var x = ques1.insertRow(++j);
+                        y0 = x.insertCell(0);
+                        y0.innerText = i + 1;
+                        y1 = x.insertCell(1);
+                        y1.innerText = data[i][0];
+                        y2 = x.insertCell(2);
+                        y2.innerText = data[i][1];
+                        y3 = x.insertCell(3);
+                        y3.innerText = data[i][2];
+                        y3 = x.insertCell(4);
+                        y3.innerText = data[i][3];
+                        y3 = x.insertCell(5);
+                        y3.innerText = data[i][4];
+                        y3 = x.insertCell(6);
+                        if(data[i][5]=="0")
+                            y3.innerText = "No";
+                        else if(data[i][5]=="1")
+                            y3.innerText = "Yes";
+                        else
+                            y3.innerText = "Declined";
+                        y3 = x.insertCell(7);
+                        var checkbox = document.createElement('input');
+                        checkbox.type = "checkbox";
+                        checkbox.name = "chk";
+                        checkbox.value = data[i][6];
+                        checkbox.id = "checkbox";
+
+                        checkbox.setAttribute("sdate",data[i][2]);
+                        checkbox.setAttribute("edate",data[i][3]);
+
+                        checkbox.className="form-control";
+                        if(data[i][5]=="0")
+                            checkbox.disabled=false;
+                        else if(data[i][5]=="1")
+                            checkbox.disabled=true;
+                        else
+                            checkbox.disabled=true;
+
+                        checkbox.onchange=next;
+                        y3.appendChild(checkbox);
+                    }
+                });
+        }
+
+        function next() {
+            var q = document.querySelectorAll("input[type=checkbox][name=chk]"), l = q.length, i;
+            for (i = 0; i < l; i++) {
+                if (q[i].checked == true) {
+                    sessionStorage.setItem("sdate", q[i].getAttribute("sdate"));
+                    sessionStorage.setItem("edate", q[i].getAttribute("edate"));
+                    sessionStorage.setItem("leave_id", q[i].value);
+                    var temp=q[i].getAttribute("edate");
+                    if(temp=="null")
+                        window.location = "http://localhost:8080/attendance_war_exploded/tupdate_leave1.html";
+                    else
+                        window.location = "http://localhost:8080/attendance_war_exploded/tupdate_leave2.html";
+                }
+            }
+        }
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-10 text-center">
+                    <table class="table text-left table-bordered" id="ques1">
+                        <tbody>
+                        <tr class="text-center"><th colspan="8">Leave Applications</th></tr>
+                        <tr class="text-center">
+                            <th>Sr.No.</th>
+                            <th>Apply Date</th>
+                            <th>Leave Type</th>
+                            <th>From Date</th>
+                            <th>To Date</th>
+                            <th>Reason</th>
+                            <th>Approved</th>
+                            <th>Update</th>
+                        </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="col-sm-1">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "tmenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .pad{
+            padding-left: 300px;
+            padding-right: 300px;
+        }
+        .btnprt{
+            padding-left: 400px;
+            padding-right: 400px;
+        }
+    </style>
+    <script>
+        var data1="",tdata, ltype, sdate, edate, reason, tid, leave_id=0,gbli=0,ttlen=0,tempflag=0,ymd=0;
+        var daysOfYear = [];
+        function fetch() {
+            validate_teacher();
+            ltype=sessionStorage.getItem("ltype");
+            sdate=sessionStorage.getItem("sdate");
+            edate=sessionStorage.getItem("edate");
+            reason=sessionStorage.getItem("reason");
+            tid = sessionStorage.getItem("id");
+            $.post("http://localhost:8080/attendance_war_exploded/global/teacher_services/viewAllEx",
+                {param1: tid},
+                function (data) {
+                    tdata=data;
+                });
+
+            var ssd = new Date(sdate);
+            var eed = new Date(edate);
+            // alert(ssd);
+            // alert(eed);
+
+            for (; ssd <= eed; ssd.setDate(ssd.getDate() + 1)) {
+                daysOfYear.push(new Date(ssd));
+            }
+            ttlen=daysOfYear.length;
+            // alert(daysOfYear);
+            // for(i=0;i<daysOfYear.length;i++)
+            //     alert(new Date(daysOfYear[i]).toISOString());
+            datechange();
+
+        }
+
+        function datechange() {
+
+            if(gbli>=ttlen) {
+                alert("Leave application added successfully...!!!");
+                window.location = "http://localhost:8080/attendance_war_exploded/tadd_leave.html";
+            }
+            var d1 = new Date(daysOfYear[gbli]).toISOString();
+            var now = new Date(d1);
+           var yer=now.getUTCFullYear();
+           var mm=now.getUTCMonth()+1;
+           if(mm<10)
+               mm="0"+mm;
+           var dd=now.getUTCDate();
+           if(dd<10)
+               dd="0"+dd;
+           ymd=yer+"-"+mm+"-"+dd;
+           document.getElementById("llbbll").innerText="Date :"+ymd;
+           // alert(ymd);
+            // now.parse("YYYY-MM-DD");
+            // alert(now);
+
+            var d = new Date(daysOfYear[gbli]);
+            // alert(d1);
+            // alert(d);
+            gbli++;
+
+            var day = d.getDay();
+            // alert(day);
+            var tbl = document.getElementById("tbl");
+            tbl.innerText = "";
+            var tid_id = sessionStorage.getItem("id");
+            $.post("http://localhost:8080/attendance_war_exploded/global/timetable_services/viewTeacherDayWise",
+                {param1: day, param2: tid_id, param3: ymd},
+                function (data) {
+                    // alert(data);
+                    data1 = data;
+                });
+            setTimeout(function () {
+                ctable();
+            }, 2000);
+        }
+        function ctable() {
+            sessionStorage.setItem("tempdata",JSON.stringify(data1));
+            if(data1=="")
+            {
+                var tbl = document.getElementById("tbl");
+                tbl.innerText = "";
+                alert("No schedule found...!!!")
+            }
+            else {
+                var tbl = document.getElementById("tbl");
+                tbl.innerText = "";
+                var table = document.createElement('table');
+                table.setAttribute("id","tble");
+                table.className = "table text-center table-bordered";
+                tbl.appendChild(table);
+                var row1 = table.insertRow(0);
+                var q = row1.insertCell(0);
+                q.innerHTML = "<b>Sr.No.</b>";
+                q = row1.insertCell(1);
+                q.innerHTML = "<b>Start Time</b>";
+                q = row1.insertCell(2);
+                q.innerHTML = "<b>End Time</b>";
+                q = row1.insertCell(3);
+                q.innerHTML = "<b>Slot No</b>";
+                q = row1.insertCell(4);
+                q.innerHTML = "<b>Subject / Lab Batch</b>";
+                q = row1.insertCell(5);
+                q.innerHTML = "<b>Class</b>";
+                q = row1.insertCell(6);
+                q.innerHTML = "<b>Division</b>";
+                q = row1.insertCell(7);
+                q.innerHTML = "<b>Select Teacher</b>";
+
+                for (var i = 0; i < data1.length; i++) {
+                    if (data1[i]["flag"] == "1") {
+                        var row1 = table.insertRow(i + 1);
+                        var q1 = row1.insertCell(0);
+                        q1.innerText = i + 1;
+                        q1 = row1.insertCell(1);
+                        q1.innerText =tConvert(data1[i]["stime"]);
+                        q1 = row1.insertCell(2);
+                        q1.innerText = tConvert(data1[i]["etime"]);
+                        q1 = row1.insertCell(3);
+                        q1.innerText = data1[i]["slotno"];
+                        q1 = row1.insertCell(4);
+                        if(data1[i]["subtname"]!="")
+                            q1.innerText = data1[i]["subtname"];
+                        else
+                            q1.innerText = data1[i]["extname"];
+                        q1 = row1.insertCell(5);
+                        q1.innerText = data1[i]["clname"];
+                        q1 = row1.insertCell(6);
+                        q1.innerText = data1[i]["dname"];
+
+                        y=row1.insertCell(7);
+                        var select = document.createElement("select");
+                        select.className="form-control";
+                        select.id=i;
+                        select.setAttribute("slotno",data1[i]["slotno"]);
+                        select.setAttribute("clid",data1[i]["clid"]);
+                        select.setAttribute("day",data1[i]["day"]);
+                        select.setAttribute("flag",data1[i]["flag"]);
+                        select.setAttribute("subjid",data1[i]["subjid"]);
+                        select.setAttribute("sname",data1[i]["sname"]);
+                        select.setAttribute("lname","");
+                        select.setAttribute("dname",data1[i]["dname"]);
+                        select.setAttribute("clname",data1[i]["clname"]);
+                        select.setAttribute("stime",data1[i]["stime"]);
+                        select.setAttribute("etime",data1[i]["etime"]);
+
+
+                        var option = document.createElement("option");
+                        option.value="-1";
+                        option.text ="None";
+                        select.add(option);
+                        for(var k=0;k<tdata.length;k++)
+                        {
+                            var option = document.createElement("option");
+                            option.value=tdata[k]["id"];
+                            option.text =tdata[k]["name"];
+                            select.add(option);
+                        }
+                        y.appendChild(select);
+                    }
+                    else if (data1[i]["flag"] == "0") {
+                        var row1 = table.insertRow(i + 1);
+                        var q1 = row1.insertCell(0);
+                        q1.innerText = i + 1;
+                        q1 = row1.insertCell(1);
+                        q1.innerText = tConvert(data1[i]["stime"]);
+                        q1 = row1.insertCell(2);
+                        q1.innerText = tConvert(data1[i]["etime"]);
+                        q1 = row1.insertCell(3);
+                        q1.innerText = "-";
+                        q1 = row1.insertCell(4);
+                        if(data1[i]["labtname"]!="")
+                            q1.innerText = data1[i]["labtname"];
+                        else
+                            q1.innerText = data1[i]["extname"];
+                        q1 = row1.insertCell(5);
+                        q1.innerText = data1[i]["clname"];
+                        q1 = row1.insertCell(6);
+                        q1.innerText = "-";
+
+                        y=row1.insertCell(7);
+                        var select = document.createElement("select");
+                        select.className="form-control";
+                        select.id=i;
+                        select.setAttribute("slotno","");
+                        select.setAttribute("clid",data1[i]["clid"]);
+                        select.setAttribute("day",data1[i]["day"]);
+                        select.setAttribute("subjid","");
+                        select.setAttribute("sname","");
+                        select.setAttribute("lname",data1[i]["lname"]);
+                        select.setAttribute("flag",data1[i]["flag"]);
+                        select.setAttribute("dname","");
+                        select.setAttribute("clname",data1[i]["clname"]);
+                        select.setAttribute("stime",data1[i]["stime"]);
+                        select.setAttribute("etime",data1[i]["etime"]);
+                        select.setAttribute("tid1",data1[i]["labtname1"])
+
+                        var option = document.createElement("option");
+                        option.value="-1";
+                        option.text ="None";
+                        select.add(option);
+                        for(var k=0;k<tdata.length;k++)
+                        {
+                            var option = document.createElement("option");
+                            option.value=tdata[k]["id"];
+                            option.text =tdata[k]["name"];
+                            select.add(option);
+                        }
+                        y.appendChild(select);
+                    }
+                }
+            }
+        }
+        function next() {
+            var flag=0;
+            if(data1!="") {
+                for (var i = 0; i < data1.length; i++) {
+                    if (data1[i]["flag"] == "1") {
+                        var sl = document.getElementById(i);
+                        if (sl.value == "-1") {
+                            flag = 1;
+                            break;
+                        }
+                    }
+                    else if (data1[i]["flag"] == "0") {
+                        var sl = document.getElementById(i);
+                        if (sl.value == "-1") {
+                            flag = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            var flag1=1;
+            if(flag==1)
+            {
+                var r = confirm("All slots not allocated, Continue?");
+                if (r == true) {
+                    flag1=1
+                } else {
+                    flag1=0;
+                }
+            }
+
+            if(flag1==1 && tempflag==0)
+            {
+                $.post("http://localhost:8080/attendance_war_exploded/global/leave_services/addLeave1",
+                    {param1: tid, param2: sdate, param3: ltype, param4: reason, param5:edate},
+                    function (data) {
+                        // alert(data);
+                        if(data=="E")
+                        {
+                            leave_id="E";
+                            alert("Something went wrong...!!!");
+                        }
+                        else
+                        {
+                            leave_id=data;
+                            addLeave();
+                        }
+                    });
+                tempflag=1;
+            }
+            else if(flag1==1 && tempflag !=0)
+                addLeave();
+        }
+        function addLeave() {
+            if(data1!="") {
+                for (var i = 0; i < data1.length; i++) {
+                    if (data1[i]["flag"] == "1") {
+
+                        var sl = document.getElementById(i);
+                        tid = sl.value;
+                        slotno = sl.getAttribute("slotno");
+                        clid = sl.getAttribute("clid");
+                        day = sl.getAttribute("day");
+                        subjid = sl.getAttribute("subjid");
+                        dname = sl.getAttribute("dname");
+                        $.post("http://localhost:8080/attendance_war_exploded/global/leave_services/addSubjectSlot",
+                            {
+                                param1: slotno,
+                                param2: day,
+                                param3: subjid,
+                                param4: dname,
+                                param5: clid,
+                                param6: tid,
+                                param7: ymd,
+                                param8: leave_id
+                            },
+                            function (data) {
+                                // alert(data);
+                            });
+
+                    }
+                    else if (data1[i]["flag"] == "0") {
+
+                        var sl = document.getElementById(i);
+                        tid = sl.value;
+                        clid = sl.getAttribute("clid");
+                        day = sl.getAttribute("day");
+                        lname = sl.getAttribute("lname");
+                        var atid = sessionStorage.getItem("id");
+                        $.post("http://localhost:8080/attendance_war_exploded/global/leave_services/addLabBatchSlot",
+                            {
+                                param1: day,
+                                param2: atid,
+                                param3: lname,
+                                param4: clid,
+                                param5: tid,
+                                param6: ymd,
+                                param7: leave_id
+                            },
+                            function (data) {
+                                // alert(data);
+                            });
+                    }
+                }
+                datechange();
+            }
+            else
+            {
+                datechange();
+            }
+        }
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-10 text-center">
+                    <h4><label>Allocate Slots</label></h4>
+                    <h5><label id="llbbll"></label></h5>
+                    <form class="form-text text-left">
+                        <div class="pad">
+                            <!--<div class="form-group text-left" >-->
+                            <!--<label>Select Date : </label>-->
+                            <!--<input type="date" name="date" id="date" class="form-control" onchange="datechange()"/>-->
+                            <!--</div>-->
+                        </div>
+                        <div id="tbl">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-1">
+                </div>
+            </div>
+            <div class="btnprt">
+                <button type="submit" id="save" class="btn btn-block btn-danger" onclick="next()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>

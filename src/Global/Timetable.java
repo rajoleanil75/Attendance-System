@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public class Timetable {
     private int slotno, day, clid, flag, flag1, subtname1, labtname1;
-    private String sname, lname, dname, clname, subjid, subtname, labtname, extname;
+    private String sname, lname, dname, clname, subjid, subtname, labtname, extname, leave_tname;
     private LocalTime stime, etime;
 
     public int getSlotno() {
@@ -149,6 +149,14 @@ public class Timetable {
 
     public void setExtname(String extname) {
         this.extname = extname;
+    }
+
+    public String getLeave_tname() {
+        return leave_tname;
+    }
+
+    public void setLeave_tname(String leave_tname) {
+        this.leave_tname = leave_tname;
     }
 }
 class Sortbytime implements Comparator<Timetable>

@@ -56,8 +56,10 @@
             $.post("http://localhost:8080/attendance_war_exploded/global/student_report_services/viewStudentSubLabLbl",
                 {param1: roll, param2: clid, param3: did, param4:sdate, param5:edate},
                 function (data) {
-                    if(data=="")
+                    if(data=="") {
+                        alert("Records not found...!!!");
                         window.location = "http://localhost:8080/attendance_war_exploded/tstudreport.html";
+                    }
                     else
                         toplbl=data;
                 });

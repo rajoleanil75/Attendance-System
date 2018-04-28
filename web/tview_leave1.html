@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "tmenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .pad{
+            padding-left: 300px;
+            padding-right: 300px;
+        }
+        .btnprt{
+            padding-left: 400px;
+            padding-right: 400px;
+        }
+    </style>
+    <script>
+        var data1,tdata, ltype, sdate, reason, tid,leave_id=0, tname;
+        function fetch() {
+            validate_teacher();
+            leave_id=sessionStorage.getItem("leave_id");
+            sdate=sessionStorage.getItem("sdate");
+            tid = sessionStorage.getItem("id");
+
+            var d = new Date(sdate);
+            var day = d.getDay();
+            var tbl = document.getElementById("tbl");
+            tbl.innerText = "";
+            $.post("http://localhost:8080/attendance_war_exploded/global/leave_services/viewTeacherDayWise",
+                {param1: day, param2: tid, param3: sdate, param4:leave_id},
+                function (data) {
+                // alert(data);
+                    data1 = data;
+                });
+            setTimeout(function () {
+                ctable();
+            }, 2000);
+        }
+        function ctable() {
+
+            // sessionStorage.setItem("tempdata",JSON.stringify(data1));
+            if(data1=="")
+            {
+                var tbl = document.getElementById("tbl");
+                tbl.innerText = "";
+                alert("No schedule found...!!!")
+            }
+            else {
+                var tbl = document.getElementById("tbl");
+                tbl.innerText = "";
+                var table = document.createElement('table');
+                table.setAttribute("id","tble");
+                table.className = "table text-center table-bordered";
+                tbl.appendChild(table);
+                var row1 = table.insertRow(0);
+                var q = row1.insertCell(0);
+                q.innerHTML = "<b>Sr.No.</b>";
+                q = row1.insertCell(1);
+                q.innerHTML = "<b>Start Time</b>";
+                q = row1.insertCell(2);
+                q.innerHTML = "<b>End Time</b>";
+                q = row1.insertCell(3);
+                q.innerHTML = "<b>Slot No</b>";
+                q = row1.insertCell(4);
+                q.innerHTML = "<b>Subject / Lab Batch</b>";
+                q = row1.insertCell(5);
+                q.innerHTML = "<b>Class</b>";
+                q = row1.insertCell(6);
+                q.innerHTML = "<b>Division</b>";
+                q = row1.insertCell(7);
+                q.innerHTML = "<b>Allocated Teacher</b>";
+
+                for (var i = 0; i < data1.length; i++) {
+                    if (data1[i]["flag"] == "1") {
+                        var row1 = table.insertRow(i + 1);
+                        var q1 = row1.insertCell(0);
+                        q1.innerText = i + 1;
+                        q1 = row1.insertCell(1);
+                        q1.innerText =tConvert(data1[i]["stime"]);
+                        q1 = row1.insertCell(2);
+                        q1.innerText = tConvert(data1[i]["etime"]);
+                        q1 = row1.insertCell(3);
+                        q1.innerText = data1[i]["slotno"];
+                        q1 = row1.insertCell(4);
+                        if(data1[i]["subtname"]!="")
+                            q1.innerText = data1[i]["subtname"];
+                        else
+                            q1.innerText = data1[i]["extname"];
+                        q1 = row1.insertCell(5);
+                        q1.innerText = data1[i]["clname"];
+                        q1 = row1.insertCell(6);
+                        q1.innerText = data1[i]["dname"];
+                        q1 = row1.insertCell(7);
+                        q1.innerText = data1[i]["leave_tname"];
+
+                        // var subjid=data1[i]["subjid"];
+                        // var slotno=data1[i]["slotno"];
+                        // var day=data1[i]["day"];
+                        // var dname=data1[i]["dname"];
+                        // var clid=data1[i]["clid"];
+
+                        // $.post("http://localhost:8080/attendance_war_exploded/global/leave_services/getSubTname",
+                        //     {param1: slotno, param2: day, param3: subjid, param4: dname, param5:clid, param6:leave_id},
+                        //     function (data) {
+                        //     alert(data);
+                        //         q1.innerText = data;
+                        //     });
+                    }
+                    else if (data1[i]["flag"] == "0") {
+                        var row1 = table.insertRow(i + 1);
+                        var q1 = row1.insertCell(0);
+                        q1.innerText = i + 1;
+                        q1 = row1.insertCell(1);
+                        q1.innerText = tConvert(data1[i]["stime"]);
+                        q1 = row1.insertCell(2);
+                        q1.innerText = tConvert(data1[i]["etime"]);
+                        q1 = row1.insertCell(3);
+                        q1.innerText = "-";
+                        q1 = row1.insertCell(4);
+                        if(data1[i]["labtname"]!="")
+                            q1.innerText = data1[i]["labtname"];
+                        else
+                            q1.innerText = data1[i]["extname"];
+                        q1 = row1.insertCell(5);
+                        q1.innerText = data1[i]["clname"];
+                        q1 = row1.insertCell(6);
+                        q1.innerText = "-";
+                        q1 = row1.insertCell(7);
+                        q1.innerText = data1[i]["leave_tname"];
+                    }
+                }
+            }
+        }
+        function next() {
+            window.location="http://localhost:8080/attendance_war_exploded/tview_leave.html";
+        }
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-10 text-center">
+                    <h4><label>Allocate Slots</label></h4>
+                    <form class="form-text text-left">
+                        <div class="pad">
+                            <!--<div class="form-group text-left" >-->
+                            <!--<label>Select Date : </label>-->
+                            <!--<input type="date" name="date" id="date" class="form-control" onchange="datechange()"/>-->
+                            <!--</div>-->
+                        </div>
+                        <div id="tbl">
+                        </div>
+                    </form>
+
+                </div>
+                <div class="col-sm-1">
+                </div>
+
+            </div>
+            <div class="btnprt">
+                <button type="submit" id="acc" class="btn btn-block btn-danger" onclick="next()">Accept</button>
+            </div>
+            <br>
+            <div class="btnprt">
+                <button type="submit" id="spnd" class="btn btn-block btn-danger" onclick="next()">Stay Pending</button>
+            </div>
+            <br>
+            <div class="btnprt">
+                <button type="submit" id="decl" class="btn btn-block btn-danger" onclick="next()">Declined</button>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>

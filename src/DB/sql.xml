@@ -228,4 +228,63 @@
         </property>
     </class>
 
+    <class name="DB.Leave" table="leave">
+        <id name="id">
+            <column name="id" sql-type="int"/>
+            <generator class="native"/>
+        </id>
+        <property name="ltype">
+            <column name="ltype" sql-type="varchar(40)"/>
+        </property>
+        <property name="reason">
+            <column name="reason" sql-type="text"/>
+        </property>
+        <property name="flag">
+            <column name="flag" sql-type="int"/>
+        </property>
+        <property name="sdate">
+            <column name="sdate" sql-type="date"/>
+        </property>
+        <property name="edate">
+            <column name="edate" sql-type="date" not-null="false"/>
+        </property>
+        <property name="adate">
+            <column name="adate" sql-type="date"/>
+        </property>
+        <property name="atime">
+            <column name="atime" sql-type="time"/>
+        </property>
+        <many-to-one name="teacher" class="DB.Teacher" column="teacher_id" not-null="true" cascade="all"/>
+    </class>
+
+    <class name="DB.Sleave" table="sleave">
+        <composite-id>
+            <key-many-to-one name="subjectTimetable" class="DB.SubjectTimetable">
+                <column name="slotno"/>
+                <column name="day"/>
+                <column name="subject_id"/>
+                <column name="dname"/>
+                <column name="csclass_id"/>
+            </key-many-to-one>
+            <key-many-to-one name="leave" class="DB.Leave" column="leave_id"/>
+            <key-property name="date" column="date"/>
+        </composite-id>
+        <many-to-one name="teacher" class="DB.Teacher" column="t_id" not-null="false" cascade="all"/>
+    </class>
+
+    <class name="DB.Lleave" table="lleave">
+        <composite-id>
+            <key-many-to-one name="labTimetable" class="DB.LabTimetable">
+                <column name="day"/>
+                <column name="teacher_id"/>
+                <column name="lname"/>
+                <column name="csclass_id"/>
+            </key-many-to-one>
+            <key-many-to-one name="leave" class="DB.Leave" column="leave_id"/>
+            <key-property name="date" column="date"/>
+        </composite-id>
+        <many-to-one name="teacher" class="DB.Teacher" column="t_id" not-null="false" cascade="all"/>
+    </class>
+
+
 </hibernate-mapping>
