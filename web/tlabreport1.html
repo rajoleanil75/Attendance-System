@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type="text/javascript" src="chartjs/Chart.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "tmenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .col-sm-12{
+            padding-left: 100px;
+            padding-right: 100px;
+        }
+        .btnprt{
+            padding-left: 400px;
+            padding-right: 400px;
+        }
+        .borderless td, .borderless th {
+            border: none;
+        }
+    </style>
+    <script>
+        var sdata,toplbl;
+        function fetch() {
+            validate_teacher();
+            var clid=sessionStorage.getItem("clid");
+            var did=sessionStorage.getItem("did");
+            var sdate=sessionStorage.getItem("sdate");
+            var edate=sessionStorage.getItem("edate");
+            $.post("http://localhost:8080/attendance_war_exploded/global/class_report_services/viewLabWise",
+                { param2: clid, param3: did, param4:sdate, param5:edate},
+                function (data) {
+                    if(data==null) {
+                        alert("Records not found...!!!");
+                        window.location = "http://localhost:8080/attendance_war_exploded/tlabreport.html";
+                    }
+                    else
+                        sdata=data;
+                });
+            $.post("http://localhost:8080/attendance_war_exploded/global/class_report_services/viewLabLbl",
+                { param2: clid, param3: did, param4:sdate, param5:edate},
+                function (data) {
+                    toplbl=data;
+                });
+
+            setTimeout(function () {
+                clbl();
+            }, 2000);
+            setTimeout(function () {
+                stable();
+            }, 3000);
+
+        }
+        function clbl() {
+            var lbl = document.getElementById('lbl');
+            lbl.innerHTML=toplbl;
+        }
+        function stable() {
+            var tbl = document.getElementById('tbl');
+            if(sdata=="")
+                tbl.hidden=true;
+            else {
+                for (var i = 0; i < (sdata.length); i++) {
+                    var x = tbl.insertRow(i);
+                    var cnt=0;
+                    while (sdata[i][""+cnt+""]!=null)
+                    {
+                        y0 = x.insertCell(cnt);
+                        y0.innerText = sdata[i][""+cnt+""];
+                        cnt++;
+                    }
+
+                }
+            }
+        }
+
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-12 text-center" id="prt">
+
+                    <h4><label id="lbl"></label></h4>
+                    <table class="table text-center table-hover table-bordered" id="tbl">
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="btnprt">
+                    <button type="submit" id="save" class="btn btn-block btn-danger" onclick="printDiv('prt')">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>

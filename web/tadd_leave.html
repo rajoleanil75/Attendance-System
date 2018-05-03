@@ -264,10 +264,13 @@
             var day = d.getDay();
             var ssd = new Date(sdate.value);
             var eed = new Date(edate.value);
+            var a=daysBetween(ssd,eed);
             if(day==0)
                 alert("Please select other than Sunday...!!!!");
             else if(ssd>=eed)
-                alert("From Date must be less than To Date...!!!")
+                alert("From Date must be less than To Date...!!!");
+            else if(a>=4)
+                alert("Leave not allowed more than 4 days continuously...!!!");
             else
             {
                 sessionStorage.setItem("ltype",ltype.value);
@@ -288,6 +291,22 @@
                 }
 
             }
+        }
+        function dcheck() {
+            var sdate=document.getElementById("sdate");
+            var edate=document.getElementById("edate");
+            var ssd = new Date(sdate.value);
+            var eed = new Date(edate.value);
+            var a=daysBetween(ssd,eed);
+            if(ssd>=eed)
+                alert("From Date must be less than To Date...!!!");
+            else if(a>=4)
+                alert("Leave not allowed more than 4 days continuously...!!!");
+
+        }
+        function dcheck1() {
+            var sdate=document.getElementById("sdate");
+
         }
     </script>
 </head>
@@ -311,19 +330,19 @@
                                 <label>Select Leave Type</label>
                                 <select name="ltype" id="ltype" class="form-control">
                                     <option value="Medical leave">Medical leave</option>
-                                    <option value="Personal leave">Personal leave</option>
-                                    <option value="Adverse weather">Adverse weather</option>
-                                    <option value="Other">Other</option>
+                                    <option value="Casual leave">Casual leave</option>
+                                    <option value="Without Pay">Without Pay</option>
+                                    <option value="Earn Leave">Earn Leave</option>
                                 </select>
                                 <!--<input type="text" class="form-control" id="ltype" required>-->
                             </div>
                             <div class="form-group text-left" >
                                 <label>Select From Date : </label>
-                                <input type="date" name="date" id="sdate" class="form-control" required/>
+                                <input type="date" name="date" id="sdate" class="form-control" required onchange="dcheck1()"/>
                             </div>
                             <div class="form-group text-left" >
                                 <label>Select To Date : (Optional)</label>
-                                <input type="date" name="date" id="edate" class="form-control"/>
+                                <input type="date" name="date" id="edate" class="form-control" onchange="dcheck()"/>
                             </div>
                             <div class="form-group">
                                 <label>Reason :</label>

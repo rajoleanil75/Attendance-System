@@ -82,4 +82,19 @@ public class Class_Service
             return "0";
         return s;
     }
+    @POST
+    @Path("getClassCourseNames1")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getClassCourseNames1(@FormParam("param1") int sid)
+    {
+        Session session1= Global.getSession();
+        Transaction t1=session1.beginTransaction();
+        CSClass csClass= (CSClass) session1.createQuery("from CSClass s where s.id=:sid").setParameter("sid",sid).uniqueResult();
+        String s="Course: "+csClass.getCourse().getName()+"<br> Class: "+csClass.getName();
+        t1.commit();
+        session1.close();
+        if(csClass==null)
+            return "";
+        return s;
+    }
 }
