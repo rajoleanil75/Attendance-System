@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -40,6 +41,7 @@ public class Leave_Service {
             leave.setTeacher(teacher);
             leave.setSdate(sd);
             leave.setLtype(ltype);
+            leave.setFlag(0);
             leave.setReason(reason);
             LocalDate ddt=LocalDate.now();
             LocalTime ddt1=LocalTime.now();
@@ -72,6 +74,50 @@ public class Leave_Service {
             DB.Leave leave=session.get(Leave.class,tid);
             leave.setAdate(LocalDate.now());
             leave.setAtime(LocalTime.now());
+            session.persist(leave);
+            t.commit();
+            session.close();
+            return ""+tid+"";
+        }
+        catch (Exception e)
+        {
+            session.close();
+            return "E";
+        }
+    }
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("accept")
+    public String accept(@FormParam("param1") int tid)
+    {
+        Session session= DB.Global.getSession();
+        Transaction t=session.beginTransaction();
+        try
+        {
+            DB.Leave leave=session.get(Leave.class,tid);
+            leave.setFlag(1);
+            session.persist(leave);
+            t.commit();
+            session.close();
+            return ""+tid+"";
+        }
+        catch (Exception e)
+        {
+            session.close();
+            return "E";
+        }
+    }
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("reject")
+    public String reject(@FormParam("param1") int tid)
+    {
+        Session session= DB.Global.getSession();
+        Transaction t=session.beginTransaction();
+        try
+        {
+            DB.Leave leave=session.get(Leave.class,tid);
+            leave.setFlag(-1);
             session.persist(leave);
             t.commit();
             session.close();
@@ -266,6 +312,132 @@ public class Leave_Service {
             session.close();
             return list;
 
+        }
+        catch (Exception e)
+        {
+            session.close();
+            return null;
+        }
+    }
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("viewTeacherReport")
+    public List viewTeacherReport(@FormParam("param1")int tid,@FormParam("param2")String sd,@FormParam("param3")String ed)
+    {
+        Session session = DB.Global.getSession();
+        Transaction t = session.beginTransaction();
+        try {
+            LocalDate sdate=LocalDate.parse(sd);
+            LocalDate edate=LocalDate.parse(ed);
+
+            java.util.List<DB.Leave> tlist = session.createQuery("from Leave s where s.teacher.id=:id and s.sdate>=:id1 and s.sdate<=:id2").setParameter("id2",edate).setParameter("id1",sdate).setParameter("id", tid).list();
+            List list = new ArrayList();
+            int ml=0;
+            int cl=0;
+            int el=0;
+            int wpl=0;
+            for (Iterator iterator = tlist.iterator(); iterator.hasNext(); ) {
+                DB.Leave s = (DB.Leave) iterator.next();
+                LocalDate sdd=s.getSdate();
+                LocalDate edd=s.getEdate();
+                int ttl;
+                if(edd==null)
+                    ttl=1;
+                else
+                {
+                    Period intervalPeriod = Period.between(sdd, edd);
+                    ttl=intervalPeriod.getDays();
+                }
+
+                if(s.getLtype().equals("Medical leave"))
+                    ml+=ttl;
+                else if(s.getLtype().equals("Casual leave"))
+                    cl+=ttl;
+                else if(s.getLtype().equals("Earn Leave"))
+                    el+=ttl;
+                else if(s.getLtype().equals("Without Pay"))
+                    wpl+=ttl;
+                else
+                    continue;
+            }
+            list.add(ml);
+            list.add(cl);
+            list.add(wpl);
+            list.add(el);
+            list.add(ml+el+wpl+cl);
+            t.commit();
+            session.close();
+            return list;
+        }
+        catch (Exception e)
+        {
+            session.close();
+            return null;
+        }
+    }
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("viewTeacherWiseLimit")
+    public List viewTeacherWiseLimit(@FormParam("param1")int tid,@FormParam("param2")String sd,@FormParam("param3")String ed)
+    {
+        Session session = DB.Global.getSession();
+        Transaction t = session.beginTransaction();
+        try {
+            LocalDate sdate=LocalDate.parse(sd);
+            LocalDate edate=LocalDate.parse(ed);
+            java.util.List<DB.Leave> tlist = session.createQuery("from Leave s where s.teacher.id=:id and s.sdate>=:id1 and s.sdate<=:id2 order by s.adate desc ,s.atime desc ").setParameter("id2",edate).setParameter("id1",sdate).setParameter("id", tid).setMaxResults(25).list();
+            List list = new ArrayList();
+            for (Iterator iterator = tlist.iterator(); iterator.hasNext(); ) {
+                DB.Leave s = (DB.Leave) iterator.next();
+                List list1 = new ArrayList();
+                list1.add(s.getAdate());
+                list1.add(s.getLtype());
+                list1.add(s.getSdate());
+                list1.add(s.getEdate());
+                list1.add(s.getReason());
+                list1.add(s.getFlag());
+                list1.add(s.getId());
+                list.add(list1);
+            }
+            t.commit();
+            session.close();
+            return list;
+
+        }
+        catch (Exception e)
+        {
+            session.close();
+            return null;
+        }
+    }
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("viewAll")
+    public List viewAll()
+    {
+        Session session = DB.Global.getSession();
+        Transaction t = session.beginTransaction();
+        try {
+
+            java.util.List<DB.Leave> tlist = session.createQuery("from Leave s where s.flag=:id order by s.adate desc ,s.atime desc ").setParameter("id",0).list();
+            List list = new ArrayList();
+            for (Iterator iterator = tlist.iterator(); iterator.hasNext(); ) {
+                DB.Leave s = (DB.Leave) iterator.next();
+                List list1 = new ArrayList();
+                list1.add(s.getAdate());
+                list1.add(s.getLtype());
+                list1.add(s.getSdate());
+                list1.add(s.getEdate());
+                list1.add(s.getReason());
+                list1.add(s.getFlag());
+                list1.add(s.getId());
+                list1.add(s.getTeacher().getId());
+                list1.add(s.getTeacher().getName());
+                list.add(list1);
+            }
+            t.commit();
+            session.close();
+            return list;
         }
         catch (Exception e)
         {

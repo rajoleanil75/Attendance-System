@@ -69,6 +69,19 @@ public class Teacher {
         return tlist;
     }
     @POST
+    @Path("getTname")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getTname(@FormParam("param1")int tid)
+    {
+        Session session= DB.Global.getSession();
+        Transaction t=session.beginTransaction();
+        DB.Teacher teacher=session.load(DB.Teacher.class,tid);
+        String tname=teacher.getName();
+        t.commit();
+        session.close();
+        return tname;
+    }
+    @POST
     @Path("viewAllEx")
     @Produces(MediaType.APPLICATION_JSON)
     public List viewAllEx(@FormParam("param1")int tid)
