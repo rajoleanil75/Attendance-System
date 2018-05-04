@@ -51,6 +51,32 @@ public class Notification {
         }
     }
     @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("hod_notification")
+    public String hod_notification(@FormParam("param1")String name, @FormParam("param2") String uname)
+    {
+        Session session = DB.Global.getSession1();
+        Transaction t = session.beginTransaction();
+        try {
+            User user=session.load(User.class,uname);
+            DB.Notification notification=new DB.Notification();
+            notification.setName(name);
+            notification.setDate(LocalDate.now());
+            notification.setTime(LocalTime.now());
+            notification.setUser(user);
+            session.persist(notification);
+            t.commit();
+            session.close();
+            return "1";
+        }
+        catch (Exception e)
+        {
+//            t.commit();
+            session.close();
+            return "E";
+        }
+    }
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("viewAllAdmin")
     public List viewAllAdmin(@FormParam("param1")String uid)

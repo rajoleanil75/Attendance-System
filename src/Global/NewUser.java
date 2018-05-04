@@ -53,6 +53,35 @@ public class NewUser {
     }
     @POST
     @Produces(MediaType.TEXT_PLAIN)
+    @Path("add_hod")
+    public String add_hod(@FormParam("param1")String name, @FormParam("param2") String pass, @FormParam("param3")String ques,@FormParam("param4")String ans)
+    {
+        Session session = DB.Global.getSession1();
+        Transaction t = session.beginTransaction();
+        try {
+
+            User user = new User();
+            user.setName(name);
+            user.setPassword(pass);
+            user.setQues(ques);
+            user.setAns(ans);
+            user.setRole(3);
+            user.setDate(LocalDate.now());
+            user.setTime(LocalTime.now());
+            session.persist(user);
+            t.commit();
+            session.close();
+            return "1";
+        }
+        catch (Exception e)
+        {
+//            t.commit();
+            session.close();
+            return "E";
+        }
+    }
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
     @Path("add_teacher")
     public String add_teacher(@FormParam("param1")int tid, @FormParam("param2") String pass, @FormParam("param3")String ques,@FormParam("param4")String ans)
     {

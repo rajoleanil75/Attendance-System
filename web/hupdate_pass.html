@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "hmenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .col-sm-8{
+            padding-left: 190px;
+            padding-right: 190px;
+        }
+    </style>
+    <script>
+        function update()
+        {
+            var pass1=document.getElementById('pass1');
+            var pass2=document.getElementById('pass2');
+            if(pass1.value==pass2.value)
+            {
+                if(pass1.value.length>=6) {
+                    var opass = document.getElementById('opass');
+                    var uname=sessionStorage.getItem("uname");
+                    $.post("http://localhost:8080/attendance_war_exploded/global/password_services/hod_update_pass",
+                        {param1: uname, param2: opass.value, param3: pass1.value},
+                        function (data) {
+                            if(data=='1')
+                            {
+                                var uname=sessionStorage.getItem("uname");
+                                $.post("http://localhost:8080/attendance_war_exploded/global/notification_services/hod_notification",
+                                    {param1: "Password Updated", param2: uname},
+                                    function (data) {
+                                    });
+                                alert("Password Updated Successfully...!!!");
+                                window.location="http://localhost:8080/attendance_war_exploded/hhome.html";
+                            }
+                            else if(data=='0')
+                                alert("Invalid Password...!!!");
+                            else
+                                alert("Something went wrong...!!!")
+                        });
+                }
+                else
+                    alert("Passwod must be greater than or equal 6 character...!!!")
+            }
+            else
+                alert("New password and Confirm password must be same...!!!");
+        }
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="validate_hod()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-8 text-center">
+                    <h4><label>Update Password</label></h4>
+                    <form class="form-text text-left" action="javascript:update();">
+                        <div class="form-group">
+                            <label>Old Passsword:</label>
+                            <input type="password" class="form-control" id="opass" placeholder="Old Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>New Passsword:</label>
+                            <input type="password" class="form-control" id="pass1" placeholder="New Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Passsword:</label>
+                            <input type="password" class="form-control" id="pass2" placeholder="Confirm Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-block btn-danger">Submit</button>
+                    </form>
+                </div>
+                <div class="col-sm-2">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>

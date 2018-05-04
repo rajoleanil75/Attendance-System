@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <script>
+        function login() {
+            var cid = document.getElementById('cid');
+            var uname = document.getElementById('uname');
+            var pass = document.getElementById('pass');
+            $.post("http://localhost:8080/attendance_war_exploded/global/login_services/hod_login",
+                {param1: uname.value, param2: pass.value, param3:cid.value},
+                function (data) {
+                    if(data=='0')
+                        alert("Invalid Username or Password...!!!");
+                    else if(data=="E")
+                        alert("Something went wrong...!!!");
+                    else
+                    {
+                        var user=JSON.parse(data);
+                        sessionStorage.setItem("uname",user.uname);
+                        sessionStorage.setItem("role",user.role);
+                        sessionStorage.setItem("llogin",user.llogin);
+                        window.location="http://localhost:8080/attendance_war_exploded/hhome.html";
+                    }
+                });
+        }
+        function fetch() {
+            document.getElementById("cid").length = 0;
+            $.post("http://localhost:8080/attendance_war_exploded/global/backup_services/viewAll",
+                function (data) {
+                    for(var i=0;i<(data.length);i++)
+                    {
+                        document.getElementById("cid").options[i]=new Option(data[i][0],data[i][3]);
+                    }
+                });
+        }
+    </script>
+</head>
+<title>Attendance System</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+
+    <div class="divnavbar">
+        <nav class="navbar navbar-expand-xl">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <div class="font-color"><a class="nav-link dropdown" href="http://localhost:8080/attendance_war_exploded/admin.html">
+                        Home
+                    </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="row content">
+        <div class="col-sm-8 mainnav">
+            <br>
+            <h1>Welcome To Attendance Portal</h1>
+            <br>
+            <hr>
+            <p><h5>Welcome to Attendence portal of Department of Computer Science, now manage your attendence on the move</h5></p>
+            <hr>
+        </div>
+        <div class="col-sm-4 sidenav">
+            <h4>Login</h4>
+            <hr>
+            <form action="javascript:login();" name="fillform" >
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" placeholder="username" id="uname" required>
+                    <br>
+                    <label>Password</label>
+                    <input type="password" class="form-control" placeholder="password" id="pass" required>
+                    <select name="role" class="form-control" id="role" hidden>
+                        <option value="4">Admin</option>
+                    </select>
+                    <br>
+                    <label>Select Academic year :</label>
+                    <select name="cid" id="cid" class="form-control">
+                    </select>
+                    <br>
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
+                    <input class="btn btn-dark" type="submit" value="Login">
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;
+                    <input class="btn btn-dark" type="reset" value="Reset">
+                </div>
+            </form>
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            <a href="http://localhost:8080/attendance_war_exploded/new_hod.html">new user?</a>
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            <a href="http://localhost:8080/attendance_war_exploded/forget_hod.html">Forget Password</a>
+        </div>
+        <div class="footer">
+            <hr>
+        </div>
+    </div>
+    <div id='footer'></div>

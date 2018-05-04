@@ -50,6 +50,35 @@ public class Password {
     }
     @POST
     @Produces(MediaType.TEXT_PLAIN)
+    @Path("hod_update_pass")
+    public String hod_update_pass(@FormParam("param1")String name, @FormParam("param2")String opass, @FormParam("param3")String npass)
+    {
+        Session session= DB.Global.getSession1();
+        Transaction transaction = session.beginTransaction();
+        try
+        {
+            User user = session.load(User.class,name);
+            if (opass.equals(user.getPassword())) {
+                user.setPassword(npass);
+                session.persist(user);
+                transaction.commit();
+                session.close();
+                return "1";
+            }
+            else {
+                transaction.commit();
+                session.close();
+                return "E";
+            }
+        }
+        catch (Exception e){
+//            transaction.commit();
+//            session.close();
+            return "E";
+        }
+    }
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
     @Path("teacher_update_pass")
     public String teacher_update_pass(@FormParam("param1")int tid, @FormParam("param2")String opass, @FormParam("param3")String npass)
     {
