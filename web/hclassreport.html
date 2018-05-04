@@ -66,27 +66,11 @@
                     }
                 });
         }
-        function didchange() {
-            var cid=document.getElementById("cid");
-            var did=document.getElementById("did");
-            document.getElementById("stid").length = 0;
-            if(did.value!="1" && cid.value!="-1") {
-                $.post("http://localhost:8080/attendance_war_exploded/global/student_services/viewDivisionWise",
-                    {param1: did.value, param2: cid.value},
-                    function (data) {
-                        document.getElementById("stid").options[0] = new Option("Select Student", "-1");
-                        for (var i = 0; i < (data.length); i++) {
-                            document.getElementById("stid").options[i + 1] = new Option(data[i]["1"], data[i]["0"]);
-                        }
-                    });
-            }
-        }
         function addStudent()
         {
             var cid=document.getElementById("cid");
             var clid=document.getElementById("clid");
             var did=document.getElementById("did");
-            var roll=document.getElementById("stid");
             var sdate=document.getElementById("sdate");
             var edate=document.getElementById("edate");
 
@@ -96,28 +80,16 @@
                 alert("Please select Class...!!!");
             else if(did.value=="-1")
                 alert("Please select Division...!!!");
-            else if(roll.value=="-1")
-                alert("Please select Student...!!!");
             else if(sdate.value=="")
                 alert("Please select Start Date...!!!");
             else if(edate.value=="")
                 alert("Please select End Date...!!!");
             else {
-                sessionStorage.setItem("roll",roll.value);
                 sessionStorage.setItem("clid",clid.value);
                 sessionStorage.setItem("did",did.value);
                 sessionStorage.setItem("sdate",sdate.value);
                 sessionStorage.setItem("edate",edate.value);
-                window.location = "http://localhost:8080/attendance_war_exploded/hstudreport1.html";
-                // $.post("http://localhost:8080/attendance_war_exploded/global/student_report_services/viewStudentLabWise",
-                //     {param1: roll.value, param2: clid.value, param3: did.value, param4:sdate.value, param5:edate.value},
-                //     function (data) {
-                //         alert(data);
-                //         // if (data == '1')
-                //         // {
-                //         //
-                //         // }
-                //     });
+                window.location = "http://localhost:8080/attendance_war_exploded/hclassreport1.html";
             }
         }
     </script>
@@ -135,7 +107,7 @@
                 <div class="col-sm-2">
                 </div>
                 <div class="col-sm-8 text-center">
-                    <h4><label>Student Report</label></h4><br>
+                    <h4><label>Division Report</label></h4><br>
                     <div class="form-group text-left" >
                         <label>Select Course : </label>
                         <select name="cid" id="cid" class="form-control" onchange="cidchange()">
@@ -148,16 +120,9 @@
                     </div>
                     <div class="form-group text-left" >
                         <label>Select Division : </label>
-                        <select name="did" id="did" class="form-control" onchange="didchange()">
+                        <select name="did" id="did" class="form-control">
                         </select>
                     </div>
-
-                    <div class="form-group text-left">
-                        <label>Select Student :</label>
-                        <select name="stid" id="stid" class="form-control" >
-                        </select>
-                    </div>
-
                     <div class="form-group text-left" >
                         <label>Select Start Date : </label>
                         <input type="date" name="date" id="sdate" class="form-control"/>
