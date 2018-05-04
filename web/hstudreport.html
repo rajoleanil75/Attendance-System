@@ -15,7 +15,7 @@
     <script type='text/javascript'>
         $(document).ready(function(){
             $( "#header" ).load( "header.html" );
-            $( "#amenu" ).load( "tmenu.html" );
+            $( "#amenu" ).load( "hmenu.html" );
             $( "#footer" ).load( "footer.html" );
         });
     </script>
@@ -29,7 +29,7 @@
 
         function fetch()
         {
-            validate_teacher();
+            validate_hod();
             document.getElementById("cid").length = 0;
             $.post("http://localhost:8080/attendance_war_exploded/global/course_services/viewAll",
                 function (data) {

@@ -59,7 +59,57 @@ public class LabBatch_Report {
                 return "-1";
             }
             else {
-                msg = "Lab Batch Attendance Report<br>Course: " + cname + ", Class: " + clname + "" +
+                msg = "Lab Batch Attendance Report<br>Teacher Name :Course: " + cname + ", Class: " + clname + "" +
+                        "<br>Lab Batch Name: " + lname + "<br>Total Practical: " + total;
+            }
+            transaction.commit();
+            session.close();
+            return msg;
+        }
+        catch (Exception e)
+        {
+            session.close();
+            return "E";
+        }
+    }
+    @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("viewTeachLabDivWiseDetails1")
+    public String viewTeachSubDivWiseDetails1(@FormParam("param1") int tid, @FormParam("param2") String lid, @FormParam("param3")int clid,@FormParam("param4")String sdate,@FormParam("param5")String edate)
+    {
+        Session session = Global.getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            Long total=null;
+            String msg="";
+            int ttl=0;
+            LocalDate sd=LocalDate.parse(sdate);
+            LocalDate ed=LocalDate.parse(edate);
+            LabInstructor l= (LabInstructor) session.createQuery("from LabInstructor s where s.teacher.id=:id and s.labBatch.name=:id1 and s.labBatch.csClass.id=:id2").setParameter("id2",clid).setParameter("id1",lid).setParameter("id",tid).uniqueResult();
+            String clname=l.getLabBatch().getCsClass().getName();
+            String lname=l.getLabBatch().getName();
+            String cname=l.getLabBatch().getCsClass().getCourse().getName();
+
+            List<Student> slist=session.createQuery("from Student s where s.division.csClass.id=:id1 and s.roll>=:id2 and s.roll<=:id3 order by roll asc ").setParameter("id3",l.getLabBatch().getTo()).setParameter("id2",l.getLabBatch().getFrom()).setParameter("id1",clid).list();
+            for(Iterator iterator = slist.iterator(); iterator.hasNext();) {
+                Student s= (Student) iterator.next();
+                Query query=session.createQuery("select count(*) from LabAttendance s where s.student.roll=:id and s.student.division.name=:id1 and s.student.division.csClass.id=:id2 and s.teacher.id=:id4 and s.flag=:id5 and s.labTimetable.labInstructor.labBatch.name=:id6 and s.labTimetable.labInstructor.labBatch.csClass.id=:id7 and s.date>=:id8 and s.date<=:id9").setParameter("id9",ed).setParameter("id8",sd).setParameter("id7",clid).setParameter("id6",lid).setParameter("id5",1).setParameter("id4",tid).setParameter("id2",clid).setParameter("id1",s.getDivision().getName()).setParameter("id",s.getRoll());
+                Long present = (Long)query.uniqueResult();
+                Query query1=session.createQuery("select count(*) from LabAttendance s where s.student.roll=:id and s.student.division.name=:id1 and s.student.division.csClass.id=:id2 and s.teacher.id=:id4 and s.flag=:id5 and s.labTimetable.labInstructor.labBatch.name=:id6 and s.labTimetable.labInstructor.labBatch.csClass.id=:id7 and s.date>=:id8 and s.date<=:id9").setParameter("id9",ed).setParameter("id8",sd).setParameter("id7",clid).setParameter("id6",lid).setParameter("id5",0).setParameter("id4",tid).setParameter("id2",clid).setParameter("id1",s.getDivision().getName()).setParameter("id",s.getRoll());
+                Long absent = (Long)query1.uniqueResult();
+                if(present<=0 && absent <=0) {
+                    ttl = 1;
+                    break;
+                }
+                total=present+absent;
+                break;
+            }
+            if(ttl==1)
+            {
+                return "-1";
+            }
+            else {
+                msg = "Lab Batch Attendance Report<br>Teacher Name :"+l.getTeacher().getName()+"<br>Course: " + cname + ", Class: " + clname + "" +
                         "<br>Lab Batch Name: " + lname + "<br>Total Practical: " + total;
             }
             transaction.commit();

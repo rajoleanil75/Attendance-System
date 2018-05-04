@@ -120,6 +120,57 @@ public class Subject_Report {
         }
     }
     @POST
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("viewTeachSubDivWiseDetails1")
+    public String viewTeachSubDivWiseDetails1(@FormParam("param1") int tid, @FormParam("param2") String sid, @FormParam("param3")String dname,@FormParam("param4")String sdate,@FormParam("param5")String edate)
+    {
+
+        //and s.date>=:id6 and s.date<=:id7").setParameter("id7",ed).setParameter("id6",sd)
+
+        Session session = Global.getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            Long total=null;
+            String msg="";
+            int ttl=0;
+            LocalDate sd=LocalDate.parse(sdate);
+            LocalDate ed=LocalDate.parse(edate);
+            Subject subject=session.load(Subject.class,sid);
+            int clid=subject.getCSClass().getId();
+            Division division= (Division) session.createQuery("from Division s where s.name=:id and s.csClass.id=:id1").setParameter("id",dname).setParameter("id1",clid).uniqueResult();
+            List<Student> slist=session.createQuery("from Student s where s.division.name=:id and s.division.csClass.id=:id1 order by roll asc ").setParameter("id",dname).setParameter("id1",clid).list();
+            for(Iterator iterator = slist.iterator(); iterator.hasNext();) {
+                Student s= (Student) iterator.next();
+                Query query=session.createQuery("select count(*) from SubjectAttendance s where s.student.roll=:id and s.student.division.name=:id1 and s.student.division.csClass.id=:id2 and s.subject.id=:id3 and s.teacher.id=:id4 and s.flag=:id5 and s.date>=:id6 and s.date<=:id7").setParameter("id7",ed).setParameter("id6",sd).setParameter("id5",1).setParameter("id4",tid).setParameter("id3",sid).setParameter("id2",clid).setParameter("id1",dname).setParameter("id",s.getRoll());
+                Long present = (Long)query.uniqueResult();
+                Query query1=session.createQuery("select count(*) from SubjectAttendance s where s.student.roll=:id and s.student.division.name=:id1 and s.student.division.csClass.id=:id2 and s.subject.id=:id3 and s.teacher.id=:id4 and s.flag=:id5 and s.date>=:id6 and s.date<=:id7").setParameter("id7",ed).setParameter("id6",sd).setParameter("id5",0).setParameter("id4",tid).setParameter("id3",sid).setParameter("id2",clid).setParameter("id1",dname).setParameter("id",s.getRoll());
+                Long absent = (Long)query1.uniqueResult();
+                if(present<=0 && absent <=0) {
+                    ttl = 1;
+                    break;
+                }
+                total=present+absent;
+                break;
+            }
+            if(ttl==1)
+            {
+                return "-1";
+            }
+            else {
+                msg = "Subject Attendance Report<br>Teacher Name: "+subject.getTeacher().getName()+"<br>Course: " + division.getCsClass().getCourse().getName() + ", Class: " + division.getCsClass().getName() + "" +
+                        ", Division: " + division.getName() + "<br>Subject Name: " + subject.getName() + "<br>Total Lecture: " + total;
+            }
+            transaction.commit();
+            session.close();
+            return msg;
+        }
+        catch (Exception e)
+        {
+            session.close();
+            return "E";
+        }
+    }
+    @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("viewTeachAllSubWise")
     public List viewTeachAllSubWise(@FormParam("param1") int tid, @FormParam("param2")String sdate,@FormParam("param3")String edate)

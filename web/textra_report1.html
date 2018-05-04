@@ -41,13 +41,13 @@
             $.post("http://localhost:8080/attendance_war_exploded/global/class_report_services/viewExtraSubReport",
                 { param1: clid, param2: tid, param3:sdate, param4:edate},
                 function (data) {
-                    alert(data);
+                    // alert(data);
                         sdata=data;
                 });
             $.post("http://localhost:8080/attendance_war_exploded/global/class_report_services/viewExtraLabReport",
                 { param1: clid, param2: tid, param3:sdate, param4:edate},
                 function (data) {
-                    alert(data);
+                    // alert(data);
                     ldata=data;
                 });
             $.post("http://localhost:8080/attendance_war_exploded/global/class_services/getClassCourseNames1",
