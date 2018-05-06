@@ -37,6 +37,7 @@
             var tid=sessionStorage.getItem("tid");
             var sdate=sessionStorage.getItem("sdate");
             var edate=sessionStorage.getItem("edate");
+            var lbl=document.getElementById("lbl");
             $.post("http://localhost:8080/attendance_war_exploded/global/teacher_services/getTname",
                 {param1:tid},
                 function (data) {

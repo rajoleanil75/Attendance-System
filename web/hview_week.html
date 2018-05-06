@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#amenu" ).load( "hmenu.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .pad{
+            padding-left: 300px;
+            padding-right: 300px;
+        }
+        .pad1{
+            padding-left: 300px;
+            padding-right: 300px;
+        }
+    </style>
+    <script>
+        var data1;
+        function fetch()
+        {
+            validate_hod();
+            document.getElementById("tid").length = 0;
+            $.post("http://localhost:8080/attendance_war_exploded/global/teacher_services/viewAll",
+                function (data) {
+                    document.getElementById("tid").options[0]=new Option("Select Teacher","-1");
+                    for(var i=0;i<(data.length);i++)
+                    {
+                        document.getElementById("tid").options[i+1]=new Option(data[i]["name"],data[i]["id"]);
+                    }
+                });
+        }
+        function next() {
+            var tid=document.getElementById("tid");
+            sessionStorage.setItem("tid",tid.value);
+            window.location = "http://localhost:8080/attendance_war_exploded/hview_week1.html";
+        }
+    </script>
+</head>
+<title>Attendance Portal</title>
+<body onload="fetch()">
+<div class="container">
+    <div id='header'></div>
+    <div id='amenu'></div>
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-10 text-center">
+                    <h4><label>View Timetable</label></h4>
+                    <form class="form-text text-left">
+                        <div class="pad">
+                            <div class="form-group text-left" >
+                                <label>Select Teacher : </label>
+                                <select name="sid" id="tid" class="form-control" >
+                                </select>
+                            </div>
+
+                        </div>
+                        <div id="tbl">
+                        </div>
+                    </form>
+                    <div class="pad1">
+                    <button type="submit" class="btn btn-block btn-danger" onclick="next()">Next</button>
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>
