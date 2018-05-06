@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="scripts/jquery-3.2.1.js"></script>
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $( "#header" ).load( "header.html" );
+            $( "#footer" ).load( "footer.html" );
+        });
+    </script>
+    <style>
+        .btnprt{
+            padding-left: 400px;
+            padding-right: 400px;
+        }
+        .pad{
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .bor{
+            width: 100%;
+            border: 1px solid #11e0fc;
+            border-radius: 8px;
+        }
+    </style>
+    <script>
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+</head>
+<title>Attendance System</title>
+<body>
+<div class="container">
+    <div id='header'></div>
+
+    <div class="divnavbar">
+        <nav class="navbar navbar-expand-xl">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <div class="font-color"><a class="nav-link dropdown" href="http://localhost:8080/attendance_war_exploded/">
+                        Home
+                    </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+
+    <div class="row content">
+        &nbsp
+        <div class="container">
+            <div class="row content1">
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-10 text-center" id="prt">
+                    <h4><label>Teacher Guide</label></h4>
+                    <hr class="border-primary">
+                    <br>
+
+                    <div class="bor">
+                    <div class="text-center">
+                        <label><b>New User Registration</b></label>
+                    </div>
+                    <div class="text-left">
+                        <p class="pad">
+                            1) Click on<b><i>New User?</i></b> in Home page.
+                            <br>
+                            2) Select your name from drop down list. (Note: If your name not present in list then please contact system admin.)
+                            <br>
+                            3) Enter new password.
+                            <br>
+                            4) Select security question and enter answer. (Note: Security question use when you forget your password).
+                            <br>
+                            5) Submit. Now you can login into system
+                        </p>
+                    </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                    <div class="text-center">
+                        <label><b>Forget Password</b></label>
+                    </div>
+                    <div class="text-left">
+                        <p class="pad">
+                            1) Click on<b><i>Forget Password</i></b> in Home page.
+                            <br>
+                            2) Select your name from drop down list. (Note: If your name not present in list then please contact system admin.)
+                            <br>
+                            3) Select security question and enter answer. (Note: Security question is set when you register).
+                            <br>
+                            4) Next
+                            <br>
+                            5) Enter new Password and submit.
+                            <br>
+                            6) Your password is reset, now you can login with new password.
+                        </p>
+                    </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Login</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Goto Home page.
+                                <br>
+                                2) Select your name from drop down list. (Note: If your name not present in list then please contact system admin.)
+                                <br>
+                                3) Enter your password
+                                <br>
+                                4) Login
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Dashboard</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) When your login is successful, then Dashboard page is displayed
+                                <br>
+                                2) Dashboard shows your name with last login information
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Add Leave application</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Home</i></b>, select <b><i>Add leave application</i></b>.
+                                <br>
+                                2) Select leave type.
+                                <br>
+                                3) If you want only one day leave then only select start date or If you want more than one day leave then select both start and end date.
+                                <br>
+                                4) Enter reason for leave and click <b><i>Next</i></b>
+                                <br>
+                                5) In next page, allocate slots for another teacher (Note: If teacher is not confirmed then select none)
+                                <br>
+                                6) after allocating slots click Next.
+                                <br>
+                                7) Your leave application added successfully.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>View Leave Application</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Home</i></b>, select <b><i>View leave application</i></b>.
+                                <br>
+                                2) You can view all leave application you applied previously and their status
+                                <br>
+                                3) Check checkbox to view more information about leave application
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Update security question</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Home</i></b>, select <b><i>Update security question</i></b>.
+                                <br>
+                                2) Enter your password
+                                <br>
+                                3) select new security question and answer and then submit
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Update password</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Home</i></b>, select <b><i>Update password</i></b>.
+                                <br>
+                                2) Enter your old password
+                                <br>
+                                3) Enter new password and submit
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Add Attendance</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Attendance</i></b>, select <b><i>Add Attendance</i></b>.
+                                <br>
+                                2) Select date of attendance
+                                <br>
+                                3) If you want to add replacement lecture attendance then check radio box YES otherwise NO
+                                <br>
+                                4) If you selected YES then select Course and class
+                                <br>
+                                5) In both cases lecture and practical schedule is displayed.
+                                <br>
+                                6) Now check your slot and then press then checkbox.
+                                <br>
+                                7) Now Select present student
+                                <br>
+                                8) If you want to take continue lecture then click on YES in continue lecture
+                                <br>
+                                9) If it is extra lecture then select your subject.
+                                <br>
+                                10) Submit.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Update Attendance</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Attendance</i></b>, select <b><i>Update Attendance</i></b>.
+                                <br>
+                                2) Select date of attendance
+                                <br>
+                                3) If you want to update replacement lecture attendance then check radio box YES otherwise NO
+                                <br>
+                                4) If you selected YES then select Course and class
+                                <br>
+                                5) In both cases lecture and practical schedule is displayed.
+                                <br>
+                                6) Now check your slot and then press then checkbox.
+                                <br>
+                                7) Now Select present student
+                                <br>
+                                8) Submit.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>View Attendance</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Attendance</i></b>, select <b><i>View Attendance</i></b>.
+                                <br>
+                                2) Select date of attendance
+                                <br>
+                                3) If you want to view replacement lecture attendance then check radio box YES otherwise NO
+                                <br>
+                                4) If you selected YES then select Course and class
+                                <br>
+                                5) In both cases lecture and practical schedule is displayed.
+                                <br>
+                                6) Now check your slot and then press then checkbox.
+                                <br>
+                                7) Now you can view present student in that lecture.
+                                <br>
+                                8) Submit.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>View Subject Report</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Reports</i></b>, select <b><i>Subject Report</i></b>.
+                                <br>Note: In subject report you can view one subject report at a time or all subject report.
+                                <br> In single subject report you can view student list with their attendance
+                                <br> In All subject report you can view Total lecture, Extra lecture, Total student in division, Total defaulter in respective subject, Average attendance and percentage for all subject with graph.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>View Lab Batch Report</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Reports</i></b>, select <b><i>Lab Batch Report</i></b>.
+                                <br>Note: In Lab Batch report you can view one lab Batch report at a time or all lab batch report.
+                                <br> In single lab batch report you can view student list with their attendance
+                                <br> In All lab batch report you can view Total lecture, Extra lecture, Total student in division, Total defaulter in respective subject, Average attendance and percentage for all lab batch with graph.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Extra Attendance Report</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Reports</i></b>, select <b><i>Extra Attendance</i></b>.
+                                <br>Note: In Extra attendance report you can view which teacher taken your lecture and how many times
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Student Attendance</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Reports</i></b>, select <b><i>Student Report</i></b>.
+                                <br>Note: In student attendance, you can view overall attendance of student.
+                                i.e. Total lecture attend. Percentage of attendance.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Division Attendance</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Reports</i></b>, select <b><i>Division Attendance</i></b>.
+                                <br>Note: In Division attendance you can view all student attendance in selected division.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Lab Batch Attendance</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Reports</i></b>, select <b><i>Lab Batch Attendance</i></b>.
+                                <br>Note: In Lab Batch attendance you can view all student attendance in selected Lab Batch.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Day Timetable</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Timetable</i></b>, select <b><i>Day</i></b>.
+                                <br>Note: You can select any date and view that day timetable.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Week Timetable</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Timetable</i></b>, select <b><i>Week</i></b>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Add Event</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Scheduler</i></b>, select <b><i>Add Event</i></b>.
+                                <br>Note: You can add one day event or multiple day event. These event visible to all teacher, and can be use when calculating your total lecture report.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>View Event</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Scheduler</i></b>, select <b><i>View Event</i></b>.
+                                <br>Note: You can view all event.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Defaulter</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Defaulter</i></b>
+                                <br>Note: You can view all defaulter in your subjects.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Notification</b></label>
+                        </div>
+                        <div class="text-left">
+                            <p class="pad">
+                                1) Double click on <b><i>Notification</i></b>
+                                <br>Note: You can view latest 25 notification like add attendance, update attendance.
+                            </p>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="bor">
+                        <div class="text-center">
+                            <label><b>Thank you</b></label>
+                            <br>
+                            <label>We will add some new feature in coming update</label>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-1">
+                </div>
+                <div class="btnprt">
+                    <br>
+                    <button type="submit" id="save" class="btn btn-block btn-danger" onclick="printDiv('prt')">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='footer'></div>
